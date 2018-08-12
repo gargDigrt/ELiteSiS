@@ -16,6 +16,7 @@ class ButtonWithBgTableViewCell: UITableViewCell,UITextFieldDelegate {
     var protocolButtonClickImplementation:ProtocolButtonClickImplementation?
     
     @IBOutlet weak var btnInCell: UIButton!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

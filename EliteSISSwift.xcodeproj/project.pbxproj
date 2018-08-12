@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2237704D21208CF4004EC900 /* ProgressLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2237704C21208CF4004EC900 /* ProgressLoader.swift */; };
+		2237704F2120A1B1004EC900 /* WebServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2237704E2120A1B1004EC900 /* WebServices.swift */; };
 		2B4556D720768FC900B9738D /* TeacherAssignmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */; };
 		2B4556D92076927D00B9738D /* ic_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B4556D82076927800B9738D /* ic_search.png */; };
 		2B4556DC2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4556DA2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift */; };
@@ -269,6 +271,8 @@
 
 /* Begin PBXFileReference section */
 		0F8D43AFC5B896B534692136 /* Pods_EliteSISSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EliteSISSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2237704C21208CF4004EC900 /* ProgressLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressLoader.swift; sourceTree = "<group>"; };
+		2237704E2120A1B1004EC900 /* WebServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServices.swift; sourceTree = "<group>"; };
 		2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherAssignmentViewController.swift; sourceTree = "<group>"; };
 		2B4556D82076927800B9738D /* ic_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_search.png; sourceTree = "<group>"; };
 		2B4556DA2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherAssignmentDetailTableViewCell.swift; sourceTree = "<group>"; };
@@ -562,6 +566,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2237704B21208CD2004EC900 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				2237704C21208CF4004EC900 /* ProgressLoader.swift */,
+				2237704E2120A1B1004EC900 /* WebServices.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 		2B94256F206F457800539DBC /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -1069,6 +1082,7 @@
 		6AA150C8203B2834007CBD99 /* EliteSISSwift */ = {
 			isa = PBXGroup;
 			children = (
+				2237704B21208CD2004EC900 /* Helper */,
 				2BDD397F20AF5F19009406E8 /* EliteSISSwift.entitlements */,
 				2BA6C6F820ADE9EB0002FFB9 /* UIBorderView.swift */,
 				386928CA2046C2B0009DE58A /* Graph */,
@@ -1517,6 +1531,7 @@
 				38EE4CD12064D71C005B1915 /* ChangePasswordViewController.swift in Sources */,
 				2BD2088F208B90FF00CD4ED5 /* FeeInformationViewController.swift in Sources */,
 				386928B62046925B009DE58A /* FSCalendar+Deprecated.m in Sources */,
+				2237704F2120A1B1004EC900 /* WebServices.swift in Sources */,
 				6ADD4201203DCEE100A26DE4 /* MenuHeadingTableViewCell.swift in Sources */,
 				388EA8A1208DB9EB0040CC9B /* ParentComplaintViewController.swift in Sources */,
 				6A532D22204C271B005DFF4E /* ScoreTableViewCell.swift in Sources */,
@@ -1544,6 +1559,7 @@
 				2B4556E32076A6B700B9738D /* TeacherAssignmentHeaderFooterView.swift in Sources */,
 				6A81E91F2069750300B14727 /* ReceiverTableViewCell.swift in Sources */,
 				6A532D29204F12C5005DFF4E /* MissedDatasource.swift in Sources */,
+				2237704D21208CF4004EC900 /* ProgressLoader.swift in Sources */,
 				389E110A2073A1630003F005 /* FeeDefaulterTableViewCell.swift in Sources */,
 				6AA150EC203B42E8007CBD99 /* ButtonWithBgTableViewCell.swift in Sources */,
 				2B942581206F7C0100539DBC /* ClassViewDataModel.swift in Sources */,
