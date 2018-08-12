@@ -3,8 +3,8 @@
 //  LoginViewController.swift
 //  EliteSISSwift
 //
-//  Created by Kunal Das on 19/02/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Created by Vivek Garg on 19/02/18.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit
@@ -19,7 +19,7 @@ enum LoginUserType: String {
 }
 
 
-class LoginViewController: UIViewController, ProtocolButtonClickImplementation {
+class LoginViewController: UIViewController, LoginButtonDelegate {
     
     
     @IBOutlet weak var tblViewLogin: UITableView!
@@ -117,19 +117,14 @@ class LoginViewController: UIViewController, ProtocolButtonClickImplementation {
             return requiredLoginType!
         }
     }
-    
-    
-    /// This method is used to return password for the user
-    ///
-    /// - Returns: password as string
-    func getPassword()->String{
-        let passwordCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 2, section: 0)) as! LoginCredentialsTableViewCell
-        return passwordCell.textField.text ?? ""
-    }
+}
 
+//MARK: - LoginButtonDelegate
+
+extension LoginViewController {
     
-    //Login method
     func buttonClicked() {
+        
         let passwordCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 2, section: 0)) as! LoginCredentialsTableViewCell
         // return passwordCell.textField.text ?? ""
         let userNameCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 1, section: 0)) as! LoginCredentialsTableViewCell
@@ -141,211 +136,57 @@ class LoginViewController: UIViewController, ProtocolButtonClickImplementation {
             
         }
         guard let password = passwordCell.textField.text, password != ""  else {
-             AlertManager.shared.showAlertWith(title: "Alert", message: "Password can't be left Blank")
+            AlertManager.shared.showAlertWith(title: "Alert", message: "Password can't be left Blank")
             return
             
         }
         
-
+        ProgressLoader.shared.showLoader(withText: "Login! Please wait...")
         
-                self.selectedLogin = self.getUserName()
-                UserDefaults.standard.set(self.selectedLogin, forKey: "selectedLogin")
-                
-                
-                //                // *******************************    STUDENT LOGIN ********************************
-                //                if (selectedLogin.capitalized == LoginUserType.STUDENT.rawValue.capitalized) {
-                //                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
-                //                {
-                //                    self.present(vc, animated: true, completion: nil)
-                //                }
-                //            }
-                // *******************************    TEACHER LOGIN ********************************
-                //               else if (selectedLogin.capitalized == LoginUserType.TEACHER.rawValue.capitalized) {
-                
-                ProgressLoader.shared.showLoader(withText: "Login! Please wait...")
-                
-                WebServices.shared.loginUserWith(username: username, password: password, completion: {(response, error ) in
+        self.selectedLogin = self.getUserName()
+        UserDefaults.standard.set(self.selectedLogin, forKey: "selectedLogin")
+        
+        WebServices.shared.loginUserWith(username: username, password: password, completion: {(response, error ) in
+            
+            if error == nil, let responseDict = response {
+                if(responseDict["@odata.count"] == 1){
                     
-                    if error == nil, let responseDict = response {
-                        if(responseDict["@odata.count"] == 1){
-                            
-                            print(responseDict["value"] [0]["_sis_registration_value"])
-                            let loginRole = responseDict["value"] [0]["new_rolecode"]
-                            print(loginRole)
-                            let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
-                            print(regId)
-                            //
-                            ProgressLoader.shared.hideLoader()
-                            UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
-                            if(loginRole == 1) {
-                                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
-                                {
-                                    self.present(vc, animated: true, completion: nil)
-                                }
-                            } else if(loginRole == 2){
-                                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
-                                {
-                                    self.present(vc, animated: true, completion: nil)
-                                }
-                                
-                            } else if(loginRole == 3) {
-                                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
-                                {
-                                    self.present(vc, animated: true, completion: nil)
-                                }
-                            }
-                        }else{
-                            ProgressLoader.shared.hideLoader()
-                            AlertManager.shared.showAlertWith(title: "Login Failed!", message: "Please check your Username and Password")
+                    print(responseDict["value"] [0]["_sis_registration_value"])
+                    let loginRole = responseDict["value"] [0]["new_rolecode"]
+                    //                    print(loginRole)
+                    let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
+                    //                    print(regId)
+                    
+                    ProgressLoader.shared.hideLoader()
+                    
+                    UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
+                    if(loginRole == 1) {
+                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
+                        {
+                            self.present(vc, animated: true, completion: nil)
                         }
-                    }else{
-                        ProgressLoader.shared.hideLoader()
-                        AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
+                    } else if(loginRole == 2){
+                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
+                        {
+                            self.present(vc, animated: true, completion: nil)
+                        }
+                        
+                    } else if(loginRole == 3) {
+                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
+                        {
+                            self.present(vc, animated: true, completion: nil)
+                        }
                     }
-                    
-                })
-        
-
-                
-//                DispatchQueue.global().async {
-//                    print(md5EncodedString)
-//                    print (userName)
-//                    let stringLoginCall = "http://43.224.136.81:5015/SIS_Student/Login/" + userName + "/" + md5EncodedString + "/MBLE_APP_00001"
-//                    print (stringLoginCall)
-//                    let encodedString = stringLoginCall.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
-//                    print(encodedString!)
-//                    Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
-//                        if((responseData.result.value) != nil) {
-//                            let responseDict = JSON(responseData.result.value!)
-//                            // let loginDataMain = swiftyJsonVar.dictionaryObject! as! [String: String]
-//                            print(responseDict)
-//
-//                            if(responseDict["@odata.count"] == 1){
-//
-//                                print(responseDict["value"] [0]["_sis_registration_value"])
-//                                let loginRole = responseDict["value"] [0]["new_rolecode"]
-//                                print(loginRole)
-//                                let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
-//                                print(regId)
-//                                //
-//                                ProgressLoader.shared.hideLoader()
-//                                UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
-//                                if(loginRole == 1) {
-//                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
-//                                    {
-//                                        self.present(vc, animated: true, completion: nil)
-//                                    }
-//                                } else if(loginRole == 2){
-//                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
-//                                    {
-//                                        self.present(vc, animated: true, completion: nil)
-//                                    }
-//
-//                                } else if(loginRole == 3) {
-//                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
-//                                    {
-//                                        self.present(vc, animated: true, completion: nil)
-//                                    }
-//                                }
-//                            }else{
-//                                ProgressLoader.shared.hideLoader()
-//                                let alert = UIAlertController(title: "Login Failed!", message: "Please check your Username and Password", preferredStyle: UIAlertControllerStyle.alert)
-//                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-//                                self.present(alert, animated: true, completion: nil)
-//                            }
-//
-//                        }else{
-//                            ProgressLoader.shared.hideLoader()
-//                            let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
-//                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-//                            self.present(alert, animated: true, completion: nil)
-//                        }
-//                    }
-//                }
-                //     }
-                
-                // *******************************    PARENTS LOGIN ********************************
-                //           else if (selectedLogin.capitalized == LoginUserType.PARENT.rawValue.capitalized)
-                //                {
-                //                    self .showLoader()
-                //                    DispatchQueue.global().async {
-                //                        print(md5EncodedString)
-                //                        print (userNamestr)
-                //                        let stringLoginCall = "http://43.224.136.81:5015/SIS_Student/Login/" + userNamestr + "/" + md5EncodedString + "/MBLE_APP_00001"
-                //                        print (stringLoginCall)
-                //                        let encodedString = stringLoginCall.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
-                //                        print(encodedString!)
-                //                        Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
-                //                            if((responseData.result.value) != nil) {
-                //                                let swiftyJsonVar = JSON(responseData.result.value!)
-                //                                // let loginDataMain = swiftyJsonVar.dictionaryObject! as! [String: String]
-                //                                print(swiftyJsonVar["@odata.count"])
-                //                                //  print (loginDataMain)
-                //
-                //                                if(swiftyJsonVar["@odata.count"] == 1){
-                //
-                //                                    print(swiftyJsonVar["value"] [0]["_sis_registration_value"])
-                //                                    let regId = swiftyJsonVar["value"] [0]["_sis_registration_value"].stringValue
-                //                                    print(regId)
-                //                                    //                                     let myString = regId
-                //                                    //                                    let myType = type(of: myString)
-                //                                    //                                    print(myType)
-                //                                    self .hideLoader()
-                //                                    UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
-                //                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
-                //                                                        {
-                //                                                            self.present(vc, animated: true, completion: nil)
-                //                                                        }
-                //                                }else{
-                //                                    self .hideLoader()
-                //                                    let alert = UIAlertController(title: "Login Failed!", message: "Please check your Username and Password", preferredStyle: UIAlertControllerStyle.alert)
-                //                                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                //                                    self.present(alert, animated: true, completion: nil)
-                //                                }
-                //
-                //                            }else{
-                //                                self .hideLoader()
-                //                                let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
-                //                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                //                                self.present(alert, animated: true, completion: nil)
-                //                            }
-                //                        }
-                //                    }
-                //                }
-                // {
-                //
-                //   }
-                
-                //                else {
-                //
-                //                    let alert = UIAlertController(title: "Alert", message: "Not a valid User Name", preferredStyle: UIAlertControllerStyle.alert)
-                //                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                //                    self.present(alert, animated: true, completion: nil)
-                //                }
-
-        
+                }else{
+                    ProgressLoader.shared.hideLoader()
+                    AlertManager.shared.showAlertWith(title: "Login Failed!", message: "Please check your Username and Password")
+                }
+            }else{
+                ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
+            }
+        })
     }
-    
-//
-//    func showLoader(){
-//
-//        // https://www.cocoacontrols.com/controls/alloadingview
-//
-//        ALLoadingView.manager.resetToDefaults()
-//        ALLoadingView.manager.blurredBackground = true
-//        ALLoadingView.manager.animationDuration = 1.0
-//        ALLoadingView.manager.itemSpacing = 30.0
-//        ALLoadingView.manager.messageText = "Login! Please wait..."
-//        ALLoadingView.manager.showLoadingView(ofType: .messageWithIndicator, windowMode: .fullscreen)
-//
-//    }
-//
-//    func hideLoader(){
-//
-//        ALLoadingView.manager.hideLoadingView(withDelay: 0.0)
-//        ALLoadingView.manager.resetToDefaults()
-//
-//    }
     
 }
 
@@ -426,7 +267,7 @@ extension LoginViewController : UITableViewDelegate, UITableViewDataSource {
         case 4:
             let cellLoginBtn = tableView.dequeueReusableCell(withIdentifier: "ButtonWithBgTableViewCell") as! ButtonWithBgTableViewCell
             cellLoginBtn.backgroundColor = UIColor.clear
-            cellLoginBtn.protocolButtonClickImplementation = self
+            cellLoginBtn.delegate = self
             cellLoginBtn.btnInCell.setTitle("Login", for: .normal)
             
             cellLoginBtn.selectionStyle = .none

@@ -22,10 +22,6 @@ class MyNavigationController: ENSideMenuNavigationController {
         view.bringSubview(toFront: navigationBar)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 }
 
 extension MyNavigationController: ENSideMenuDelegate {

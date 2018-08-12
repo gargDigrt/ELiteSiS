@@ -2,8 +2,8 @@
 //  AssignmentHeaderReusableView.swift
 //  EliteSISSwift
 //
-//  Created by Kunal Das on 24/02/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Created by Vivek Garg on 24/02/18.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit

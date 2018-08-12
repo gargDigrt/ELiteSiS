@@ -3,7 +3,7 @@
 //  EliteSISSwift
 //
 //  Created by Reetesh Bajpai on 23/03/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit
@@ -137,7 +137,7 @@ class ChangePasswordViewController: UIViewController , UITableViewDelegate,UITab
             cellLoginBtn.backgroundColor = UIColor.clear
             //            cellLoginBtn.protocolButtonClickImplementation = self
             cellLoginBtn.btnInCell.setTitle("SUBMIT", for: .normal)
-            cellLoginBtn.protocolButtonClickImplementation = self
+            cellLoginBtn.delegate = self
             cellLoginBtn.selectionStyle = .none
             return cellLoginBtn
             
@@ -242,7 +242,7 @@ class ChangePasswordViewController: UIViewController , UITableViewDelegate,UITab
 }
 
 
-extension ChangePasswordViewController: ProtocolButtonClickImplementation{
+extension ChangePasswordViewController: LoginButtonDelegate{
     func buttonClicked() {
         self.onSubmitClick()
     }

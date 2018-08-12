@@ -9,6 +9,7 @@
 import UIKit
 
 class DashboardViewController: UIViewController, ENSideMenuDelegate {
+    
     @IBOutlet weak var circularProgressView: KDCircularProgress!
     @IBOutlet weak var circularProgressViewSubject: KDCircularProgress!
     @IBOutlet weak var circularProgressViewDay: KDCircularProgress!
@@ -36,6 +37,7 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
     var allowBack = false
     
     override func viewDidLoad() {
+     
         super.viewDidLoad()
         self.sideMenuController()?.sideMenu?.delegate = self
         self.navigationController?.navigationBar.isHidden = true;

@@ -2,13 +2,13 @@
 //  ForgotPasswordViewController.swift
 //  EliteSISSwift
 //
-//  Created by Kunal Das on 13/04/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Created by Vivek Garg on 13/04/18.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit
 
-class ForgotPasswordViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProtocolButtonClickImplementation, UITextFieldDelegate {
+class ForgotPasswordViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LoginButtonDelegate, UITextFieldDelegate {
 
     @IBOutlet weak var tblView: UITableView!
     
@@ -116,7 +116,7 @@ class ForgotPasswordViewController: UIViewController, UITableViewDelegate, UITab
         case 3:
             let cellLoginBtn = tableView.dequeueReusableCell(withIdentifier: "ButtonWithBgTableViewCell") as! ButtonWithBgTableViewCell
             cellLoginBtn.backgroundColor = UIColor.clear
-            cellLoginBtn.protocolButtonClickImplementation = self
+            cellLoginBtn.delegate = self
             cellLoginBtn.btnInCell.setTitle("Submit", for: .normal)
             
             cellLoginBtn.selectionStyle = .none

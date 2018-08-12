@@ -2,8 +2,8 @@
 //  HealthReportViewController.swift
 //  EliteSISSwift
 //
-//  Created by Kunal Das on 03/03/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Created by Vivek Garg on 03/03/18.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit
