@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2237704D21208CF4004EC900 /* ProgressLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2237704C21208CF4004EC900 /* ProgressLoader.swift */; };
 		2237704F2120A1B1004EC900 /* WebServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2237704E2120A1B1004EC900 /* WebServices.swift */; };
+		223770512120B7D8004EC900 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223770502120B7D8004EC900 /* AlertManager.swift */; };
 		2B4556D720768FC900B9738D /* TeacherAssignmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */; };
 		2B4556D92076927D00B9738D /* ic_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B4556D82076927800B9738D /* ic_search.png */; };
 		2B4556DC2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4556DA2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift */; };
@@ -273,6 +274,7 @@
 		0F8D43AFC5B896B534692136 /* Pods_EliteSISSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EliteSISSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2237704C21208CF4004EC900 /* ProgressLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressLoader.swift; sourceTree = "<group>"; };
 		2237704E2120A1B1004EC900 /* WebServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServices.swift; sourceTree = "<group>"; };
+		223770502120B7D8004EC900 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherAssignmentViewController.swift; sourceTree = "<group>"; };
 		2B4556D82076927800B9738D /* ic_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_search.png; sourceTree = "<group>"; };
 		2B4556DA2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherAssignmentDetailTableViewCell.swift; sourceTree = "<group>"; };
@@ -571,6 +573,7 @@
 			children = (
 				2237704C21208CF4004EC900 /* ProgressLoader.swift */,
 				2237704E2120A1B1004EC900 /* WebServices.swift */,
+				223770502120B7D8004EC900 /* AlertManager.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -1549,6 +1552,7 @@
 				2BF0A8A220B01FF9001FA6A2 /* TeacherAssginementResponseModel.swift in Sources */,
 				6A4224C620821F4E00214124 /* ComplaintTextViewTableViewCell.swift in Sources */,
 				2BA6C6F920ADE9EB0002FFB9 /* UIBorderView.swift in Sources */,
+				223770512120B7D8004EC900 /* AlertManager.swift in Sources */,
 				6A629D242067BB1600BCC75E /* TeachersHeaderView.swift in Sources */,
 				6A0914FD2065790E004A9382 /* StudentProfileViewController.swift in Sources */,
 				2BAD73852075C8EE00972D50 /* AssignmentContainerViewController.swift in Sources */,

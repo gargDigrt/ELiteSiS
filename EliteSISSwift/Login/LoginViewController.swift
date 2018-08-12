@@ -11,7 +11,6 @@ import UIKit
 import SwiftHash
 import Alamofire
 import SwiftyJSON
-import ALLoadingView
 
 enum LoginUserType: String {
     case STUDENT = "S"
@@ -135,11 +134,20 @@ class LoginViewController: UIViewController, ProtocolButtonClickImplementation {
         // return passwordCell.textField.text ?? ""
         let userNameCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 1, section: 0)) as! LoginCredentialsTableViewCell
         
-        if  (userNameCell.textField.text!.count) > 0{
-            if  (passwordCell.textField.text!.count) > 0{
-                let md5EncodedString = MD5(passwordCell.textField.text!)
-                
-                let userNamestr = userNameCell.textField.text!
+        
+        guard let username = userNameCell.textField.text, username != ""  else {
+            AlertManager.shared.showAlertWith(title: "Alert", message: "User Name cannot be left blank")
+            return
+            
+        }
+        guard let password = passwordCell.textField.text, password != ""  else {
+             AlertManager.shared.showAlertWith(title: "Alert", message: "Password can't be left Blank")
+            return
+            
+        }
+        
+
+        
                 self.selectedLogin = self.getUserName()
                 UserDefaults.standard.set(self.selectedLogin, forKey: "selectedLogin")
                 
@@ -156,61 +164,104 @@ class LoginViewController: UIViewController, ProtocolButtonClickImplementation {
                 
                 ProgressLoader.shared.showLoader(withText: "Login! Please wait...")
                 
-                DispatchQueue.global().async {
-                    print(md5EncodedString)
-                    print (userNamestr)
-                    let stringLoginCall = "http://43.224.136.81:5015/SIS_Student/Login/" + userNamestr + "/" + md5EncodedString + "/MBLE_APP_00001"
-                    print (stringLoginCall)
-                    let encodedString = stringLoginCall.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
-                    print(encodedString!)
-                    Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
-                        if((responseData.result.value) != nil) {
-                            let swiftyJsonVar = JSON(responseData.result.value!)
-                            // let loginDataMain = swiftyJsonVar.dictionaryObject! as! [String: String]
-                            print(swiftyJsonVar)
+                WebServices.shared.loginUserWith(username: username, password: password, completion: {(response, error ) in
+                    
+                    if error == nil, let responseDict = response {
+                        if(responseDict["@odata.count"] == 1){
                             
-                            if(swiftyJsonVar["@odata.count"] == 1){
-                                
-                                print(swiftyJsonVar["value"] [0]["_sis_registration_value"])
-                                let loginRole = swiftyJsonVar["value"] [0]["new_rolecode"]
-                                print(loginRole)
-                                let regId = swiftyJsonVar["value"] [0]["_sis_registration_value"].stringValue
-                                print(regId)
-                                //
-                                ProgressLoader.shared.hideLoader()
-                                UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
-                                if(loginRole == 1) {
-                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
-                                    {
-                                        self.present(vc, animated: true, completion: nil)
-                                    }
-                                } else if(loginRole == 2){
-                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
-                                    {
-                                        self.present(vc, animated: true, completion: nil)
-                                    }
-                                    
-                                } else if(loginRole == 3) {
-                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
-                                    {
-                                        self.present(vc, animated: true, completion: nil)
-                                    }
+                            print(responseDict["value"] [0]["_sis_registration_value"])
+                            let loginRole = responseDict["value"] [0]["new_rolecode"]
+                            print(loginRole)
+                            let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
+                            print(regId)
+                            //
+                            ProgressLoader.shared.hideLoader()
+                            UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
+                            if(loginRole == 1) {
+                                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
+                                {
+                                    self.present(vc, animated: true, completion: nil)
                                 }
-                            }else{
-                                ProgressLoader.shared.hideLoader()
-                                let alert = UIAlertController(title: "Login Failed!", message: "Please check your Username and Password", preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                                self.present(alert, animated: true, completion: nil)
+                            } else if(loginRole == 2){
+                                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
+                                {
+                                    self.present(vc, animated: true, completion: nil)
+                                }
+                                
+                            } else if(loginRole == 3) {
+                                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
+                                {
+                                    self.present(vc, animated: true, completion: nil)
+                                }
                             }
-                            
                         }else{
                             ProgressLoader.shared.hideLoader()
-                            let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                            self.present(alert, animated: true, completion: nil)
+                            AlertManager.shared.showAlertWith(title: "Login Failed!", message: "Please check your Username and Password")
                         }
+                    }else{
+                        ProgressLoader.shared.hideLoader()
+                        AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
                     }
-                }
+                    
+                })
+        
+
+                
+//                DispatchQueue.global().async {
+//                    print(md5EncodedString)
+//                    print (userName)
+//                    let stringLoginCall = "http://43.224.136.81:5015/SIS_Student/Login/" + userName + "/" + md5EncodedString + "/MBLE_APP_00001"
+//                    print (stringLoginCall)
+//                    let encodedString = stringLoginCall.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+//                    print(encodedString!)
+//                    Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
+//                        if((responseData.result.value) != nil) {
+//                            let responseDict = JSON(responseData.result.value!)
+//                            // let loginDataMain = swiftyJsonVar.dictionaryObject! as! [String: String]
+//                            print(responseDict)
+//
+//                            if(responseDict["@odata.count"] == 1){
+//
+//                                print(responseDict["value"] [0]["_sis_registration_value"])
+//                                let loginRole = responseDict["value"] [0]["new_rolecode"]
+//                                print(loginRole)
+//                                let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
+//                                print(regId)
+//                                //
+//                                ProgressLoader.shared.hideLoader()
+//                                UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
+//                                if(loginRole == 1) {
+//                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
+//                                    {
+//                                        self.present(vc, animated: true, completion: nil)
+//                                    }
+//                                } else if(loginRole == 2){
+//                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
+//                                    {
+//                                        self.present(vc, animated: true, completion: nil)
+//                                    }
+//
+//                                } else if(loginRole == 3) {
+//                                    if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
+//                                    {
+//                                        self.present(vc, animated: true, completion: nil)
+//                                    }
+//                                }
+//                            }else{
+//                                ProgressLoader.shared.hideLoader()
+//                                let alert = UIAlertController(title: "Login Failed!", message: "Please check your Username and Password", preferredStyle: UIAlertControllerStyle.alert)
+//                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+//                                self.present(alert, animated: true, completion: nil)
+//                            }
+//
+//                        }else{
+//                            ProgressLoader.shared.hideLoader()
+//                            let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
+//                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+//                            self.present(alert, animated: true, completion: nil)
+//                        }
+//                    }
+//                }
                 //     }
                 
                 // *******************************    PARENTS LOGIN ********************************
@@ -271,18 +322,7 @@ class LoginViewController: UIViewController, ProtocolButtonClickImplementation {
                 //                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 //                    self.present(alert, animated: true, completion: nil)
                 //                }
-            }
-            else {
-                let alert = UIAlertController(title: "Alert", message: "Password can't be left Blank", preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-            }
-        }
-        else {
-            let alert = UIAlertController(title: "Alert", message: "User Name cannot be left blank", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
+
         
     }
     
