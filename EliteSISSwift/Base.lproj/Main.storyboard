@@ -614,12 +614,21 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="allAssignmentLabel" destination="EFS-TY-G4T" id="AKg-VB-5z3"/>
+                        <outlet property="assignmentPercentLabel" destination="ogU-UG-zed" id="PyL-OF-lOm"/>
+                        <outlet property="assignmentProgressView" destination="sDd-6H-wAg" id="JS8-96-V68"/>
+                        <outlet property="attendencePercentLabel" destination="P4h-A8-1lY" id="uvp-LC-yqt"/>
+                        <outlet property="attendenceProgressView" destination="Rna-Mw-Wdm" id="U40-3d-lmH"/>
                         <outlet property="btnBack" destination="g7k-uA-O7d" id="cdk-5I-zvO"/>
-                        <outlet property="circularProgressView" destination="sDd-6H-wAg" id="8em-g4-APq"/>
-                        <outlet property="circularProgressViewDay" destination="Rna-Mw-Wdm" id="Izb-b9-5Gr"/>
-                        <outlet property="circularProgressViewOverall" destination="N9g-C5-zep" id="Epo-jk-2fm"/>
-                        <outlet property="circularProgressViewSubject" destination="KSt-LS-PSV" id="cv7-6W-TRn"/>
-                        <outlet property="lblStudentName" destination="zfC-OL-1WT" id="VoO-WY-mtQ"/>
+                        <outlet property="dueAssignmentLabel" destination="B6R-fh-OMe" id="tFf-le-VRA"/>
+                        <outlet property="overallPerformanceProgressView" destination="N9g-C5-zep" id="NHu-F1-C9j"/>
+                        <outlet property="performanceNumberLabel" destination="ins-tB-dvZ" id="l90-r2-tct"/>
+                        <outlet property="performancePercentLabel" destination="hxM-Dw-Y6e" id="D1F-gM-pxU"/>
+                        <outlet property="presentDayLabel" destination="OMA-aI-6gA" id="bm8-m3-qAu"/>
+                        <outlet property="studentNameLabel" destination="zfC-OL-1WT" id="Lzv-ug-Q93"/>
+                        <outlet property="studyProgressPercentLabel" destination="ZXX-rw-OHD" id="dcp-gk-04H"/>
+                        <outlet property="studyProgressView" destination="KSt-LS-PSV" id="AOF-7Y-1Gn"/>
+                        <outlet property="subjectNumberLabel" destination="BR1-mt-Qgc" id="oZn-Vk-RHj"/>
                         <outlet property="viewAssignmentStatus" destination="tDf-VZ-6V2" id="jTQ-vV-QDl"/>
                         <outlet property="viewAssignmentTap" destination="i1C-BE-KTs" id="7kb-YX-gtB"/>
                         <outlet property="viewAttendance" destination="WIb-Fa-iLf" id="Daj-5f-wxk"/>

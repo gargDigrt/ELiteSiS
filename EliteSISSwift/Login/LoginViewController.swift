@@ -21,10 +21,11 @@ enum LoginUserType: String {
 
 class LoginViewController: UIViewController, LoginButtonDelegate {
     
-    
+    //IBOutlets
     @IBOutlet weak var tblViewLogin: UITableView!
     @IBOutlet weak var tblViewBottomConstraint: NSLayoutConstraint!
     
+    //Variables
     var selectedLogin = LoginUserType.TEACHER.rawValue
     var btnRememberTick:UIButton!
     var boolRemember = false
@@ -152,7 +153,11 @@ extension LoginViewController {
                 if(responseDict["@odata.count"] == 1){
                     
                     print(responseDict["value"] [0]["_sis_registration_value"])
-                    let loginRole = responseDict["value"] [0]["new_rolecode"]
+                    
+                    let sisName = responseDict["value"][0]["sis_name"].stringValue
+                    UserDefaults.standard.set(sisName, forKey: "sis_name")
+                    
+                    let loginRole = responseDict["value"] [0]["new_rolecode"].stringValue
                     //                    print(loginRole)
                     let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
                     //                    print(regId)
@@ -160,18 +165,19 @@ extension LoginViewController {
                     ProgressLoader.shared.hideLoader()
                     
                     UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
-                    if(loginRole == 1) {
+                    UserDefaults.standard.set(loginRole, forKey: "new_rolecode")
+                    if(loginRole == "1") {
                         if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
                         {
                             self.present(vc, animated: true, completion: nil)
                         }
-                    } else if(loginRole == 2){
+                    } else if(loginRole == "2"){
                         if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
                         {
                             self.present(vc, animated: true, completion: nil)
                         }
                         
-                    } else if(loginRole == 3) {
+                    } else if(loginRole == "3") {
                         if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
                         {
                             self.present(vc, animated: true, completion: nil)

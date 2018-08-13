@@ -13,13 +13,19 @@ import ALLoadingView
 
 
 class MyMenuTableViewController: UITableViewController {
+    
+    //VAriables
     var selectedMenuItem : Int = 0
     var arrMenuValues = [String]()
+    var myArrMenuValues = [String]()
     var arrMenuImages = [String]()
     var selectedLogin = UserDefaults.standard.string(forKey: "selectedLogin")
     let regid = UserDefaults.standard.string(forKey: "_sis_registration_value")!
-    
+    let roleCode = UserDefaults.standard.string(forKey: "new_rolecode")!
     var arrUserProfile = [String:String]()
+    
+    
+    // MARK:- View's Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,59 +33,56 @@ class MyMenuTableViewController: UITableViewController {
         tableView.delegate = nil
         tableView.dataSource = nil
         if (!(arrUserProfile.count > 0)) {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                            self.callForUserProfileData()
-                        }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                //                            self.callForUserProfileData()
+                self.MenuListItems()
+            }
+        }
     }
-}
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(true)
-//        if (!(arrUserProfile.count > 0)) {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-//                self.callForUserProfileData()
-//            }
-//        }
-//
-//    }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
+    //    override func viewWillAppear(_ animated: Bool) {
+    //        super.viewWillAppear(true)
+    //        if (!(arrUserProfile.count > 0)) {
+    //            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+    //                self.callForUserProfileData()
+    //            }
+    //        }
+    //
+    //    }
+
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-      if (selectedLogin == "S") {
-        let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuStudentInfoHeaderView") as! MenuStudentInfoHeaderView
-        viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
-        return viewHeader
+        if (selectedLogin == "S") {
+            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuStudentInfoHeaderView") as! MenuStudentInfoHeaderView
+            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
+            return viewHeader
         }
-      else if (selectedLogin == "E") {
-        let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuTeacherInfoHeaderView") as! MenuTeacherInfoHeaderView
-    // let FacultyName = UserDefaults.standard.string(forKey: "FacultyName")!
-        viewHeader.lblName.text = UserDefaults.standard.string(forKey: "FacultyName")!
-        viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
-        /*
-        print(self.arrUserProfile)
-      //  viewHeader.lblName.text = self.arrUserProfile ["ApplicantFullName"]!
-        let strClassName = self.arrUserProfile["className"]!
-        let strSection = self.arrUserProfile["Section"]!
- 
-        viewHeader.lblMotherClass.text = " Mother teacher of - " + strClassName + " (" + strSection + ")"
-        
-        let decodedData = NSData(base64Encoded: self.arrUserProfile["Entityimage"]!, options: NSData.Base64DecodingOptions(rawValue: 0) )
- 
-        let decodedimage = UIImage(data: decodedData! as Data)
- 
-        viewHeader.imgView.image = decodedimage
-        viewHeader.imgView.layer.cornerRadius = viewHeader.imgView.frame.size.width/2
-        viewHeader.imgView.clipsToBounds = true
-      //   */
-        return viewHeader
-      }
-      else{
-        let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuParentInfoHeaderView") as! MenuParentInfoHeaderView
-        viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
-        return viewHeader
+        else if (selectedLogin == "E") {
+            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuTeacherInfoHeaderView") as! MenuTeacherInfoHeaderView
+            // let FacultyName = UserDefaults.standard.string(forKey: "FacultyName")!
+            viewHeader.lblName.text = UserDefaults.standard.string(forKey: "FacultyName")!
+            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
+            /*
+             print(self.arrUserProfile)
+             //  viewHeader.lblName.text = self.arrUserProfile ["ApplicantFullName"]!
+             let strClassName = self.arrUserProfile["className"]!
+             let strSection = self.arrUserProfile["Section"]!
+             
+             viewHeader.lblMotherClass.text = " Mother teacher of - " + strClassName + " (" + strSection + ")"
+             
+             let decodedData = NSData(base64Encoded: self.arrUserProfile["Entityimage"]!, options: NSData.Base64DecodingOptions(rawValue: 0) )
+             
+             let decodedimage = UIImage(data: decodedData! as Data)
+             
+             viewHeader.imgView.image = decodedimage
+             viewHeader.imgView.layer.cornerRadius = viewHeader.imgView.frame.size.width/2
+             viewHeader.imgView.clipsToBounds = true
+             //   */
+            return viewHeader
+        }
+        else{
+            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuParentInfoHeaderView") as! MenuParentInfoHeaderView
+            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
+            return viewHeader
         }
     }
     
@@ -98,16 +101,16 @@ class MyMenuTableViewController: UITableViewController {
         }
     }
     
-   
+    
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
-       
+        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
-        return arrMenuValues.count
+        return myArrMenuValues.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -123,35 +126,35 @@ class MyMenuTableViewController: UITableViewController {
             
         }
         
-//        let theImageView = UIImageView(image: UIImage(named:"progress.png")!.withRenderingMode(.alwaysTemplate))
-//        theImageView.tintColor = UIColor.blue
-//
+        //        let theImageView = UIImageView(image: UIImage(named:"progress.png")!.withRenderingMode(.alwaysTemplate))
+        //        theImageView.tintColor = UIColor.blue
+        //
         cell?.imageView?.image = UIImage(named:(arrMenuImages[indexPath.row]))!.withRenderingMode(.alwaysTemplate)
         //UIImage(named: arrMenuImages[indexPath.row])
         cell?.imageView?.tintColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0)
-        cell!.textLabel?.text = arrMenuValues[indexPath.row]//"ViewController #\(indexPath.row+1)"
+        cell!.textLabel?.text = myArrMenuValues[indexPath.row]//"ViewController #\(indexPath.row+1)"
         
         return cell!
-//        switch indexPath.row {
-//        case 0:
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "MenuHeadingTableViewCell") as! MenuHeadingTableViewCell
-//            return cell
-//        default:
-//            var cell = tableView.dequeueReusableCell(withIdentifier: "CELL")
-//
-//            if (cell == nil) {
-//                cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "CELL")
-//                cell!.backgroundColor = UIColor.clear
-//                cell!.textLabel?.textColor = UIColor.darkGray
-//                let selectedBackgroundView = UIView(frame: CGRect(x: 0, y: 0, width: cell!.frame.size.width, height: cell!.frame.size.height))
-//                selectedBackgroundView.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
-//                cell!.selectedBackgroundView = selectedBackgroundView
-//            }
-//
-//            cell!.textLabel?.text = "ViewController #\(indexPath.row+1)"
-//
-//            return cell!
-//        }
+        //        switch indexPath.row {
+        //        case 0:
+        //            let cell = tableView.dequeueReusableCell(withIdentifier: "MenuHeadingTableViewCell") as! MenuHeadingTableViewCell
+        //            return cell
+        //        default:
+        //            var cell = tableView.dequeueReusableCell(withIdentifier: "CELL")
+        //
+        //            if (cell == nil) {
+        //                cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "CELL")
+        //                cell!.backgroundColor = UIColor.clear
+        //                cell!.textLabel?.textColor = UIColor.darkGray
+        //                let selectedBackgroundView = UIView(frame: CGRect(x: 0, y: 0, width: cell!.frame.size.width, height: cell!.frame.size.height))
+        //                selectedBackgroundView.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
+        //                cell!.selectedBackgroundView = selectedBackgroundView
+        //            }
+        //
+        //            cell!.textLabel?.text = "ViewController #\(indexPath.row+1)"
+        //
+        //            return cell!
+        //        }
         
         
     }
@@ -186,76 +189,76 @@ class MyMenuTableViewController: UITableViewController {
                 self.present(alert, animated: true, completion: nil)
                 
             }else{
-        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-        var destViewController : UIViewController
-        
-        switch (indexPath.row) {
-            
-        case 0:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
-            break
-        case 1:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "PinboardViewController")
-            break
-        case 2:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ParentChatViewController")
-            break
-            
-        case 3:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "NotificationViewController")
-            break
-        case 4:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "timetableview")
-            break
-            
-        case 5:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "AssignmentViewController")
-            break
-        case 6:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "performancescoreview")
-            break
-            
-        case 7:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudyProgressViewController")
-            break
-        case 8:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teachersviewcontroller")
-            break
-            
-        case 9:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "attendanceview")
-            break
-        case 10:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "EventGalleryListViewController")
-            break
-            
-        case 11:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HealthReportViewController")
-            break
-        case 12:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HolidayListViewController")
-            break
-            
-        case 13:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudentProfileViewController")
-            break
-            
-        case 14:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChangePasswordViewController")
-            break
-        case 15:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginviewcontroller")
-            break
-            
-        default:
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ViewController4")
-            break
+                let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
+                var destViewController : UIViewController
+                
+                switch (indexPath.row) {
+                    
+                case 0:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
+                    break
+                case 1:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "PinboardViewController")
+                    break
+                case 2:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ParentChatViewController")
+                    break
+                    
+                case 3:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "NotificationViewController")
+                    break
+                case 4:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "timetableview")
+                    break
+                    
+                case 5:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "AssignmentViewController")
+                    break
+                case 6:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "performancescoreview")
+                    break
+                    
+                case 7:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudyProgressViewController")
+                    break
+                case 8:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teachersviewcontroller")
+                    break
+                    
+                case 9:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "attendanceview")
+                    break
+                case 10:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "EventGalleryListViewController")
+                    break
+                    
+                case 11:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HealthReportViewController")
+                    break
+                case 12:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HolidayListViewController")
+                    break
+                    
+                case 13:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudentProfileViewController")
+                    break
+                    
+                case 14:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChangePasswordViewController")
+                    break
+                case 15:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginviewcontroller")
+                    break
+                    
+                default:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ViewController4")
+                    break
+                }
+                
+                sideMenuController()?.setContentViewController(destViewController)
+            }
         }
-        
-        sideMenuController()?.setContentViewController(destViewController)
-        }
-        }
-       else if (selectedLogin == "E"){
+        else if (selectedLogin == "E"){
             if (indexPath.row == 15) {
                 hideSideMenuView()
                 let alert = UIAlertController(title: "Logout", message: "Do you really want to logout?", preferredStyle: UIAlertControllerStyle.alert)
@@ -271,73 +274,73 @@ class MyMenuTableViewController: UITableViewController {
                 // show the alert
                 self.present(alert, animated: true, completion: nil)
             }else{
-            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-            var destViewController : UIViewController
-            
-            switch (indexPath.row) {
+                let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
+                var destViewController : UIViewController
                 
-            case 0:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
-                break
-            case 1:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherDailySchedule")
-                break
-            case 2:
-               destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudentAttendanceViewController")
-                break
-                
-            case 3:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "PinboardViewController")
-                break
-            case 4:
+                switch (indexPath.row) {
+                    
+                case 0:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
+                    break
+                case 1:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherDailySchedule")
+                    break
+                case 2:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudentAttendanceViewController")
+                    break
+                    
+                case 3:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "PinboardViewController")
+                    break
+                case 4:
                     destViewController = self.getStudentProfileListingWithAction(actionType: .DISCUSSION)
-                break
+                    break
+                    
+                case 5:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "AssignmentContainerViewController")
+                    break
+                    
+                case 6:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudyProgressViewController")
+                    break
+                    
+                case 7:
+                    destViewController = self.getStudentProfileListingWithAction(actionType: .DASHBOARD)
+                    break
+                case 8:
+                    destViewController = self.getStudentProfileListingWithAction(actionType: .PROFILE)
+                    break
+                case 9:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "FeeDefaulterViewController")
+                    break
+                case 10:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "EventGalleryListViewController")
+                    break
+                    
+                case 11:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HolidayListViewController")
+                    break
+                case 12:
+                    destViewController =  mainStoryboard.instantiateViewController(withIdentifier: "teacherprofileviewcontroller")
+                    break
+                case 13:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChangePasswordViewController")
+                    break
+                case 14:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ComplaintsListViewController")
+                    break
+                    
+                case 15:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginviewcontroller")
+                    break
+                    
+                default:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
+                    break
+                }
                 
-            case 5:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "AssignmentContainerViewController")
-                break
-                
-            case 6:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudyProgressViewController")
-                break
-                
-            case 7:
-                destViewController = self.getStudentProfileListingWithAction(actionType: .DASHBOARD)
-                break
-            case 8:
-                destViewController = self.getStudentProfileListingWithAction(actionType: .PROFILE)
-                break
-           case 9:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "FeeDefaulterViewController")
-                break
-            case 10:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "EventGalleryListViewController")
-                break
-                
-            case 11:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HolidayListViewController")
-                break
-            case 12:
-                destViewController =  mainStoryboard.instantiateViewController(withIdentifier: "teacherprofileviewcontroller")
-                break
-            case 13:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChangePasswordViewController")
-                break
-            case 14:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ComplaintsListViewController")
-                break
-                
-            case 15:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginviewcontroller")
-                break
-                
-            default:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
-                break
+                sideMenuController()?.setContentViewController(destViewController)
             }
-            
-            sideMenuController()?.setContentViewController(destViewController)
-        }
         }
         if (selectedLogin == "G"){
             if (indexPath.row == 8) {
@@ -355,46 +358,46 @@ class MyMenuTableViewController: UITableViewController {
                 // show the alert
                 self.present(alert, animated: true, completion: nil)
             }else{
-            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-            var destViewController : UIViewController
-            
-            switch (indexPath.row) {
+                let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
+                var destViewController : UIViewController
                 
-            case 0:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
-                break
-            case 1:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "PinboardViewController")
-                break
-            case 2:
-               destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ParentChatViewController")
-                break
-            case 3:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "EventGalleryListViewController")
-                break
-            case 4:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HolidayListViewController")
-                break
-           case 5:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentprofileviewcontroller")
-                break
-            case 6:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChangePasswordViewController")
-                break
-            case 7:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ParentComplaintDetailViewController")
-                break
-            case 8:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginviewcontroller")
-                break
-            default:
-                destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ViewController4")
-                break
+                switch (indexPath.row) {
+                    
+                case 0:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
+                    break
+                case 1:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "PinboardViewController")
+                    break
+                case 2:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ParentChatViewController")
+                    break
+                case 3:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "EventGalleryListViewController")
+                    break
+                case 4:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HolidayListViewController")
+                    break
+                case 5:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentprofileviewcontroller")
+                    break
+                case 6:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChangePasswordViewController")
+                    break
+                case 7:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ParentComplaintDetailViewController")
+                    break
+                case 8:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginviewcontroller")
+                    break
+                default:
+                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ViewController4")
+                    break
+                }
+                
+                sideMenuController()?.setContentViewController(destViewController)
             }
             
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        
         }
     }
     
@@ -405,7 +408,7 @@ class MyMenuTableViewController: UITableViewController {
     }
     
     func callForUserProfileData()  {
-       self .showLoader()
+        self .showLoader()
         DispatchQueue.global().async {
             print(self.regid)
             
@@ -420,14 +423,18 @@ class MyMenuTableViewController: UITableViewController {
                     print(swiftyJsonVar)
                     // let loginDataMain = swiftyJsonVar.dictionaryObject! as! [String: String]
                     
-                   /*
-                    self.arrUserProfile = swiftyJsonVar.dictionaryObject! as! [String: String]
-                    print (self.arrUserProfile )
-                    print ( self.arrUserProfile ["ApplicantFullName"]!)
-                    */
-                    if (self.selectedLogin == "S"){
+                    /*
+                     self.arrUserProfile = swiftyJsonVar.dictionaryObject! as! [String: String]
+                     print (self.arrUserProfile )
+                     print ( self.arrUserProfile ["ApplicantFullName"]!)
+                     */
+                    
+                    
+                    
+                    if (self.selectedLogin == "S") {
+                        
                         // for Student Login  menu
-                        self.arrMenuValues = ["Dashboard", "Pinboard", "Discussion", "Notification", "Time Table", "Assignment", "Performance/Score", "Study Progress", "Teachers", "Attendance", "Event/Gallery", "Health Report", "Holiday List", "My Profile", "Change Password", "Logout"]
+                        //                        self.arrMenuValues = ["Dashboard", "Pinboard", "Discussion", "Notification", "Time Table", "Assignment", "Performance/Score", "Study Progress", "Teachers", "Attendance", "Event/Gallery", "Health Report", "Holiday List", "My Profile", "Change Password", "Logout"]
                         
                         self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "notification.png", "calendar.png", "assignment.png", "performance.png", "progress.png", "teacher.png", "attendance.png", "event.png", "health.png", "holiday.png", "s_profile.png", "key.png", "logout.png"]
                     }
@@ -468,7 +475,7 @@ class MyMenuTableViewController: UITableViewController {
                     
                     self.tableView.delegate = self
                     self.tableView.dataSource = self
-//                    self.tableView .reloadData()
+                    //                    self.tableView .reloadData()
                     self.tableView.frame.origin.y = self.tableView.frame.origin.y - 35
                     
                 }else{
@@ -479,6 +486,95 @@ class MyMenuTableViewController: UITableViewController {
                 }
             }
         }
+    }
+    
+    
+    func MenuListItems() {
+        WebServices.shared.MenuListItem(role: self.roleCode, completion: {(response,error) in
+            if error == nil, let responceDict = response {
+                // print(responceDict)
+                let swiftyJsonVar = responceDict
+                print(swiftyJsonVar)
+                
+                if (responceDict["Teachers"] == true)
+                {
+                    self.myArrMenuValues.append("Teachers")
+                }
+                
+                if (responceDict["Assignment"] == true)
+                {
+                    self.myArrMenuValues.append("Assignment")
+                }
+                
+                if (responceDict["MyProfile"] == true)
+                {
+                    self.myArrMenuValues.append("My Profile")
+                }
+                
+                if (responceDict["EventGallery"] == true)
+                {
+                    self.myArrMenuValues.append("Event Gallery")
+                }
+                
+                if (responceDict["PerformanceScore"] == true)
+                {
+                    self.myArrMenuValues.append("Performance Score")
+                }
+                
+                if (responceDict["HealthReport"] == true)
+                {
+                    self.myArrMenuValues.append("Health Report")
+                }
+                
+                if (responceDict["Student"] == true)
+                {
+                    self.myArrMenuValues.append("Student")
+                }
+                
+                if (responceDict["Discussion"] == true)
+                {
+                    self.myArrMenuValues.append("Discussion")
+                }
+                
+                if (responceDict["Notification"] == true)
+                {
+                    self.myArrMenuValues.append("Notification")
+                }
+                
+                if (responceDict["Attendance"] == true)
+                {
+                    self.myArrMenuValues.append("Attendance")
+                }
+                
+                if (responceDict["PinBoard"] == true)
+                {
+                    self.myArrMenuValues.append("PinBoard")
+                }
+                
+                if (responceDict["StudyProcess"] == true)
+                {
+                    self.myArrMenuValues.append("Study Process")
+                }
+                
+                if (responceDict["HolidayList"] == true)
+                {
+                    self.myArrMenuValues.append("Holiday List")
+                }
+                
+                if (responceDict["TimeTable"] == true)
+                {
+                    self.myArrMenuValues.append("Time Table")
+                }
+                print(self.myArrMenuValues)
+                self.callForUserProfileData()
+            }
+                
+            else{
+                ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
+            }
+            
+        })
     }
     
     /*
