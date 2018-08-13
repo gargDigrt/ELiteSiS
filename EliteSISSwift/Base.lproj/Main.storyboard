@@ -624,11 +624,11 @@
                         <outlet property="overallPerformanceProgressView" destination="N9g-C5-zep" id="NHu-F1-C9j"/>
                         <outlet property="performanceNumberLabel" destination="ins-tB-dvZ" id="l90-r2-tct"/>
                         <outlet property="performancePercentLabel" destination="hxM-Dw-Y6e" id="D1F-gM-pxU"/>
-                        <outlet property="presentDayLabel" destination="OMA-aI-6gA" id="bm8-m3-qAu"/>
                         <outlet property="studentNameLabel" destination="zfC-OL-1WT" id="Lzv-ug-Q93"/>
                         <outlet property="studyProgressPercentLabel" destination="ZXX-rw-OHD" id="dcp-gk-04H"/>
                         <outlet property="studyProgressView" destination="KSt-LS-PSV" id="AOF-7Y-1Gn"/>
                         <outlet property="subjectNumberLabel" destination="BR1-mt-Qgc" id="oZn-Vk-RHj"/>
+                        <outlet property="totalDayLabel" destination="OMA-aI-6gA" id="bm8-m3-qAu"/>
                         <outlet property="viewAssignmentStatus" destination="tDf-VZ-6V2" id="jTQ-vV-QDl"/>
                         <outlet property="viewAssignmentTap" destination="i1C-BE-KTs" id="7kb-YX-gtB"/>
                         <outlet property="viewAttendance" destination="WIb-Fa-iLf" id="Daj-5f-wxk"/>
@@ -1161,13 +1161,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recommendations: Try eating fruits more!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTK-f7-mfJ">
-                                <rect key="frame" x="10" y="636.66666666666663" width="394" height="19.333333333333371"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Recommendations: Try eating fruits more!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTK-f7-mfJ">
+                                <rect key="frame" x="10" y="636.66666666666652" width="394" height="19.333333333333371"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="viG-rD-aKc" customClass="CosmosView" customModule="EliteSISSwift" customModuleProvider="target">
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="viG-rD-aKc" customClass="CosmosView" customModule="EliteSISSwift" customModuleProvider="target">
                                 <rect key="frame" x="97" y="676" width="220" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <accessibility key="accessibilityConfiguration">
@@ -1200,7 +1200,7 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0Fb-sJ-3qb">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0Fb-sJ-3qb">
                                 <rect key="frame" x="0.0" y="218.66666666666663" width="414" height="398"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -1,4 +1,3 @@
-
 //
 //  ViewController.swift
 //  SwiftSideMenu
@@ -24,7 +23,7 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
     @IBOutlet weak var studyProgressPercentLabel: UILabel!
     @IBOutlet weak var subjectNumberLabel: UILabel!
     @IBOutlet weak var attendencePercentLabel: UILabel!
-    @IBOutlet weak var presentDayLabel: UILabel!
+    @IBOutlet weak var totalDayLabel: UILabel!
     @IBOutlet weak var performancePercentLabel: UILabel!
     @IBOutlet weak var performanceNumberLabel: UILabel!
     
@@ -81,27 +80,33 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
     private func setupProgressCircles(withData dict:[String: Any]) {
         // for circular Progress
         
-        let percentage = dict["new_percentage"] as! Double
-        
         let totalAssignment = dict["new_totalassignments"] as! Int
         allAssignmentLabel.text = "\(totalAssignment)"
         
         let completAssignment = dict["new_completedassignments"] as! Int
         let dueAssignment = totalAssignment - completAssignment
         dueAssignmentLabel.text = "\(dueAssignment)"
+        assignmentPercentLabel.text = "\((completAssignment * 100 ) / totalAssignment)% COMPLETE"
         
         let newAngleValue = getAngle(value: Double(dueAssignment), outOf: Double(totalAssignment))
         assignmentProgressView.animate(toAngle: newAngleValue, duration: 1.0, completion: nil)
         
+        let totalSubject = dict["new_totalsubjects"] as! Int
+        subjectNumberLabel.text = "\(totalSubject)"
+        
         let studyProgress = dict["new_studyprogress"] as! Double
+        studyProgressPercentLabel.text = "\(studyProgress)%"
         let newAngleProfressViewSubjectValue = getAngle(value: studyProgress, outOf: 100)
         studyProgressView.animate(toAngle: newAngleProfressViewSubjectValue, duration: 1.0, completion: nil)
         
         let totalClasses = dict["new_totalclasses"] as! Double
+        totalDayLabel.text = "\(totalClasses)"
         let presentDays = dict["new_presentdays"] as! Double
         let newAngleProgressViewDayValue = getAngle(value: presentDays, outOf: totalClasses)
         attendenceProgressView.animate(toAngle: newAngleProgressViewDayValue, duration: 1.0, completion: nil)
         
+        let percentage = dict["new_percentage"] as! Double
+        performancePercentLabel.text = "\(percentage)%"
         let newAngleProgressViewOverallValue = getAngle(value: 75, outOf: 100)
         overallPerformanceProgressView.animate(toAngle: newAngleProgressViewOverallValue, duration: 1.0, completion: nil)
     }
