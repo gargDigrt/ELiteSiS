@@ -48,7 +48,7 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         self.sideMenuController()?.sideMenu?.delegate = self
         self.navigationController?.navigationBar.isHidden = true;
         
-        getUserProfile()
+        getDasboardDetailsForUser()
 
         let tapGestureAssignmentStatus = UITapGestureRecognizer(target: self, action: #selector(DashboardViewController.showAssignment))
         viewAssignmentTap.addGestureRecognizer(tapGestureAssignmentStatus)
@@ -111,34 +111,23 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         overallPerformanceProgressView.animate(toAngle: newAngleProgressViewOverallValue, duration: 1.0, completion: nil)
     }
     
-   private func getUserProfile() {
-        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else { return}
+    private func getDasboardDetailsForUser() {
         
-        // Getting USer profile 
-        WebServices.shared.getProfile(forRegistrationID: regID, completion: { (response, error) in
+        guard let classSession = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value"), let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else {
+            
+            AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+            return
+        }
+        // getting dashboard details
+        WebServices.shared.getDashboardDetailsFor(classSession: classSession, studentId: studentID, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)
-                let classSession = responseDict["value"][0]["_sis_currentclasssession_value"].stringValue
-                UserDefaults.standard.set(classSession, forKey: "_sis_currentclasssession_value")
-                let studentID = responseDict["value"][0]["sis_studentid"].stringValue
-                UserDefaults.standard.set(studentID, forKey: "sis_studentid")
-                
-                // getting dashboard details
-                WebServices.shared.getDashboardDetailsFor(classSession: classSession, studentId: studentID, completion: { (response, error) in
-                    
-                    if error == nil, let responseDict = response {
-                        debugPrint(responseDict)
-                        let dashboardDict = responseDict["value"][0].dictionaryObject
-                        self.setupProgressCircles(withData: dashboardDict!)
-                    }else{
-                        AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                        debugPrint(error?.localizedDescription ?? "fetching dashboard error")
-                    }
-                })
+                let dashboardDict = responseDict["value"][0].dictionaryObject
+                self.setupProgressCircles(withData: dashboardDict!)
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "fetching dashboard error")
             }
         })
         

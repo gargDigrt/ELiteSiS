@@ -157,6 +157,9 @@ extension LoginViewController {
                     let sisName = responseDict["value"][0]["sis_name"].stringValue
                     UserDefaults.standard.set(sisName, forKey: "sis_name")
                     
+                    let userID = responseDict["value"][0]["sis_user_id"].stringValue
+                     UserDefaults.standard.set(userID, forKey: "sis_user_id")
+                    
                     let loginRole = responseDict["value"] [0]["new_rolecode"].stringValue
                     //                    print(loginRole)
                     let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
