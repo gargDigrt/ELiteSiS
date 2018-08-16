@@ -9,7 +9,7 @@
 import UIKit
 
 class AssignmentViewController: UIViewController, UITableViewDelegate,UITableViewDataSource, UISearchBarDelegate {
-
+    
     @IBOutlet weak var searchBarAssignment: UISearchBar!
     @IBOutlet weak var tblViewAssignment: UITableView!
     var arrAssignments = [[String:String]]()
@@ -17,6 +17,7 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
     @IBOutlet weak var tblViewBottomConstraint: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.callAssignment()
         tblViewAssignment.separatorStyle = .none
         
         tblViewAssignment.delegate = self
@@ -59,7 +60,7 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
         
         tblViewAssignment.register(UINib(nibName:"AssignmentTableViewCell", bundle: nil), forCellReuseIdentifier: "AssignmentTableViewCell")
         tblViewAssignment.register(UINib(nibName:"AssignmentHeaderReusableView", bundle: nil), forHeaderFooterViewReuseIdentifier: "AssignmentHeaderReusableView")
-
+        
         // Do any additional setup after loading the view.
     }
     
@@ -94,11 +95,11 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
         return arrAssignments.count
     }
     
-   
+    
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "AssignmentHeaderReusableView") as! AssignmentHeaderReusableView
-
+        
         viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
         return viewHeader
     }
@@ -137,40 +138,40 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-       arrAssignments = arrResult.filter{$0["desc"]?.range(of: searchText, options: .caseInsensitive) != nil}
+        arrAssignments = arrResult.filter{$0["desc"]?.range(of: searchText, options: .caseInsensitive) != nil}
         
         if searchText.count == 0 {
             arrAssignments = arrResult
         }
-       tblViewAssignment.reloadData()
+        tblViewAssignment.reloadData()
     }
     
     @objc func dismissKeypad() {
         self.view.endEditing(true)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
     @IBAction func showMenu(_ sender: Any) {
         toggleSideMenuView()
         
     }
     
-   
+    
     
     @IBAction func toggleSideMenuBtn(_ sender: UIBarButtonItem) {
         toggleSideMenuView()
@@ -182,7 +183,7 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -191,7 +192,7 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)
@@ -199,5 +200,29 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
         hideSideMenuView()
     }
     
-    
+    func callAssignment()  {
+        ProgressLoader.shared.showLoader(withText: "Please wait... ")
+        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else { return }
+        WebServices.shared.showAssignmentList(studentID: regID, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                print("Responce...........\(responseDict)")
+                
+                //                self.arrHolidayList = responseDict["value"].arrayObject as! [[String : Any]]
+                //                print(self.arrHolidayList)
+                //                DispatchQueue.main.async {
+                //                    self.tblViewHolidayList.reloadData()
+                //                }
+                ProgressLoader.shared.hideLoader()
+            }
+            else{
+                ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+        
+    }
 }
+

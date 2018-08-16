@@ -13,7 +13,7 @@ import SwiftyJSON
 import ALLoadingView
 
 class TeacherProfileViewController: UIViewController,UITableViewDelegate {
-
+    
     @IBOutlet weak var lblTeacherName: UILabel!
     @IBOutlet weak var tblViewInfo: UITableView!
     var generalDatasource: GeneralInfoDatasource!
@@ -26,7 +26,7 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
     var dropDownClasses: DropDown!
     @IBOutlet weak var imgViewProfile: UIImageView!
     @IBOutlet weak var stackViewProfileChangeOptions: UIStackView!
-     let regid = UserDefaults.standard.string(forKey: "_sis_registration_value")!
+    let regid = UserDefaults.standard.string(forKey: "_sis_registration_value")!
     var isEditableView = true
     
     override func viewDidLoad() {
@@ -38,13 +38,13 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
         qualificationDatasource = QualificationDatasource(isDetailEditable: isEditableView)
         addressDatasource = AddressDatasource(isDetailEditable: isEditableView)
         identityCardDatasource = IdentityCardDatasource(isDetailEditable: isEditableView)
-       
+        
         tblViewInfo.separatorStyle = .none
         tblViewInfo.register(UINib(nibName: "TextfieldTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldTableCell")
         tblViewInfo.register(UINib(nibName: "TextFieldWithCalendarTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldwithCalendarTableCell")
         tblViewInfo.register(UINib(nibName: "DropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "DropDownTableViewCell")
         tblViewInfo.register(UINib(nibName: "DateSelectionTableViewCell", bundle:nil), forCellReuseIdentifier: "DateSelectionTableViewCell")
-
+        
         pickerData = ["General Info", "Contact Info", "Qualification Detail", "Address Detail"]
         self .showLoader()
         DispatchQueue.global().async {
@@ -83,7 +83,7 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
                 }
             }
         }
-       
+        
         
         // Do any additional setup after loading the view.
         self.configDropDown()
@@ -98,7 +98,7 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
         //Hide profile change options
         stackViewProfileChangeOptions.isHidden = true
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -147,14 +147,14 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
             tblViewInfo.reloadData()
             
         }//else if row == 4 {
-//            tblViewInfo.dataSource = addressDatasource
-//            tblViewInfo.reloadData()
-//            
-//        }else if row == 5 {
-//            tblViewInfo.dataSource = identityCardDatasource
-//            tblViewInfo.reloadData()
-//            
-//        }
+        //            tblViewInfo.dataSource = addressDatasource
+        //            tblViewInfo.reloadData()
+        //
+        //        }else if row == 5 {
+        //            tblViewInfo.dataSource = identityCardDatasource
+        //            tblViewInfo.reloadData()
+        //
+        //        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -179,7 +179,7 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teachersviewcontroller")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -188,7 +188,7 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)

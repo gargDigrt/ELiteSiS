@@ -43,16 +43,16 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
     
     //MARK: - View's Lifecycle
     override func viewDidLoad() {
-     
+        
         super.viewDidLoad()
         self.sideMenuController()?.sideMenu?.delegate = self
         self.navigationController?.navigationBar.isHidden = true;
         
         getDasboardDetailsForUser()
-
+        
         let tapGestureAssignmentStatus = UITapGestureRecognizer(target: self, action: #selector(DashboardViewController.showAssignment))
         viewAssignmentTap.addGestureRecognizer(tapGestureAssignmentStatus)
-       
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(DashboardViewController.showStudyProgress))
         viewStudyProgress.addGestureRecognizer(tapGesture)
         
@@ -113,10 +113,11 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
     
     private func getDasboardDetailsForUser() {
         
-        guard let classSession = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value"), let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else {
-            
-            AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-            return
+        guard let classSession = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value"),
+            let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else {
+                
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                return
         }
         // getting dashboard details
         WebServices.shared.getDashboardDetailsFor(classSession: classSession, studentId: studentID, completion: { (response, error) in
@@ -132,8 +133,8 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         })
         
     }
-   
-
+    
+    
     func getAngle(value: Double, outOf: Double) -> Double {
         return 360 * (value / outOf)
     }
@@ -194,7 +195,7 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         hideSideMenuView()
         
     }
-
+    
     //MARK: - Action methods
     
     @IBAction func showMenu(_ sender: Any) {
@@ -223,7 +224,7 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         sideMenuController()?.setContentViewController(destViewController)
         hideSideMenuView()
     }
- 
+    
     @IBAction func showDiscussionScreen(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)

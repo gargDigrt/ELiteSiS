@@ -94,5 +94,54 @@ class WebServices: NSObject {
         }
     }
     
+    // for Discussion API
+    func ChooseTeacherForDiscussion(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
+        let stringMenuList = baseURL + "SIS_Student/GetLessonPlan/" + classSession + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+    }
+}
     
+    // for showing holidayList
+    func showHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+        let stringMenuList = baseURL + "SIS_Student/Holidays/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    // for showing Assignment
+    func showAssignmentList(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+        let stringMenuList = baseURL + "SIS_Student/GetAssignmentList/" + studentID + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+    }
 }

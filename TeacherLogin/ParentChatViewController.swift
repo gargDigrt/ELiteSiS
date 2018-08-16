@@ -8,8 +8,13 @@
 
 import UIKit
 import DropDown
+import Alamofire
+import SwiftyJSON
+import ALLoadingView
+
 class ParentChatViewController: UIViewController, UITableViewDelegate,UITableViewDataSource, UITextViewDelegate {
-    var dataSourceClassses = ["Maths Teacher", "Science Teacher", "English Teacher", "Hindi Teacher", "Geography Teacher", "History Teacher", "Dance Teacher", "Sports Teacher"]
+    //  var dataSourceClassses = ["Maths Teacher", "Science Teacher", "English Teacher", "Hindi Teacher", "Geography Teacher", "History Teacher", "Dance Teacher", "Sports Teacher"]
+    var dataSourceClassses = [String]()
     var selectedClass = "Maths Teacher"
     var dropDownStudents: DropDown!
     @IBOutlet weak var viewClassSelection: UIView!
@@ -46,20 +51,46 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
         dropDownStudents = DropDown()
         
         // The view to which the drop down will appear on
-        dropDownStudents.anchorView = self.viewClassSelection // UIView or UIBarButtonItem
+        dropDownStudents.anchorView = self.viewClassSelection
+        // call API here
+        ProgressLoader.shared.showLoader(withText: "Please wait...")
+        guard let ClassSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
+        WebServices.shared.ChooseTeacherForDiscussion(classSession: ClassSession, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                print("Responce...........\(responseDict)")
+                
+                //  for dic in responseDict["value"] {
+                for index in 0..<4 {
+                    let SubjectName = responseDict["value"][index]["new_subject"]["sis_name"].stringValue
+                    let FacultyName = responseDict["value"][index]["new_faculty"]["sis_name"].stringValue
+                    print("\(FacultyName), \(SubjectName)")
+                    print(SubjectName)
+                    self.dataSourceClassses.append("\(FacultyName), \(SubjectName)")
+                }
+                ProgressLoader.shared.hideLoader()
+                print(self.dataSourceClassses)
+                // The list of items to display. Can be changed dynamically
+                self.dropDownStudents.dataSource = self.dataSourceClassses
+                
+                self.dropDownStudents.selectionAction = { [unowned self] (index: Int, item: String) in
+                    self.showStudentsClass(classSelected: item)
+                }
+            }
+            else{
+                ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
         
-        // The list of items to display. Can be changed dynamically
-        dropDownStudents.dataSource = self.dataSourceClassses
-        
-        dropDownStudents.selectionAction = { [unowned self] (index: Int, item: String) in
-            self.showStudentsClass(classSelected: item)
-        }
     }
     
     func showStudentsClass(classSelected: String){
         self.lblSelectedClass.text = classSelected
         self.selectedClass = classSelected
-       
+        
     }
     
     @IBAction func btnSelectClassClick(_ sender: Any) {
@@ -149,6 +180,7 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
         
         toggleSideMenuView()
     }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
@@ -156,7 +188,7 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -165,7 +197,7 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)

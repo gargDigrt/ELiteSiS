@@ -35,13 +35,6 @@ class LoginViewController: UIViewController, LoginButtonDelegate {
     
     override func viewDidLoad() {
         
-        
-        
-        
-        
-        
-        
-        
         super.viewDidLoad()
         
         tblViewLogin.separatorStyle = .none

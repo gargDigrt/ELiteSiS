@@ -21,7 +21,7 @@ class MyMenuTableViewController: UITableViewController {
     var arrMenuImages = [String]()
     var selectedLogin = UserDefaults.standard.string(forKey: "selectedLogin")
     var arrUserProfile = [String:String]()
-    
+    var classNameValue:String = ""
     
     // MARK:- View's Lifecycle
     
@@ -44,16 +44,18 @@ class MyMenuTableViewController: UITableViewController {
             let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuStudentInfoHeaderView") as! MenuStudentInfoHeaderView
             viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
             
+            viewHeader.lblClass.text = "Class: " + self.classNameValue
+            
             if let userID = UserDefaults.standard.string(forKey: "sis_user_id") {
                 viewHeader.lblId.text = "ID: " + userID
             }
             if let fatherName = UserDefaults.standard.string(forKey: "sis_fathername") {
-                 viewHeader.lblParentName.text = "Parent Name: Mr. " + fatherName
+                viewHeader.lblParentName.text = "Parent Name: Mr. " + fatherName
             }
             if let sisName = UserDefaults.standard.string(forKey: "sis_name") {
                 viewHeader.lblStudentName.text = "Student Name: " + sisName
             }
-
+            
             return viewHeader
         }
         else if (selectedLogin == "E") {
@@ -409,25 +411,32 @@ class MyMenuTableViewController: UITableViewController {
     
     func callForUserProfileData()  {
         
-        //        ProgressLoader.shared.showLoader(withText: " ")
+        //  ProgressLoader.shared.showLoader(withText: "Please wait...")
         
-        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else { return}
+        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else { return }
         
         // Getting USer profile
         WebServices.shared.getProfile(forRegistrationID: regID, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)
+                let className1 = responseDict["value"][0]["sis_currentclasssession"]["sis_name"].stringValue
+                let fullNameArr = className1.split(separator: " ")
+                self.classNameValue = "\(fullNameArr[1])(\(responseDict["value"][0]["sis_section"]["sis_name"]))"
+                // UserDefaults.standard.set(self.classNameValue, forKey: "_sis_class_value")
+                
                 let classSession = responseDict["value"][0]["_sis_currentclasssession_value"].stringValue
                 UserDefaults.standard.set(classSession, forKey: "_sis_currentclasssession_value")
+                
                 let studentID = responseDict["value"][0]["sis_studentid"].stringValue
                 UserDefaults.standard.set(studentID, forKey: "sis_studentid")
                 
                 let parentsName = responseDict["value"][0]["sis_fathername"].stringValue
                 UserDefaults.standard.set(parentsName, forKey: "sis_fathername")
-
+                //  ProgressLoader.shared.hideLoader()
                 self.setupDisplay()
             }else{
+                // ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "Getting user profile error")
             }
@@ -479,15 +488,15 @@ class MyMenuTableViewController: UITableViewController {
         self.tableView.reloadData()
         self.tableView.frame.origin.y = self.tableView.frame.origin.y - 35
         
-//        if let userProfileCell = self.tableView.headerView(forSection: 0) as? MenuStudentInfoHeaderView {
-//            let studentID = dict["value"][0]["sis_studentid"].stringValue
-//            userProfileCell.lblId.text = studentID
-//            let parentsName = dict["value"][0]["sis_fathername"].stringValue
-//            userProfileCell.lblParentName.text = parentsName
-//        }
+        //        if let userProfileCell = self.tableView.headerView(forSection: 0) as? MenuStudentInfoHeaderView {
+        //            let studentID = dict["value"][0]["sis_studentid"].stringValue
+        //            userProfileCell.lblId.text = studentID
+        //            let parentsName = dict["value"][0]["sis_fathername"].stringValue
+        //            userProfileCell.lblParentName.text = parentsName
+        //        }
         
     }
-
+    
     func MenuListItems() {
         ProgressLoader.shared.showLoader(withText: "")
         
@@ -500,32 +509,14 @@ class MyMenuTableViewController: UITableViewController {
                 let swiftyJsonVar = responceDict
                 print(swiftyJsonVar)
                 
-                if (responceDict["Teachers"] == true){
-                    self.sideMenuItems.append("Teachers")
-                }
+                self.sideMenuItems.append("Dashboard")
                 
-                if (responceDict["Assignment"] == true){
-                    self.sideMenuItems.append("Assignment")
-                }
+                //                if (responceDict["Student"] == true){
+                //                    self.sideMenuItems.append("Student")
+                //                }
                 
-                if (responceDict["MyProfile"] == true){
-                    self.sideMenuItems.append("My Profile")
-                }
-                
-                if (responceDict["EventGallery"] == true){
-                    self.sideMenuItems.append("Event Gallery")
-                }
-                
-                if (responceDict["PerformanceScore"] == true){
-                    self.sideMenuItems.append("Performance Score")
-                }
-                
-                if (responceDict["HealthReport"] == true){
-                    self.sideMenuItems.append("Health Report")
-                }
-                
-                if (responceDict["Student"] == true){
-                    self.sideMenuItems.append("Student")
+                if (responceDict["PinBoard"] == true){
+                    self.sideMenuItems.append("PinBoard")
                 }
                 
                 if (responceDict["Discussion"] == true){
@@ -536,25 +527,49 @@ class MyMenuTableViewController: UITableViewController {
                     self.sideMenuItems.append("Notification")
                 }
                 
+                if (responceDict["TimeTable"] == true){
+                    self.sideMenuItems.append("Time Table")
+                }
+                
+                if (responceDict["Assignment"] == true){
+                    self.sideMenuItems.append("Assignment")
+                }
+                
+                if (responceDict["PerformanceScore"] == true){
+                    self.sideMenuItems.append("Performance Score")
+                }
+                
+                if (responceDict["Teachers"] == true){
+                    self.sideMenuItems.append("Teachers")
+                }
+                
                 if (responceDict["Attendance"] == true){
                     self.sideMenuItems.append("Attendance")
                 }
                 
-                if (responceDict["PinBoard"] == true){
-                    self.sideMenuItems.append("PinBoard")
+                if (responceDict["EventGallery"] == true){
+                    self.sideMenuItems.append("Event Gallery")
                 }
                 
-                if (responceDict["StudyProcess"] == true){
-                    self.sideMenuItems.append("Study Process")
+                if (responceDict["HealthReport"] == true){
+                    self.sideMenuItems.append("Health Report")
                 }
                 
                 if (responceDict["HolidayList"] == true){
                     self.sideMenuItems.append("Holiday List")
                 }
                 
-                if (responceDict["TimeTable"] == true){
-                    self.sideMenuItems.append("Time Table")
+                if (responceDict["MyProfile"] == true){
+                    self.sideMenuItems.append("My Profile")
                 }
+                
+                if (responceDict["StudyProcess"] == true){
+                    self.sideMenuItems.append("Study Process")
+                }
+                
+                self.sideMenuItems.append("Change Password")
+                self.sideMenuItems.append("Logout")
+                
                 print(self.sideMenuItems)
                 self.callForUserProfileData()
             }
@@ -568,3 +583,4 @@ class MyMenuTableViewController: UITableViewController {
     }
     
 }
+

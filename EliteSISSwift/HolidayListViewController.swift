@@ -24,10 +24,10 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
         tblViewHolidayList.separatorStyle = .none
         tblViewHolidayList.sectionHeaderHeight = 45
         tblViewHolidayList.rowHeight = UITableViewAutomaticDimension
-       
-//        arrHolidayName = ["Republic Day","Maha Shivratri","Holika Dahan","Holi","Ram Navami","Rakshabandhan","Dussehra","Chhoti Diwali","Badi Diwali","Christmas"]
-//        arrHolidayDate = ["26-Jan-2018", "13-Feb-2018", "01-Mar-2018", "02-Mar-2018", "25-Mar-2018", "26-Aug-2018","19-Oct-2018", "06-Nov-2018", "07-Nov-2018", "25-Dec-2018"]
-//        arrHolidayDay = ["Friday", "Tuesday", "Thursday", "Friday", "Sunday", "Sunday","Friday", "Tuesday", "Wednesday", "Monday"]
+        
+        //        arrHolidayName = ["Republic Day","Maha Shivratri","Holika Dahan","Holi","Ram Navami","Rakshabandhan","Dussehra","Chhoti Diwali","Badi Diwali","Christmas"]
+        //        arrHolidayDate = ["26-Jan-2018", "13-Feb-2018", "01-Mar-2018", "02-Mar-2018", "25-Mar-2018", "26-Aug-2018","19-Oct-2018", "06-Nov-2018", "07-Nov-2018", "25-Dec-2018"]
+        //        arrHolidayDay = ["Friday", "Tuesday", "Thursday", "Friday", "Sunday", "Sunday","Friday", "Tuesday", "Wednesday", "Monday"]
         self.tblViewHolidayList.delegate = self
         self.tblViewHolidayList.dataSource = self
         self.tblViewHolidayList.register(UINib(nibName:"HolidaylistHeaderReusableviewTableViewCell", bundle: nil), forHeaderFooterViewReuseIdentifier: "HolidaylistHeaderReusableviewTableViewCell")
@@ -104,56 +104,31 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
         
         hideSideMenuView()
     }
-    func callForHolidayListData(){
-        self .showLoader()
-        DispatchQueue.global().async {
+    
+    func callForHolidayListData() {
+        ProgressLoader.shared.showLoader(withText: "Please wait... ")
+        WebServices.shared.showHolidayList(completion: { (response, error) in
             
-            let stringHolidayDataCall = "http://43.224.136.81:5015/SIS_Student/Holidays"
-            print (stringHolidayDataCall)
-            let encodedString = stringHolidayDataCall.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
-            print(encodedString!)
-            Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
-                if((responseData.result.value) != nil) {
-                    self .hideLoader()
-                    let swiftyJsonVar = JSON(responseData.result.value!)
-                  //  self.arrHolidayList = swiftyJsonVar["value"]
-                    print(swiftyJsonVar ["value"])
-                    self.arrHolidayList = swiftyJsonVar ["value"].arrayObject as! [[String : Any]]
-                    print(self.arrHolidayList [0])
-                    DispatchQueue.main.async{
-                        //put your code here
-                        
-                        self.tblViewHolidayList.reloadData()
-                    }
-                    
-                    
-                }else{
-                     self .hideLoader()
-                    let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                print("Responce...........\(responseDict)")
+                
+                self.arrHolidayList = responseDict["value"].arrayObject as! [[String : Any]]
+                print(self.arrHolidayList)
+                DispatchQueue.main.async {
+                    self.tblViewHolidayList.reloadData()
                 }
+                ProgressLoader.shared.hideLoader()
             }
-        }
-        
-    }
-    func showLoader(){
-        
-        // https://www.cocoacontrols.com/controls/alloadingview
-        
-        ALLoadingView.manager.resetToDefaults()
-        ALLoadingView.manager.blurredBackground = true
-        ALLoadingView.manager.animationDuration = 1.0
-        ALLoadingView.manager.itemSpacing = 30.0
-        ALLoadingView.manager.messageText = "Loading...."
-        ALLoadingView.manager.showLoadingView(ofType: .messageWithIndicator, windowMode: .fullscreen)
-        
-    }
-    func hideLoader(){
-        
-        ALLoadingView.manager.hideLoadingView(withDelay: 0.0)
-        ALLoadingView.manager.resetToDefaults()
+            else{
+                ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
         
     }
     
+    
 }
+
