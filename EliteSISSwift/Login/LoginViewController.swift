@@ -28,6 +28,14 @@ class LoginViewController: UIViewController, UITableViewDelegate,UITableViewData
      var selectedLogin = LoginUserType.TEACHER.rawValue
     
     override func viewDidLoad() {
+        
+        
+        
+        
+        
+        
+        
+        
         super.viewDidLoad()
         tblViewLogin.separatorStyle = .none
         tblViewLogin.register(UINib(nibName: "LogoTableViewCell", bundle:nil), forCellReuseIdentifier: "LogoTableViewCell")
