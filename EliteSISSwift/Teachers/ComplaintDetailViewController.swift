@@ -2,13 +2,13 @@
 //  ComplaintDetailViewController.swift
 //  EliteSISSwift
 //
-//  Created by Kunal Das on 14/04/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Created by Vivek Garg on 14/04/18.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit
 
-class ComplaintDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ProtocolButtonClickImplementation {
+class ComplaintDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, LoginButtonDelegate {
 
     @IBOutlet weak var tblViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var tblViewCompliance: UITableView!
@@ -110,7 +110,7 @@ class ComplaintDetailViewController: UIViewController, UITableViewDataSource, UI
         case 3:
             let cellLoginBtn = tableView.dequeueReusableCell(withIdentifier: "ButtonWithBgTableViewCell") as! ButtonWithBgTableViewCell
             cellLoginBtn.backgroundColor = UIColor.clear
-            cellLoginBtn.protocolButtonClickImplementation = self
+            cellLoginBtn.delegate = self
             cellLoginBtn.btnInCell.setTitle("Submit", for: .normal)
             
             cellLoginBtn.selectionStyle = .none

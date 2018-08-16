@@ -3,7 +3,7 @@
 //  EliteSISSwift
 //
 //  Created by PeakGeek on 07/04/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit

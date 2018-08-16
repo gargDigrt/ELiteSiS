@@ -9,17 +9,27 @@
 import UIKit
 
 class DashboardViewController: UIViewController, ENSideMenuDelegate {
-    @IBOutlet weak var circularProgressView: KDCircularProgress!
-    @IBOutlet weak var circularProgressViewSubject: KDCircularProgress!
-    @IBOutlet weak var circularProgressViewDay: KDCircularProgress!
-    @IBOutlet weak var circularProgressViewOverall:
+    
+    //IBOutlets
+    @IBOutlet weak var assignmentProgressView: KDCircularProgress!
+    @IBOutlet weak var studyProgressView: KDCircularProgress!
+    @IBOutlet weak var attendenceProgressView: KDCircularProgress!
+    @IBOutlet weak var overallPerformanceProgressView:
     KDCircularProgress!
+    
+    @IBOutlet weak var dueAssignmentLabel: UILabel!
+    @IBOutlet weak var allAssignmentLabel: UILabel!
+    @IBOutlet weak var assignmentPercentLabel: UILabel!
+    @IBOutlet weak var studyProgressPercentLabel: UILabel!
+    @IBOutlet weak var subjectNumberLabel: UILabel!
+    @IBOutlet weak var attendencePercentLabel: UILabel!
+    @IBOutlet weak var totalDayLabel: UILabel!
+    @IBOutlet weak var performancePercentLabel: UILabel!
+    @IBOutlet weak var performanceNumberLabel: UILabel!
     
     @IBOutlet weak var viewAssignmentStatus: UIView!
     
-    @IBOutlet weak var lblStudentName: UILabel!
-    
-    var studentName:String!
+    @IBOutlet weak var studentNameLabel: UILabel!
     
     @IBOutlet weak var viewAssignmentTap: UIView!
     @IBOutlet weak var viewStudyProgress: UIView!
@@ -27,35 +37,18 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
     @IBOutlet weak var viewPerformance: UIView!
     @IBOutlet weak var btnBack: UIButton!
     
-    var currentCount = 0.0
-    var currentCount1 = 0.0
-    var currentCount2 = 0.0
-    var currentCount3 = 0.0
-    let maxCount = 100.0
-    
+    // Variables
+    var studentName:String!
     var allowBack = false
     
+    //MARK: - View's Lifecycle
     override func viewDidLoad() {
+     
         super.viewDidLoad()
         self.sideMenuController()?.sideMenu?.delegate = self
         self.navigationController?.navigationBar.isHidden = true;
         
-        // for circular Progress
-        currentCount += 80;
-        let newAngleValue = newAngle()
-        circularProgressView.animate(toAngle: newAngleValue, duration: 1.0, completion: nil)
-        
-        currentCount = 68;
-        let newAngleProfressViewSubjectValue = newAngle()
-        circularProgressViewSubject.animate(toAngle: newAngleProfressViewSubjectValue, duration: 1.0, completion: nil)
-        
-        currentCount = 45;
-        let newAngleProgressViewDayValue = newAngle()
-        circularProgressViewDay.animate(toAngle: newAngleProgressViewDayValue, duration: 1.0, completion: nil)
-        
-         currentCount = 75;
-        let newAngleProgressViewOverallValue = newAngle()
-        circularProgressViewOverall.animate(toAngle: newAngleProgressViewOverallValue, duration: 1.0, completion: nil)
+        getDasboardDetailsForUser()
 
         let tapGestureAssignmentStatus = UITapGestureRecognizer(target: self, action: #selector(DashboardViewController.showAssignment))
         viewAssignmentTap.addGestureRecognizer(tapGestureAssignmentStatus)
@@ -69,35 +62,80 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let tapgesturePerformance = UITapGestureRecognizer(target: self, action: #selector(DashboardViewController.showOveAllperformance))
         viewPerformance.addGestureRecognizer(tapgesturePerformance)
         
-        if studentName != nil {
-            lblStudentName.text = studentName
+        if let sisName = UserDefaults.standard.value(forKey: "sis_name") as? String{
+            studentNameLabel.text = sisName
         }
+        
         if allowBack {
             self.btnBack.isHidden = false
         }
         else {
             self.btnBack.isHidden = true
         }
+        
     }
     
+    // MARK:- Custom methods
+    
+    private func setupProgressCircles(withData dict:[String: Any]) {
+        // for circular Progress
+        
+        let totalAssignment = dict["new_totalassignments"] as! Int
+        allAssignmentLabel.text = "\(totalAssignment)"
+        
+        let completAssignment = dict["new_completedassignments"] as! Int
+        let dueAssignment = totalAssignment - completAssignment
+        dueAssignmentLabel.text = "\(dueAssignment)"
+        assignmentPercentLabel.text = "\((completAssignment * 100 ) / totalAssignment)% COMPLETE"
+        
+        let newAngleValue = getAngle(value: Double(dueAssignment), outOf: Double(totalAssignment))
+        assignmentProgressView.animate(toAngle: newAngleValue, duration: 1.0, completion: nil)
+        
+        let totalSubject = dict["new_totalsubjects"] as! Int
+        subjectNumberLabel.text = "\(totalSubject)"
+        
+        let studyProgress = dict["new_studyprogress"] as! Double
+        studyProgressPercentLabel.text = "\(studyProgress)%"
+        let newAngleProfressViewSubjectValue = getAngle(value: studyProgress, outOf: 100)
+        studyProgressView.animate(toAngle: newAngleProfressViewSubjectValue, duration: 1.0, completion: nil)
+        
+        let totalClasses = dict["new_totalclasses"] as! Double
+        totalDayLabel.text = "\(totalClasses)"
+        let presentDays = dict["new_presentdays"] as! Double
+        let newAngleProgressViewDayValue = getAngle(value: presentDays, outOf: totalClasses)
+        attendenceProgressView.animate(toAngle: newAngleProgressViewDayValue, duration: 1.0, completion: nil)
+        
+        let percentage = dict["new_percentage"] as! Double
+        performancePercentLabel.text = "\(percentage)%"
+        let newAngleProgressViewOverallValue = getAngle(value: 75, outOf: 100)
+        overallPerformanceProgressView.animate(toAngle: newAngleProgressViewOverallValue, duration: 1.0, completion: nil)
+    }
+    
+    private func getDasboardDetailsForUser() {
+        
+        guard let classSession = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value"), let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else {
+            
+            AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+            return
+        }
+        // getting dashboard details
+        WebServices.shared.getDashboardDetailsFor(classSession: classSession, studentId: studentID, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                let dashboardDict = responseDict["value"][0].dictionaryObject
+                self.setupProgressCircles(withData: dashboardDict!)
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "fetching dashboard error")
+            }
+        })
+        
+    }
    
-    
-    func newAngle() -> Double {
-        return 360 * (currentCount / maxCount)
-    }
-    
-    @IBAction func showMenu(_ sender: Any) {
-    toggleSideMenuView()
-    
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    @IBAction func toggleSideMenuBtn(_ sender: UIBarButtonItem) {
-        toggleSideMenuView()
+
+    func getAngle(value: Double, outOf: Double) -> Double {
+        return 360 * (value / outOf)
     }
     
     // MARK: - ENSideMenu Delegate
@@ -122,6 +160,8 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         print("sideMenuDidOpen")
     }
     
+    //MARK:- selector methods
+    
     @objc func showStudyProgress() {
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
         var destViewController : UIViewController
@@ -129,7 +169,6 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         sideMenuController()?.setContentViewController(destViewController)
         hideSideMenuView()
     }
-    
     
     @objc func showAttendace() {
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
@@ -154,7 +193,17 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         sideMenuController()?.setContentViewController(destViewController)
         hideSideMenuView()
         
+    }
+
+    //MARK: - Action methods
+    
+    @IBAction func showMenu(_ sender: Any) {
+        toggleSideMenuView()
         
+    }
+    
+    @IBAction func toggleSideMenuBtn(_ sender: UIBarButtonItem) {
+        toggleSideMenuView()
     }
     
     @IBAction func showTimetable(_ sender: Any) {

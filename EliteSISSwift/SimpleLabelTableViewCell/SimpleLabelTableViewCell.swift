@@ -2,8 +2,8 @@
 //  SimpleTableViewCell.swift
 //  EliteSISSwift
 //
-//  Created by Kunal Das on 26/03/18.
-//  Copyright © 2018 Kunal Das. All rights reserved.
+//  Created by Vivek Garg on 26/03/18.
+//  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
 import UIKit
