@@ -541,9 +541,11 @@ class MyMenuTableViewController: UITableViewController {
                 if (responceDict["PerformanceScore"] == true){
                     self.sideMenuItems.append("Performance Score")
                 }
-                if (responceDict["StudyProcess"] == true){
-                    self.sideMenuItems.append("Study Process")
+                // need to check it
+                if (responceDict["StudyProgress"] == false){
+                    self.sideMenuItems.append("Study Progress")
                 }
+                //
                 if (responceDict["Teachers"] == true){
                     self.sideMenuItems.append("Teachers")
                 }
