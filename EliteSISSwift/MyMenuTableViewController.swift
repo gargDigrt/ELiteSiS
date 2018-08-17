@@ -502,7 +502,7 @@ class MyMenuTableViewController: UITableViewController {
         
         guard let roleCode = UserDefaults.standard.string(forKey: "new_rolecode") else { return }
         
-        WebServices.shared.MenuListItem(role: roleCode, completion: {(response,error) in
+        WebServices.shared.menuListItem(role: roleCode, completion: {(response,error) in
             ProgressLoader.shared.hideLoader()
             if error == nil, let responceDict = response {
                 // print(responceDict)

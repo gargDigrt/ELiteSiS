@@ -19,13 +19,13 @@ class WebServices: NSObject {
     let baseURL = "http://43.224.136.81:5015/"
     
     
+    // For Login
     func loginUserWith(username: String, password: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
-        
         
         let md5EncodedPassword = MD5(password)
         
         let requestURL = baseURL + "SIS_Student/Login/" + username + "/" + md5EncodedPassword + "/MBLE_APP_00001"
-
+        
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
@@ -42,10 +42,11 @@ class WebServices: NSObject {
     }
     
     
+    // To get user profile
     func getProfile(forRegistrationID rID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
         let requestURL = baseURL + "SIS_Student/GetProfile/" + rID + "/MBLE_APP_00001"
-//        let encodedURL = stringLoginCall.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
         
         Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
             
@@ -59,6 +60,7 @@ class WebServices: NSObject {
         }
     }
     
+    //To get user dashboard
     func getDashboardDetailsFor(classSession: String, studentId: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
         let requestURL = baseURL + "SIS_Student/GetDashboardData/" + classSession + "/" + studentId + "/MBLE_APP_00001"
@@ -78,7 +80,7 @@ class WebServices: NSObject {
     
     
     // for menu list
-    func MenuListItem(role: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
+    func menuListItem(role: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         let stringMenuList = baseURL + "SIS/GetConfigurations/" + role + "/MBLE_APP_00001"
         print(stringMenuList)
         let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
@@ -95,7 +97,7 @@ class WebServices: NSObject {
     }
     
     // for Discussion API
-    func ChooseTeacherForDiscussion(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
+    func chooseTeacherForDiscussion(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         let stringMenuList = baseURL + "SIS_Student/GetLessonPlan/" + classSession + "/MBLE_APP_00001"
         print(stringMenuList)
         let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
@@ -108,8 +110,8 @@ class WebServices: NSObject {
             } else {
                 completion(nil, responseData.error)
             }
+        }
     }
-}
     
     // for showing holidayList
     func showHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {

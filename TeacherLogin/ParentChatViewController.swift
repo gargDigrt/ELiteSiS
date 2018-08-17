@@ -55,16 +55,17 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
         // call API here
         ProgressLoader.shared.showLoader(withText: "Please wait...")
         guard let ClassSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
-        WebServices.shared.ChooseTeacherForDiscussion(classSession: ClassSession, completion: { (response, error) in
+        WebServices.shared.chooseTeacherForDiscussion(classSession: ClassSession, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)
                 print("Responce...........\(responseDict)")
                 
+                let subjects = responseDict["value"].arrayValue
                 //  for dic in responseDict["value"] {
-                for index in 0..<4 {
-                    let SubjectName = responseDict["value"][index]["new_subject"]["sis_name"].stringValue
-                    let FacultyName = responseDict["value"][index]["new_faculty"]["sis_name"].stringValue
+                for subject in subjects {
+                    let SubjectName = subject["new_subject"]["sis_name"].stringValue
+                    let FacultyName = subject["new_faculty"]["sis_name"].stringValue
                     print("\(FacultyName), \(SubjectName)")
                     print(SubjectName)
                     self.dataSourceClassses.append("\(FacultyName), \(SubjectName)")
