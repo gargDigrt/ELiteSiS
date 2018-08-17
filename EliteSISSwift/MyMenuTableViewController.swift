@@ -33,7 +33,7 @@ class MyMenuTableViewController: UITableViewController {
         if (!(arrUserProfile.count > 0)) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 //                            self.callForUserProfileData()
-                self.MenuListItems()
+                self.getMenuListItems()
             }
         }
     }
@@ -433,6 +433,9 @@ class MyMenuTableViewController: UITableViewController {
                 
                 let parentsName = responseDict["value"][0]["sis_fathername"].stringValue
                 UserDefaults.standard.set(parentsName, forKey: "sis_fathername")
+                
+                let sectionID = responseDict["value"][0]["_sis_section_value"].stringValue
+                UserDefaults.standard.set(sectionID, forKey: "_sis_section_value")
                 //  ProgressLoader.shared.hideLoader()
                 self.setupDisplay()
             }else{
@@ -497,7 +500,7 @@ class MyMenuTableViewController: UITableViewController {
         
     }
     
-    func MenuListItems() {
+    func getMenuListItems() {
         ProgressLoader.shared.showLoader(withText: "")
         
         guard let roleCode = UserDefaults.standard.string(forKey: "new_rolecode") else { return }

@@ -17,6 +17,7 @@ class WebServices: NSObject {
     static var shared = WebServices()
     
     let baseURL = "http://43.224.136.81:5015/"
+    let contactID = "65e99ee3-7669-e811-8157-c4346bdc1f11"
     
     
     // For Login
@@ -131,7 +132,7 @@ class WebServices: NSObject {
     }
     
     // for showing Assignment
-    func showAssignmentList(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+    func getAssignmentList(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         let stringMenuList = baseURL + "SIS_Student/GetAssignmentList/" + studentID + "/MBLE_APP_00001"
         print(stringMenuList)
         let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
@@ -146,4 +147,113 @@ class WebServices: NSObject {
             }
         }
     }
+    
+    // To download assignment
+    func downloadAssignment(objectID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+        let stringMenuList = baseURL + "SIS_Student/DownloadAssignment/" + objectID + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    
+    // Get address for the user
+    
+    func getAddress(forRegistrationID rID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
+        
+        let requestURL = baseURL + "SIS_Student/GetAddress/" + rID + "/MBLE_APP_00001"
+        
+        
+        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+            
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            }else{
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    //To get states for country id
+    func getStates(forCountryID cID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
+        
+        let requestURL = baseURL + "SIS_Student/GetState/" + cID + "/MBLE_APP_00001"
+        
+        
+        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+            
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            }else{
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    //To get cities for state id
+    func getCities(forStateID sID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
+        
+        let requestURL = baseURL + "SIS_Student/GetCity/" + sID + "/MBLE_APP_00001"
+        
+        
+        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+            
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            }else{
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    //To get attendence status
+    func getAttendenceStatusFor(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+        let stringMenuList = baseURL + "SIS_Student/GetStudentAttendance/" + studentID + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    // To get notification list
+    func getNotificationFor(contactID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+        
+        let stringMenuList = baseURL + "SIS_Student/GetNotificationList/" + contactID + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
 }

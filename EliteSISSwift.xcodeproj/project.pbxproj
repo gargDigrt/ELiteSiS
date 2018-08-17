@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2237704D21208CF4004EC900 /* ProgressLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2237704C21208CF4004EC900 /* ProgressLoader.swift */; };
 		223770512120B7D8004EC900 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223770502120B7D8004EC900 /* AlertManager.swift */; };
+		227505AB21275F95003CA6D9 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227505AA21275F94003CA6D9 /* Assignment.swift */; };
 		2B4556D720768FC900B9738D /* TeacherAssignmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */; };
 		2B4556D92076927D00B9738D /* ic_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B4556D82076927800B9738D /* ic_search.png */; };
 		2B4556DC2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4556DA2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift */; };
@@ -274,6 +275,7 @@
 		0F8D43AFC5B896B534692136 /* Pods_EliteSISSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EliteSISSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2237704C21208CF4004EC900 /* ProgressLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressLoader.swift; sourceTree = "<group>"; };
 		223770502120B7D8004EC900 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		227505AA21275F94003CA6D9 /* Assignment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
 		2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherAssignmentViewController.swift; sourceTree = "<group>"; };
 		2B4556D82076927800B9738D /* ic_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_search.png; sourceTree = "<group>"; };
 		2B4556DA2076A18C00B9738D /* TeacherAssignmentDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherAssignmentDetailTableViewCell.swift; sourceTree = "<group>"; };
@@ -1094,6 +1096,7 @@
 				38FA1AAF203D69C200067620 /* Library */,
 				6AA150DB203B292F007CBD99 /* Login */,
 				6AA150C9203B2834007CBD99 /* AppDelegate.swift */,
+				227505AA21275F94003CA6D9 /* Assignment.swift */,
 				3854D661204816D0006DA7C0 /* TimetableViewController.swift */,
 				3820080F203DAB7600DF45C9 /* DashboardViewController.swift */,
 				388A3F25207CF078008DF915 /* ParentViewController.swift */,
@@ -1480,6 +1483,7 @@
 				6A45682920642A3700937CE0 /* ClassAppliedDatasource.swift in Sources */,
 				6AA150E0203B2B0E007CBD99 /* LogoTableViewCell.swift in Sources */,
 				2B85F56E208CA08700D428EF /* FeeViewModel.swift in Sources */,
+				227505AB21275F95003CA6D9 /* Assignment.swift in Sources */,
 				6A8D37F5206ABC40009FF210 /* GalleryCollectionViewCell.swift in Sources */,
 				382FC547206E59C900B4E8E2 /* TeacherNavigationController.swift in Sources */,
 				386928B82046925B009DE58A /* FSCalendarAppearance.m in Sources */,

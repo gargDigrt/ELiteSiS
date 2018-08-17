@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class AllDatasource: NSObject, UITableViewDataSource {
     
@@ -28,7 +29,20 @@ class AllDatasource: NSObject, UITableViewDataSource {
         arrDate.append("26-Jan-2018")
         arrDate.append("26-Jan-2018")
         
-        
+    }
+    
+     func configureData(from json: [JSON] ) {
+        for item in json {
+            let heading = item["new_heading"].stringValue
+            arrAllClass.append(heading)
+            let title = item["new_title"].stringValue
+            arrAllEvent.append(title)
+            var crationDate = item["createdon"].stringValue
+            crationDate = Date.getFormattedDate(string: crationDate, formatter: "MMM dd")
+            arrDate.append(crationDate)
+            let desc = item["new_description"].stringValue
+            arrAllTiming.append(desc)
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

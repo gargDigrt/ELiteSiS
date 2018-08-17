@@ -21,6 +21,27 @@ class AssignmentTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
+    
+    func displayData(dict: Assignment) {
+        if let _ = dict.id {
+            
+        }
+        if let _ = dict.description {
+
+        }
+        if let submitDat = dict.submitDate {
+            lblSubmitDate.text = submitDat
+        }
+        if let duedate = dict.dueDate {
+            lblIssueDate.text = duedate
+        }
+        if let name = dict.name {
+            lblDescription.text = name
+        }
+        if let _ = dict.status {
+            
+        }
+    }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
