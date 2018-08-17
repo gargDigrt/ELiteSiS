@@ -511,6 +511,8 @@ class MyMenuTableViewController: UITableViewController {
                 // print(responceDict)
                 let swiftyJsonVar = responceDict
                 print(swiftyJsonVar)
+                let schoolID = responceDict["Name"]
+                UserDefaults.standard.set(schoolID, forKey: "Name")
                 
                 self.sideMenuItems.append("Dashboard")
                 
