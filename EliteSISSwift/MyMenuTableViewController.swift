@@ -541,7 +541,9 @@ class MyMenuTableViewController: UITableViewController {
                 if (responceDict["PerformanceScore"] == true){
                     self.sideMenuItems.append("Performance Score")
                 }
-                
+                if (responceDict["StudyProcess"] == true){
+                    self.sideMenuItems.append("Study Process")
+                }
                 if (responceDict["Teachers"] == true){
                     self.sideMenuItems.append("Teachers")
                 }
@@ -564,10 +566,6 @@ class MyMenuTableViewController: UITableViewController {
                 
                 if (responceDict["MyProfile"] == true){
                     self.sideMenuItems.append("My Profile")
-                }
-                
-                if (responceDict["StudyProcess"] == true){
-                    self.sideMenuItems.append("Study Process")
                 }
                 
                 self.sideMenuItems.append("Change Password")
