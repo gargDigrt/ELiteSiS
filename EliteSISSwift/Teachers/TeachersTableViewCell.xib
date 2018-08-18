@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -146,6 +146,9 @@
                 <outlet property="btnTeacherProfile" destination="8p8-fH-LhA" id="tkj-MB-LVl"/>
                 <outlet property="btnTeacherSendMsg" destination="LEF-9W-fo8" id="dxG-Iw-uSa"/>
                 <outlet property="imgViewTeacher" destination="7tG-OQ-6Jw" id="SS4-6N-5mF"/>
+                <outlet property="subjectLabel" destination="857-6H-pQ0" id="SWz-pt-1YC"/>
+                <outlet property="teacherNameLabel" destination="n0c-dl-I9f" id="GDR-ee-jMO"/>
+                <outlet property="timeLabel" destination="C7g-Qb-wpm" id="Ggg-e3-Ou7"/>
             </connections>
             <point key="canvasLocation" x="59" y="117"/>
         </tableViewCell>
