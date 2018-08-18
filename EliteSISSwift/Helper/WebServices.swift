@@ -256,4 +256,64 @@ class WebServices: NSObject {
         }
     }
     
+    
+    // get performanc list
+    
+    func getPerformancelistFor(studentID: String, sessionID: String, sectionID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+        
+        let stringMenuList = baseURL + "SIS_Student/getPerformanceList/" + studentID + "/" + sessionID + "/" + sectionID + "/" + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+        
+    }
+    
+    
+    // To Get Study Progress
+    
+    func getStudyProgress(marksID: String, completion:@escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+       
+        let stringMenuList = baseURL + "SIS_Student/GetStudyProgress/" + marksID + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    // get TIME TABLE
+    
+    func getTimeTableFor(sessionID: String, sectionID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+        
+        let stringMenuList = baseURL + "SIS_Student/GetTimeTable/"  + sessionID + "/" + sectionID + "/" + "/MBLE_APP_00001"
+        print(stringMenuList)
+        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+        
+    }
 }

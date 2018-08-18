@@ -28,6 +28,7 @@ class StudyProgressViewController: UIViewController, UITableViewDelegate,UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getStudyProgress()
         tblViewStudyProgress.register(UINib(nibName:"StudyProgressTableViewCell", bundle: nil), forCellReuseIdentifier: "StudyProgressTableViewCell")
         tblViewStudyProgress.separatorStyle = .none
         
@@ -94,6 +95,15 @@ class StudyProgressViewController: UIViewController, UITableViewDelegate,UITable
         self.lblSelectedOption.text = self.pickerData[0]
     }
     
+    func getStudyProgress() {
+        let marksID = UserDefaults.standard.string(forKey: "sis_classsessionwisemarksid")
+        
+        WebServices.shared.getStudyProgress(marksID: marksID!, completion: {(response, error) in
+            if error == nil, let responseDict = response{
+                
+            }
+        })
+    }
     func configDropDown(){
         dropDownClasses = DropDown()
         

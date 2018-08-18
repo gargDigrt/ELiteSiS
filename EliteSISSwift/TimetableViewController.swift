@@ -9,6 +9,10 @@
 import UIKit
 import DropDownMenuKit
 import WRCalendarView
+import SwiftyJSON
+
+
+
 class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendarDelegate,FSCalendarDelegateAppearance,UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var MonthViewTimetable: UIView!
@@ -17,8 +21,8 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
     
     var titleView: DropDownTitleView!
     var navigationBarMenu: DropDownMenu!
-    @IBOutlet
-    weak var calendar: FSCalendar!
+    @IBOutlet weak var calendar: FSCalendar!
+    
     fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
     fileprivate lazy var dateFormatter1: DateFormatter = {
         let formatter = DateFormatter()
@@ -46,11 +50,13 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
     // don't forget to hook this up from the storyboard
     @IBOutlet var tableView: UITableView!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         
+        getTimeTable()
         
         setupCalendarData()
         MonthViewTimetable.isHidden = true;
@@ -64,9 +70,6 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
         
         //add events
         weekView.addEvent(event: WREvent.make(date: Date(), chunk: 1.hours, title: "Lunch"))
-//        weekView.addEvent(event: WREvent.make(date: Date(), chunk: 1.hours, title: ""))
-//        weekView.addEvent(event: WREvent.make(date: Date().add(90.minutes), chunk: 1.hours, title: "#3"))
-//        weekView.addEvent(event: WREvent.make(date: Date().add(110.minutes), chunk: 1.hours, title: "#4"))
         
         weekView.addEvent(event: WREvent.make(date: Date().add(1.days), chunk: 1.hours, title: "Lunch"))
          weekView.addEvent(event: WREvent.make(date: Date().add(2.days), chunk: 1.hours, title: "Lunch"))
@@ -109,7 +112,33 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
         tableView.backgroundColor = .clear
     }
     
+    func getTimeTable() {
+        let sessionId = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value")
+        let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
+        WebServices.shared.getTimeTableFor(sessionID: sessionId!, sectionID: sectionId!, completion: {(response, error) in
+            
+            if error == nil , let responseDict = response {
+                
+                let events = responseDict["value"].arrayValue
+                self.displayEventsInCalender(events: events)
+                
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+    }
     
+    func displayEventsInCalender(events: [JSON]) {
+    
+        for item in events {
+            let startDate = item["new_startdate"].stringValue
+            let endTime = item["new_endtime"].stringValue
+            
+//            let time = startDate.
+        }
+        
+    }
     // number of rows in table view
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.eventsToShow.count

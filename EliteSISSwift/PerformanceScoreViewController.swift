@@ -9,42 +9,60 @@
 import UIKit
 import Charts
 import DropDown
+import SwiftyJSON
+
 
 class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+    //IBOutlet
     @IBOutlet weak var chtChart: LineChartView!
-    let numbers = [60, 80, 92, 70, 77]
-    let exams = ["FA1", "SA1", "FA2", "SA2", "Final"]
-    var pickerData: [String] = [String]()
-    var arrScoreData = [(String,String,String,String)]()
-    
     @IBOutlet weak var graphChart: LineChartView!
     @IBOutlet weak var viewChart: UIView!
+    @IBOutlet var currentProgress: KDCircularProgress!
+    @IBOutlet var currentProgressLabel: UILabel!
+    @IBOutlet var overallProgress: KDCircularProgress!
+    @IBOutlet var overallProgressLabel: UILabel!
     @IBOutlet weak var segmentedControlPerformanceScore: UISegmentedControl!
     
     @IBOutlet weak var tblViewScore: UITableView!
     @IBOutlet weak var viewScore: UIView!
     @IBOutlet weak var lblGrade: UILabel!
-    var dropDownClasses: DropDown!
     @IBOutlet weak var viewOptions: UIView!
     @IBOutlet weak var lblSelectedOption: UILabel!
-
+    
+    //Variables
+    var dropDownClasses: DropDown!
+    let numbers = [60, 80, 92, 70, 77]
+    let exams = ["FA1", "SA1", "FA2", "SA2", "Final"]
+    var pickerData: [String] = [String]()
+    var arrScoreData = [(String,String,String,String)]()
+    var resultPercentage = Int()
+    //MARK:- View's Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         updateGraph()
+        
+        getPerformanceList()
         pickerData = ["FA1", "FA2", "SA1", "SA2", "Final"]
-        var scoreDataHindi = ("Hindi", "77", "100", "A")
-        var scoreDataEng = ("English", "80", "100", "A")
-        var scoreDataMaths = ("English", "85", "100", "A")
-        var scoreDataArt = ("English", "85", "100", "A")
-        arrScoreData.append(scoreDataHindi)
-        arrScoreData.append(scoreDataEng)
-        arrScoreData.append(scoreDataMaths)
-        arrScoreData.append(scoreDataArt)
+//        var scoreDataHindi = ("Hindi", "77", "100", "A")
+//        var scoreDataEng = ("English", "80", "100", "A")
+//        var scoreDataMaths = ("English", "85", "100", "A")
+//        var scoreDataArt = ("English", "85", "100", "A")
+//        arrScoreData.append(scoreDataHindi)
+//        arrScoreData.append(scoreDataEng)
+//        arrScoreData.append(scoreDataMaths)
+//        arrScoreData.append(scoreDataArt)
+        
          segmentedControlPerformanceScore.addTarget(self, action: #selector(segmentSelected(sender:)), for: .valueChanged)
+        
          tblViewScore.sectionHeaderHeight = 55
         tblViewScore.sectionFooterHeight = 55
+        
         tblViewScore.register(UINib(nibName:"AssignmentHeaderReusableView", bundle: nil), forHeaderFooterViewReuseIdentifier: "AssignmentHeaderReusableView")
         tblViewScore.register(UINib(nibName:"ScoreTableViewCell", bundle:nil), forCellReuseIdentifier: "ScoreTableViewCell")
+        
         tblViewScore.separatorStyle = .none
         tblViewScore.delegate = self
         tblViewScore.dataSource = self
@@ -58,12 +76,61 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
     @objc func segmentSelected(sender: UISegmentedControl) {
         let index = sender.selectedSegmentIndex
         if index == 0 {
+            displayCircularProgress()
             viewScore.isHidden = true
             viewChart.isHidden = false
         } else {
+            tblViewScore.reloadData()
             viewScore.isHidden = false
             viewChart.isHidden = true
         }
+    }
+    
+    func getPerformanceList() {
+        let studentId = UserDefaults.standard.string(forKey: "sis_studentid")
+        let sessionId = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value")
+        let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
+        
+        WebServices.shared.getPerformancelistFor(studentID: studentId!, sessionID: sessionId!, sectionID: sectionId!, completion: { (response, error) in
+            
+            if error == nil, let respondeDict = response {
+                 self.resultPercentage = respondeDict["value"][0]["sis_resultsinpercentage"].intValue
+                let marksID = respondeDict["value"][0]["sis_classsessionwisemarksid"].stringValue
+                
+                self.displayCircularProgress()
+                //getStudyProgress
+                WebServices.shared.getStudyProgress(marksID: marksID, completion: { (response, error) in
+                    if error == nil, let respondeDict = response {
+                        self.displayStudyProgress(withDict: respondeDict)
+                    }else{
+                        AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                        debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                    }
+                    
+                })
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+    }
+    
+    func displayCircularProgress(){
+        let angle = getAngle(value: Double(resultPercentage), outOf: 100)
+        currentProgress.animate(toAngle: angle, duration: 1.0, completion: nil)
+        currentProgressLabel.text = "\(resultPercentage)% Current"
+        overallProgress.animate(toAngle: angle, duration: 1.0, completion: nil)
+        overallProgressLabel.text = "\(resultPercentage)% Overall"
+    }
+    
+    func displayStudyProgress(withDict json:JSON) {
+        let subjects = json["value"].arrayValue
+        
+        for item in subjects {
+            let sub = (item["sis_name"].stringValue, item["sis_obtainedmarks"].stringValue, item["sis_totalmarks"].stringValue, "A")
+            arrScoreData.append(sub)
+        }
+        
     }
     
     func configDropDown(){
@@ -92,6 +159,10 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
         else{
             dropDownClasses.hide()
         }
+    }
+    
+    func getAngle(value: Double, outOf: Double) -> Double {
+        return 360 * (value / outOf)
     }
     
     func onCategoryChange(withCategoryIndex row: Int){

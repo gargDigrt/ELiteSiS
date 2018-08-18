@@ -11,6 +11,8 @@ import UIKit
 
 class HealthReportViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    
+    
     @IBOutlet weak var lblHeading: UILabel!
     @IBOutlet weak var lblStudentName: UILabel!
     @IBOutlet weak var lblBloodGroup: UILabel!

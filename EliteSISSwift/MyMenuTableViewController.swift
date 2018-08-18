@@ -9,7 +9,6 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
-import ALLoadingView
 
 
 class MyMenuTableViewController: UITableViewController {
@@ -88,7 +87,191 @@ class MyMenuTableViewController: UITableViewController {
         }
     }
     
-    // MARK: - Table view data source
+    func getStudentProfileListingWithAction(actionType: StudentProfileActionType)->StudentProfileListingViewController{
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "StudentProfileListingViewController") as! StudentProfileListingViewController
+        vc.screenActionType = actionType
+        return vc
+    }
+    
+    func callForUserProfileData()  {
+        
+        //  ProgressLoader.shared.showLoader(withText: "Please wait...")
+        
+        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else { return }
+        
+        // Getting USer profile
+        WebServices.shared.getProfile(forRegistrationID: regID, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                let className1 = responseDict["value"][0]["sis_currentclasssession"]["sis_name"].stringValue
+                let fullNameArr = className1.split(separator: " ")
+                self.classNameValue = "\(fullNameArr[1])(\(responseDict["value"][0]["sis_section"]["sis_name"]))"
+                // UserDefaults.standard.set(self.classNameValue, forKey: "_sis_class_value")
+                
+                let classSession = responseDict["value"][0]["_sis_currentclasssession_value"].stringValue
+                UserDefaults.standard.set(classSession, forKey: "_sis_currentclasssession_value")
+                
+                let studentID = responseDict["value"][0]["sis_studentid"].stringValue
+                UserDefaults.standard.set(studentID, forKey: "sis_studentid")
+                
+                let parentsName = responseDict["value"][0]["sis_fathername"].stringValue
+                UserDefaults.standard.set(parentsName, forKey: "sis_fathername")
+                
+                let sectionID = responseDict["value"][0]["_sis_section_value"].stringValue
+                UserDefaults.standard.set(sectionID, forKey: "_sis_section_value")
+                //  ProgressLoader.shared.hideLoader()
+                self.setupDisplay()
+            }else{
+                // ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+    }
+    
+    func setupDisplay() {
+        
+        if (self.selectedLogin == "S") {
+            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "notification.png", "calendar.png", "assignment.png", "performance.png", "progress.png", "teacher.png", "attendance.png", "event.png", "health.png", "holiday.png", "s_profile.png", "key.png", "logout.png"]
+        }
+        
+        
+        //        else if(self.selectedLogin == "E"){
+        //            // for Teacher Login
+        //            self.arrMenuValues = ["Dashboard", "Daily Schedule", "Attendance", "Pinboard", "Discussion", "Assignment",  "Study Progress", "Student Dashboard", "Student Information","Fee Defaulter", "Event/Gallery", "Holiday List", "My Profile", "Change Password","Complaints", "Logout"]
+        //
+        //            self.arrMenuImages = ["dashboard.png", "calendar.png", "attendance.png", "pinboard.png", "discussion.png", "assignment.png", "progress.png", "s_dashboard.png", "s_info.png", "fee.png", "event.png", "holiday.png",  "profile.png", "key.png","compliance.png", "logout.png"]
+        //        }
+        //
+        //        else if(self.selectedLogin == "G"){
+        //            // for Teacher Login
+        //            self.arrMenuValues = ["Dashboard", "Pinboard", "Discussion", "Event/ Gallery", "Holiday List", "My Profile",  "Change Password", "Complaints","Logout"]
+        //
+        //            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "event.png", "holiday.png", "profile.png", "key.png", "compliance.png", "logout.png"]
+        //        }
+        
+        self.tableView = UITableView.init(frame: .zero, style: .grouped)
+        let statusBarHeight = UIApplication.shared.keyWindow!.safeAreaInsets.top
+        self.tableView.frame.origin = CGPoint(x: 0, y: statusBarHeight)
+        self.tableView.separatorStyle = .none
+        self.tableView.backgroundColor = UIColor.clear
+        self.tableView.scrollsToTop = false
+        self.tableView.bounces = false
+        // Preserve selection between presentations
+        self.clearsSelectionOnViewWillAppear = false
+        
+        self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+        //self.tableView.estimatedSectionHeaderHeight = 100
+        
+        self.tableView.selectRow(at: IndexPath(row: self.selectedMenuItem, section: 0), animated: false, scrollPosition: .middle)
+        self.tableView.register(UINib(nibName:"MenuHeadingTableViewCell", bundle: nil), forCellReuseIdentifier: "MenuHeadingTableViewCell")
+        self.tableView.register(UINib(nibName:"MenuStudentInfoHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "MenuStudentInfoHeaderView")
+        self.tableView.register(UINib(nibName:"MenuTeacherInfoHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "MenuTeacherInfoHeaderView")
+        self.tableView.register(UINib(nibName:"MenuParentInfoHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "MenuParentInfoHeaderView")
+        
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        self.tableView.reloadData()
+        self.tableView.frame.origin.y = self.tableView.frame.origin.y - 35
+        
+        //        if let userProfileCell = self.tableView.headerView(forSection: 0) as? MenuStudentInfoHeaderView {
+        //            let studentID = dict["value"][0]["sis_studentid"].stringValue
+        //            userProfileCell.lblId.text = studentID
+        //            let parentsName = dict["value"][0]["sis_fathername"].stringValue
+        //            userProfileCell.lblParentName.text = parentsName
+        //        }
+        
+    }
+    
+    func getMenuListItems() {
+        ProgressLoader.shared.showLoader(withText: "")
+        
+        guard let roleCode = UserDefaults.standard.string(forKey: "new_rolecode") else { return }
+        
+        WebServices.shared.menuListItem(role: roleCode, completion: {(response,error) in
+            ProgressLoader.shared.hideLoader()
+            if error == nil, let responceDict = response {
+                // print(responceDict)
+                let swiftyJsonVar = responceDict
+                print(swiftyJsonVar)
+                
+                self.sideMenuItems.append("Dashboard")
+                
+                //                if (responceDict["Student"] == true){
+                //                    self.sideMenuItems.append("Student")
+                //                }
+                
+                if (responceDict["PinBoard"] == true){
+                    self.sideMenuItems.append("PinBoard")
+                }
+                
+                if (responceDict["Discussion"] == true){
+                    self.sideMenuItems.append("Discussion")
+                }
+                
+                if (responceDict["Notification"] == true){
+                    self.sideMenuItems.append("Notification")
+                }
+                
+                if (responceDict["TimeTable"] == true){
+                    self.sideMenuItems.append("Time Table")
+                }
+                
+                if (responceDict["Assignment"] == true){
+                    self.sideMenuItems.append("Assignment")
+                }
+                
+                if (responceDict["PerformanceScore"] == true){
+                    self.sideMenuItems.append("Performance Score")
+                }
+                // need to check it
+                if (responceDict["StudyProgress"] == false){
+                    self.sideMenuItems.append("Study Progress")
+                }
+                //
+                if (responceDict["Teachers"] == true){
+                    self.sideMenuItems.append("Teachers")
+                }
+                
+                if (responceDict["Attendance"] == true){
+                    self.sideMenuItems.append("Attendance")
+                }
+                
+                if (responceDict["EventGallery"] == true){
+                    self.sideMenuItems.append("Event Gallery")
+                }
+                
+                if (responceDict["HealthReport"] == true){
+                    self.sideMenuItems.append("Health Report")
+                }
+                
+                if (responceDict["HolidayList"] == true){
+                    self.sideMenuItems.append("Holiday List")
+                }
+                
+                if (responceDict["MyProfile"] == true){
+                    self.sideMenuItems.append("My Profile")
+                }
+                
+                self.sideMenuItems.append("Change Password")
+                self.sideMenuItems.append("Logout")
+                
+                print(self.sideMenuItems)
+                self.callForUserProfileData()
+            }
+                
+            else{
+                ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
+            }
+            
+        })
+    }
+}
+// MARK: - Table view data source
+extension MyMenuTableViewController {
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // Return the number of sections.
         return 1
@@ -164,12 +347,15 @@ class MyMenuTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        defer {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+        
         print("did select row: \(indexPath.row)")
         
         if (indexPath.row == selectedMenuItem) {
             //return
         }
-        
         
         selectedMenuItem = indexPath.row
         
@@ -401,188 +587,6 @@ class MyMenuTableViewController: UITableViewController {
             }
             
         }
-    }
-    
-    func getStudentProfileListingWithAction(actionType: StudentProfileActionType)->StudentProfileListingViewController{
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "StudentProfileListingViewController") as! StudentProfileListingViewController
-        vc.screenActionType = actionType
-        return vc
-    }
-    
-    func callForUserProfileData()  {
-        
-        //  ProgressLoader.shared.showLoader(withText: "Please wait...")
-        
-        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else { return }
-        
-        // Getting USer profile
-        WebServices.shared.getProfile(forRegistrationID: regID, completion: { (response, error) in
-            
-            if error == nil, let responseDict = response {
-                debugPrint(responseDict)
-                let className1 = responseDict["value"][0]["sis_currentclasssession"]["sis_name"].stringValue
-                let fullNameArr = className1.split(separator: " ")
-                self.classNameValue = "\(fullNameArr[1])(\(responseDict["value"][0]["sis_section"]["sis_name"]))"
-                // UserDefaults.standard.set(self.classNameValue, forKey: "_sis_class_value")
-                
-                let classSession = responseDict["value"][0]["_sis_currentclasssession_value"].stringValue
-                UserDefaults.standard.set(classSession, forKey: "_sis_currentclasssession_value")
-                
-                let studentID = responseDict["value"][0]["sis_studentid"].stringValue
-                UserDefaults.standard.set(studentID, forKey: "sis_studentid")
-                
-                let parentsName = responseDict["value"][0]["sis_fathername"].stringValue
-                UserDefaults.standard.set(parentsName, forKey: "sis_fathername")
-                
-                let sectionID = responseDict["value"][0]["_sis_section_value"].stringValue
-                UserDefaults.standard.set(sectionID, forKey: "_sis_section_value")
-                //  ProgressLoader.shared.hideLoader()
-                self.setupDisplay()
-            }else{
-                // ProgressLoader.shared.hideLoader()
-                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
-            }
-        })
-    }
-    
-    func setupDisplay() {
-        
-        if (self.selectedLogin == "S") {
-            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "notification.png", "calendar.png", "assignment.png", "performance.png", "progress.png", "teacher.png", "attendance.png", "event.png", "health.png", "holiday.png", "s_profile.png", "key.png", "logout.png"]
-        }
-        
-        
-        //        else if(self.selectedLogin == "E"){
-        //            // for Teacher Login
-        //            self.arrMenuValues = ["Dashboard", "Daily Schedule", "Attendance", "Pinboard", "Discussion", "Assignment",  "Study Progress", "Student Dashboard", "Student Information","Fee Defaulter", "Event/Gallery", "Holiday List", "My Profile", "Change Password","Complaints", "Logout"]
-        //
-        //            self.arrMenuImages = ["dashboard.png", "calendar.png", "attendance.png", "pinboard.png", "discussion.png", "assignment.png", "progress.png", "s_dashboard.png", "s_info.png", "fee.png", "event.png", "holiday.png",  "profile.png", "key.png","compliance.png", "logout.png"]
-        //        }
-        //
-        //        else if(self.selectedLogin == "G"){
-        //            // for Teacher Login
-        //            self.arrMenuValues = ["Dashboard", "Pinboard", "Discussion", "Event/ Gallery", "Holiday List", "My Profile",  "Change Password", "Complaints","Logout"]
-        //
-        //            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "event.png", "holiday.png", "profile.png", "key.png", "compliance.png", "logout.png"]
-        //        }
-        
-        self.tableView = UITableView.init(frame: .zero, style: .grouped)
-        let statusBarHeight = UIApplication.shared.keyWindow!.safeAreaInsets.top
-        self.tableView.frame.origin = CGPoint(x: 0, y: statusBarHeight)
-        self.tableView.separatorStyle = .none
-        self.tableView.backgroundColor = UIColor.clear
-        self.tableView.scrollsToTop = false
-        self.tableView.bounces = false
-        // Preserve selection between presentations
-        self.clearsSelectionOnViewWillAppear = false
-        
-        self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension
-        //self.tableView.estimatedSectionHeaderHeight = 100
-        
-        self.tableView.selectRow(at: IndexPath(row: self.selectedMenuItem, section: 0), animated: false, scrollPosition: .middle)
-        self.tableView.register(UINib(nibName:"MenuHeadingTableViewCell", bundle: nil), forCellReuseIdentifier: "MenuHeadingTableViewCell")
-        self.tableView.register(UINib(nibName:"MenuStudentInfoHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "MenuStudentInfoHeaderView")
-        self.tableView.register(UINib(nibName:"MenuTeacherInfoHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "MenuTeacherInfoHeaderView")
-        self.tableView.register(UINib(nibName:"MenuParentInfoHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "MenuParentInfoHeaderView")
-        
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        self.tableView.reloadData()
-        self.tableView.frame.origin.y = self.tableView.frame.origin.y - 35
-        
-        //        if let userProfileCell = self.tableView.headerView(forSection: 0) as? MenuStudentInfoHeaderView {
-        //            let studentID = dict["value"][0]["sis_studentid"].stringValue
-        //            userProfileCell.lblId.text = studentID
-        //            let parentsName = dict["value"][0]["sis_fathername"].stringValue
-        //            userProfileCell.lblParentName.text = parentsName
-        //        }
-        
-    }
-    
-    func getMenuListItems() {
-        ProgressLoader.shared.showLoader(withText: "")
-        
-        guard let roleCode = UserDefaults.standard.string(forKey: "new_rolecode") else { return }
-        
-        WebServices.shared.menuListItem(role: roleCode, completion: {(response,error) in
-            ProgressLoader.shared.hideLoader()
-            if error == nil, let responceDict = response {
-                // print(responceDict)
-                let swiftyJsonVar = responceDict
-                print(swiftyJsonVar)
-                
-                self.sideMenuItems.append("Dashboard")
-                
-                //                if (responceDict["Student"] == true){
-                //                    self.sideMenuItems.append("Student")
-                //                }
-                
-                if (responceDict["PinBoard"] == true){
-                    self.sideMenuItems.append("PinBoard")
-                }
-                
-                if (responceDict["Discussion"] == true){
-                    self.sideMenuItems.append("Discussion")
-                }
-                
-                if (responceDict["Notification"] == true){
-                    self.sideMenuItems.append("Notification")
-                }
-                
-                if (responceDict["TimeTable"] == true){
-                    self.sideMenuItems.append("Time Table")
-                }
-                
-                if (responceDict["Assignment"] == true){
-                    self.sideMenuItems.append("Assignment")
-                }
-                
-                if (responceDict["PerformanceScore"] == true){
-                    self.sideMenuItems.append("Performance Score")
-                }
-                // need to check it
-                if (responceDict["StudyProgress"] == false){
-                    self.sideMenuItems.append("Study Progress")
-                }
-                //
-                if (responceDict["Teachers"] == true){
-                    self.sideMenuItems.append("Teachers")
-                }
-                
-                if (responceDict["Attendance"] == true){
-                    self.sideMenuItems.append("Attendance")
-                }
-                
-                if (responceDict["EventGallery"] == true){
-                    self.sideMenuItems.append("Event Gallery")
-                }
-                
-                if (responceDict["HealthReport"] == true){
-                    self.sideMenuItems.append("Health Report")
-                }
-                
-                if (responceDict["HolidayList"] == true){
-                    self.sideMenuItems.append("Holiday List")
-                }
-                
-                if (responceDict["MyProfile"] == true){
-                    self.sideMenuItems.append("My Profile")
-                }
-                
-                self.sideMenuItems.append("Change Password")
-                self.sideMenuItems.append("Logout")
-                
-                print(self.sideMenuItems)
-                self.callForUserProfileData()
-            }
-                
-            else{
-                ProgressLoader.shared.hideLoader()
-                AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
-            }
-            
-        })
     }
     
 }

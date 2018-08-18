@@ -2413,9 +2413,13 @@
                     </view>
                     <connections>
                         <outlet property="chtChart" destination="bq9-Lf-Qwq" id="Evr-H3-h79"/>
+                        <outlet property="currentProgress" destination="kID-BE-hWl" id="ipJ-YH-qWG"/>
+                        <outlet property="currentProgressLabel" destination="QYj-fj-9KC" id="kr1-fu-5jx"/>
                         <outlet property="graphChart" destination="bq9-Lf-Qwq" id="SoA-YE-5Ye"/>
                         <outlet property="lblGrade" destination="7Qt-dD-13t" id="gXS-2b-gHE"/>
                         <outlet property="lblSelectedOption" destination="U3t-41-91p" id="bQJ-RX-cDD"/>
+                        <outlet property="overallProgress" destination="ri7-jb-SO2" id="njv-6d-QHc"/>
+                        <outlet property="overallProgressLabel" destination="axT-rd-cLt" id="2s6-ns-d0g"/>
                         <outlet property="segmentedControlPerformanceScore" destination="OcZ-26-QNk" id="nj9-2E-OIC"/>
                         <outlet property="tblViewScore" destination="9DY-m8-89H" id="WJT-A8-U2Q"/>
                         <outlet property="viewChart" destination="eoi-td-JUS" id="jJo-Kj-gco"/>
