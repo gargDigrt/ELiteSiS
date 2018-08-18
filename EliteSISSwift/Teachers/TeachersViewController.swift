@@ -7,19 +7,21 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewDataSource, TeachersViewActionMethods {
 
     @IBOutlet weak var tblViewTeachers: UITableView!
+    var faculties = [JSON]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        getFacultyList()
         // Do any additional setup after loading the view.
         tblViewTeachers.separatorStyle = .none
         tblViewTeachers.register(UINib(nibName: "TeachersTableViewCell", bundle:nil), forCellReuseIdentifier: "TeachersTableViewCell")
         tblViewTeachers.register(UINib(nibName:"TeachersHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TeachersHeaderView")
-        
-        
         
         tblViewTeachers.sectionHeaderHeight = 50
         tblViewTeachers.rowHeight = UITableViewAutomaticDimension
@@ -28,39 +30,22 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
         
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+    
+    func getFacultyList() {
+        let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
+        WebServices.shared.getFacultyList(sectionID: sectionId!, completion: {(response, error) in
+            
+            if error == nil, let responseDict = response {
+                
+                self.faculties = responseDict["value"].arrayValue
+                
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TeachersTableViewCell") as! TeachersTableViewCell
-        cell.delegateTeachersMethods = self
-        cell.backgroundColor = UIColor.clear
-        cell.selectionStyle = .none
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TeachersHeaderView") as! TeachersHeaderView
-        viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0)
-        return viewHeader
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
     func showTeachersProfile() {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
@@ -78,9 +63,7 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
         sideMenuController()?.setContentViewController(destViewController)
         hideSideMenuView()
         
-        
-//        TeacherChatViewController
-    }
+}
     
     func showTeachersSendMsg() {
         let alertController = UIAlertController(title: "Write message", message: "", preferredStyle: .alert)
@@ -106,6 +89,7 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
         
         toggleSideMenuView()
     }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
@@ -128,5 +112,28 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
             sideMenuController()?.setContentViewController(destViewController)
         }
         hideSideMenuView()
+    }
+}
+
+extension TeachersViewController{
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return faculties.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TeachersTableViewCell") as! TeachersTableViewCell
+        cell.delegateTeachersMethods = self
+        cell.displayDataFrom(teacher: faculties[indexPath.row])
+        cell.backgroundColor = UIColor.clear
+        cell.selectionStyle = .none
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TeachersHeaderView") as! TeachersHeaderView
+        viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+        return viewHeader
     }
 }

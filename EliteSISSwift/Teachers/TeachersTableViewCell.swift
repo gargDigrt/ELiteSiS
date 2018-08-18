@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 protocol TeachersViewActionMethods {
     func showTeachersProfile()
@@ -17,13 +18,23 @@ protocol TeachersViewActionMethods {
 class TeachersTableViewCell: UITableViewCell {
 
     @IBOutlet weak var imgViewTeacher: UIImageView!
+    @IBOutlet weak var teacherNameLabel: UILabel!
+    @IBOutlet weak var subjectLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var btnTeacherProfile: UIButton!
     @IBOutlet weak var btnTeacherChat: UIButton!
     @IBOutlet weak var btnTeacherSendMsg: UIButton!
     var delegateTeachersMethods:TeachersViewActionMethods?
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+    }
+    
+    func displayDataFrom(teacher: JSON) {
+        let name = teacher["FacultyName"].stringValue
+        teacherNameLabel.text = name
     }
 
     @IBAction func btnTeacherProfileClicked(_ sender: UIButton) {
@@ -45,3 +56,4 @@ class TeachersTableViewCell: UITableViewCell {
     }
     
 }
+
