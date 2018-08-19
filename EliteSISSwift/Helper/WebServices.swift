@@ -114,7 +114,8 @@ class WebServices: NSObject {
             }
         }
     }
-    
+   
+
     // For getting Faculty List
     
     func getFacultyList(sectionID: String,  completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
@@ -149,6 +150,7 @@ class WebServices: NSObject {
             }
         }
     }
+    
     
     // for showing holidayList
     func showHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {

@@ -120,6 +120,9 @@ class MyMenuTableViewController: UITableViewController {
                 
                 let sectionID = responseDict["value"][0]["_sis_section_value"].stringValue
                 UserDefaults.standard.set(sectionID, forKey: "_sis_section_value")
+                
+                let contactID = responseDict["value"][0]["_sis_studentname_value"].stringValue
+                UserDefaults.standard.set(contactID, forKey: "_sis_studentname_value")
                 //  ProgressLoader.shared.hideLoader()
                 self.setupDisplay()
             }else{

@@ -17,6 +17,7 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
     var dataSourceClassses = [String]()
     var selectedClass = "Maths Teacher"
     var dropDownStudents: DropDown!
+    var myReciepentID:String = ""
     @IBOutlet weak var viewClassSelection: UIView!
     @IBOutlet weak var lblSelectedClass: UILabel!
     @IBOutlet weak var btnSend: UIButton!
@@ -67,11 +68,14 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
                     let SubjectName = subject["new_subject"]["sis_name"].stringValue
                     let FacultyName = subject["new_faculty"]["sis_name"].stringValue
                     print("\(FacultyName), \(SubjectName)")
-                    print(SubjectName)
+                  
                     self.dataSourceClassses.append("\(FacultyName), \(SubjectName)")
                 }
                 ProgressLoader.shared.hideLoader()
                 print(self.dataSourceClassses)
+                
+               
+                
                 // The list of items to display. Can be changed dynamically
                 self.dropDownStudents.dataSource = self.dataSourceClassses
                 
@@ -85,10 +89,51 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
                 debugPrint(error?.localizedDescription ?? "Getting user profile error")
             }
         })
-        
+        // calling new API
+        self.getFacultyList()
     }
     
-    func showStudentsClass(classSelected: String){
+    func getFacultyList() {
+        let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
+        WebServices.shared.getFacultyList(sectionID: sectionId!, completion: {(response, error) in
+            
+            if error == nil, let responseDict = response {
+               
+             let ReceipentID = responseDict.arrayValue
+                
+                for recepent in ReceipentID {
+                    self.myReciepentID = recepent["FacultyContactID"].stringValue
+                      print(self.myReciepentID)
+                }
+                self.getChatMessage()
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+    }
+
+    func getChatMessage()  {
+        
+        let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value")
+        WebServices.shared.getChatMessage(senderID: senderid!, RecipientId: self.myReciepentID, CreatedOn: "nodate", completion: {(response, error) in
+                        if error == nil, let responseDict = response {
+                print(responseDict)
+//                let ReceipentID = responseDict.arrayValue
+//
+//                for recepent in ReceipentID {
+//                    self.myReciepentID = recepent["FacultyContactID"].stringValue
+//                    print(self.myReciepentID)
+//                }
+                
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+    }
+    
+    func showStudentsClass(classSelected: String) {
         self.lblSelectedClass.text = classSelected
         self.selectedClass = classSelected
         
