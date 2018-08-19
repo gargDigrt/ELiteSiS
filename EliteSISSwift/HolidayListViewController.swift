@@ -107,7 +107,7 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
     
     func callForHolidayListData() {
         ProgressLoader.shared.showLoader(withText: "Please wait... ")
-        WebServices.shared.showHolidayList(completion: { (response, error) in
+        WebServices.shared.getHolidayList(completion: { (response, error) in
             
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)

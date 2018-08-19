@@ -99,7 +99,7 @@ class WebServices: NSObject {
     }
     
     // for Discussion API
-    func chooseTeacherForDiscussion(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
+    func getLessionPlansFor(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         let stringMenuList = baseURL + "SIS_Student/GetLessonPlan/" + classSession + "/MBLE_APP_00001"
         print(stringMenuList)
         let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
@@ -153,7 +153,7 @@ class WebServices: NSObject {
     
     
     // for showing holidayList
-    func showHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
+    func getHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         let stringMenuList = baseURL + "SIS_Student/Holidays/MBLE_APP_00001"
         print(stringMenuList)
         let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)

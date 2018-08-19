@@ -55,15 +55,14 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
         dropDownStudents.anchorView = self.viewClassSelection
         // call API here
         ProgressLoader.shared.showLoader(withText: "Please wait...")
-        guard let ClassSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
-        WebServices.shared.chooseTeacherForDiscussion(classSession: ClassSession, completion: { (response, error) in
+        guard let classSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
+        WebServices.shared.getLessionPlansFor(classSession: classSession, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
-                debugPrint(responseDict)
                 print("Responce...........\(responseDict)")
                 
                 let subjects = responseDict["value"].arrayValue
-                //  for dic in responseDict["value"] {
+
                 for subject in subjects {
                     let SubjectName = subject["new_subject"]["sis_name"].stringValue
                     let FacultyName = subject["new_faculty"]["sis_name"].stringValue
@@ -71,6 +70,7 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
                   
                     self.dataSourceClassses.append("\(FacultyName), \(SubjectName)")
                 }
+                
                 ProgressLoader.shared.hideLoader()
                 print(self.dataSourceClassses)
                 
