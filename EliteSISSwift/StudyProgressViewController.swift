@@ -96,9 +96,9 @@ class StudyProgressViewController: UIViewController, UITableViewDelegate,UITable
     }
     
     func getStudyProgress() {
-        let marksID = UserDefaults.standard.string(forKey: "sis_classsessionwisemarksid")
+        guard let marksID = UserDefaults.standard.string(forKey: "sis_classsessionwisemarksid") else { return }
         
-        WebServices.shared.getStudyProgress(marksID: marksID!, completion: {(response, error) in
+        WebServices.shared.getStudyProgress(marksID: marksID, completion: {(response, error) in
             if error == nil, let responseDict = response{
                 
             }

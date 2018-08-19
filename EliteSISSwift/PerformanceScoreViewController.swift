@@ -96,7 +96,7 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
             if error == nil, let respondeDict = response {
                  self.resultPercentage = respondeDict["value"][0]["sis_resultsinpercentage"].intValue
                 let marksID = respondeDict["value"][0]["sis_classsessionwisemarksid"].stringValue
-                
+                UserDefaults.standard.set(marksID, forKey: "sis_classsessionwisemarksid")
                 self.displayCircularProgress()
                 //getStudyProgress
                 WebServices.shared.getStudyProgress(marksID: marksID, completion: { (response, error) in

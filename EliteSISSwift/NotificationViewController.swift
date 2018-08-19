@@ -76,6 +76,8 @@ class NotificationViewController: UIViewController,UICollectionViewDataSource, U
                 let notifications = responseDict["value"].arrayValue
                 self.allDatasource.configureData(from: notifications)
             }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "fetching dashboard error")
                 
             }
         })

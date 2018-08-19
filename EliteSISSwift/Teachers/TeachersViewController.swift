@@ -17,7 +17,7 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        getFacultyList()
+        getFacultyListToDisplay()
         // Do any additional setup after loading the view.
         tblViewTeachers.separatorStyle = .none
         tblViewTeachers.register(UINib(nibName: "TeachersTableViewCell", bundle:nil), forCellReuseIdentifier: "TeachersTableViewCell")
@@ -31,17 +31,18 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
     }
     
     
-    func getFacultyList() {
-        let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
-        WebServices.shared.getFacultyList(sectionID: sectionId!, completion: {(response, error) in
+    func getFacultyListToDisplay() {
+        
+        guard let classSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
+        WebServices.shared.getLessionPlansFor(classSession: classSession, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
-                
                 self.faculties = responseDict["value"].arrayValue
-                
+                self.tblViewTeachers.reloadData()
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "fetching dashboard error")
+                
             }
         })
     }

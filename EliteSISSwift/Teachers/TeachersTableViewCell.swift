@@ -33,8 +33,10 @@ class TeachersTableViewCell: UITableViewCell {
     }
     
     func displayDataFrom(teacher: JSON) {
-        let name = teacher["FacultyName"].stringValue
+        let name = teacher["new_faculty"]["sis_name"].stringValue
         teacherNameLabel.text = name
+        let subject = teacher["new_subject"]["sis_name"].stringValue
+        subjectLabel.text = subject
     }
 
     @IBAction func btnTeacherProfileClicked(_ sender: UIButton) {
