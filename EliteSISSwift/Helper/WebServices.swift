@@ -34,7 +34,7 @@ class WebServices: NSObject {
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             }else{
                 completion(nil, responseData.error)
@@ -54,7 +54,7 @@ class WebServices: NSObject {
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             }else{
                 completion(nil, responseData.error)
@@ -71,7 +71,7 @@ class WebServices: NSObject {
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             }else{
                 completion(nil, responseData.error)
@@ -83,14 +83,14 @@ class WebServices: NSObject {
     
     // for menu list
     func menuListItem(role: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
-        let stringMenuList = baseURL + "SIS/GetConfigurations/" + role + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        let requestURL = baseURL + "SIS/GetConfigurations/" + role + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -100,14 +100,16 @@ class WebServices: NSObject {
     
     // for Discussion API
     func getLessionPlansFor(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
-        let stringMenuList = baseURL + "SIS_Student/GetLessonPlan/" + classSession + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        let requestURL = baseURL + "SIS_Student/GetLessonPlan/" + classSession + "/MBLE_APP_00001"
+        print(
+        )
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -119,14 +121,15 @@ class WebServices: NSObject {
     // For getting Faculty List
     
     func getFacultyList(sectionID: String,  completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
-        let stringMenuList = baseURL + "SIS/getFacultyList/" + sectionID + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        let requestURL = baseURL + "SIS/getFacultyList/" + sectionID + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -136,14 +139,15 @@ class WebServices: NSObject {
     
     // For discussion API get Chat
     func getChatMessage(senderID: String, RecipientId: String, CreatedOn: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
-        let stringMenuList = baseURL + "SIS_Student/GetChat/" + senderID + "/" + RecipientId + "/" + CreatedOn + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        let requestURL = baseURL + "SIS_Student/GetChat/" + senderID + "/" + RecipientId + "/" + CreatedOn + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -154,14 +158,15 @@ class WebServices: NSObject {
     
     // for showing holidayList
     func getHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
-        let stringMenuList = baseURL + "SIS_Student/Holidays/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        let requestURL = baseURL + "SIS_Student/Holidays/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -171,14 +176,15 @@ class WebServices: NSObject {
     
     // for showing Assignment
     func getAssignmentList(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
-        let stringMenuList = baseURL + "SIS_Student/GetAssignmentList/" + studentID + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        let requestURL = baseURL + "SIS_Student/GetAssignmentList/" + studentID + "/MBLE_APP_00001"
+        
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -188,14 +194,15 @@ class WebServices: NSObject {
     
     // To download assignment
     func downloadAssignment(objectID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
-        let stringMenuList = baseURL + "SIS_Student/DownloadAssignment/" + objectID + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        let requestURL = baseURL + "SIS_Student/DownloadAssignment/" + objectID + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -210,12 +217,11 @@ class WebServices: NSObject {
         
         let requestURL = baseURL + "SIS_Student/GetAddress/" + rID + "/MBLE_APP_00001"
         
-        
         Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             }else{
                 completion(nil, responseData.error)
@@ -228,12 +234,11 @@ class WebServices: NSObject {
         
         let requestURL = baseURL + "SIS_Student/GetState/" + cID + "/MBLE_APP_00001"
         
-        
         Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             }else{
                 completion(nil, responseData.error)
@@ -246,12 +251,11 @@ class WebServices: NSObject {
         
         let requestURL = baseURL + "SIS_Student/GetCity/" + sID + "/MBLE_APP_00001"
         
-        
         Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             }else{
                 completion(nil, responseData.error)
@@ -261,14 +265,14 @@ class WebServices: NSObject {
     
     //To get attendence status
     func getAttendenceStatusFor(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
-        let stringMenuList = baseURL + "SIS_Student/GetStudentAttendance/" + studentID + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        let requestURL = baseURL + "SIS_Student/GetStudentAttendance/" + studentID + "/MBLE_APP_00001"
+        
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -279,14 +283,14 @@ class WebServices: NSObject {
     // To get notification list
     func getNotificationFor(contactID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
-        let stringMenuList = baseURL + "SIS_Student/GetNotificationList/" + contactID + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        let requestURL = baseURL + "SIS_Student/GetNotificationList/" + contactID + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -299,35 +303,33 @@ class WebServices: NSObject {
     
     func getPerformancelistFor(studentID: String, sessionID: String, sectionID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
-        let stringMenuList = baseURL + "SIS_Student/getPerformanceList/" + studentID + "/" + sessionID + "/" + sectionID + "/" + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        let requestURL = baseURL + "SIS_Student/getPerformanceList/" + studentID + "/" + sessionID + "/" + sectionID + "/" + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
             }
         }
-        
     }
     
     
     // To Get Study Progress
-    
     func getStudyProgress(marksID: String, completion:@escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
        
-        let stringMenuList = baseURL + "SIS_Student/GetStudyProgress/" + marksID + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        let requestURL = baseURL + "SIS_Student/GetStudyProgress/" + marksID + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
@@ -336,22 +338,54 @@ class WebServices: NSObject {
     }
     
     // get TIME TABLE
-    
     func getTimeTableFor(sessionID: String, sectionID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
-        let stringMenuList = baseURL + "SIS_Student/GetTimeTable/"  + sessionID + "/" + sectionID + "/" + "/MBLE_APP_00001"
-        print(stringMenuList)
-        let encodedURL = stringMenuList.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        let requestURL = baseURL + "SIS_Student/GetTimeTable/"  + sessionID + "/" + sectionID + "/" + "/MBLE_APP_00001"
+
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
-                debugPrint(responseDict)
+//                debugPrint(responseDict)
                 completion(responseDict, nil)
             } else {
                 completion(nil, responseData.error)
             }
         }
+    }
+    
+    func getPhotoAlbums(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void  ){
         
+        let requestURL = baseURL + "SIS_Student/GetGalleryFolders/MBLE_APP_00001"
+        
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                //                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    func getImagesForAlbum(withId id: String,completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void  ){
+        
+        let requestURL = baseURL + "SIS_Student/GetImages/" + id + "/MBLE_APP_00001"
+        
+        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                //                debugPrint(responseDict)
+                completion(responseDict, nil)
+            } else {
+                completion(nil, responseData.error)
+            }
+        }
     }
 }

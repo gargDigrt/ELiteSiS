@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2237704D21208CF4004EC900 /* ProgressLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2237704C21208CF4004EC900 /* ProgressLoader.swift */; };
 		223770512120B7D8004EC900 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223770502120B7D8004EC900 /* AlertManager.swift */; };
+		224BE5FB212B44C800882A61 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 224BE5FA212B44C800882A61 /* placeholder.png */; };
 		227505AB21275F95003CA6D9 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227505AA21275F94003CA6D9 /* Assignment.swift */; };
 		2B4556D720768FC900B9738D /* TeacherAssignmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */; };
 		2B4556D92076927D00B9738D /* ic_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B4556D82076927800B9738D /* ic_search.png */; };
@@ -275,6 +276,7 @@
 		0F8D43AFC5B896B534692136 /* Pods_EliteSISSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EliteSISSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2237704C21208CF4004EC900 /* ProgressLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressLoader.swift; sourceTree = "<group>"; };
 		223770502120B7D8004EC900 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		224BE5FA212B44C800882A61 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
 		227505AA21275F94003CA6D9 /* Assignment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
 		2B4556D620768FC900B9738D /* TeacherAssignmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherAssignmentViewController.swift; sourceTree = "<group>"; };
 		2B4556D82076927800B9738D /* ic_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_search.png; sourceTree = "<group>"; };
@@ -678,6 +680,7 @@
 				2BF0A89F20B01A82001FA6A2 /* delete-sign.png */,
 				2B4556E02076A43800B9738D /* ic_done.png */,
 				381817EB204029F2005EBA85 /* pinboard_logo.png */,
+				224BE5FA212B44C800882A61 /* placeholder.png */,
 				2B4556DE2076A2D200B9738D /* ic_teacher.png */,
 				381817EC204029F2005EBA85 /* timetable_logo.png */,
 				381817E72040230B005EBA85 /* iconarrowright.png */,
@@ -1310,6 +1313,7 @@
 				2B85F56C208C843200D428EF /* FeeTotalTableViewCell.xib in Resources */,
 				382401C1203EF47A00604D92 /* notification.png in Resources */,
 				2B85F560208C6BFD00D428EF /* FeeInfoTableViewCell.xib in Resources */,
+				224BE5FB212B44C800882A61 /* placeholder.png in Resources */,
 				382287CC203EE5EE00E6CF9B /* ic_lock.png in Resources */,
 				38CBB06D2078F90800AD27D7 /* profile_logo.png in Resources */,
 				6A4224C720821F4E00214124 /* ComplaintTextViewTableViewCell.xib in Resources */,

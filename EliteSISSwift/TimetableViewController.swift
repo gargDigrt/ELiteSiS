@@ -2,7 +2,7 @@
 //  TimetableViewController.swift
 //  EliteSISSwift
 //
-//  Created by Reetesh Bajpai on 01/03/18.
+//  Created by Vivek Garg on 01/03/18.
 //  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
@@ -12,18 +12,18 @@ import WRCalendarView
 import SwiftyJSON
 
 
+class TimetableViewController: UIViewController {
 
-class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendarDelegate,FSCalendarDelegateAppearance,UITableViewDelegate, UITableViewDataSource {
-
+    //IBOUTLETS
     @IBOutlet weak var MonthViewTimetable: UIView!
     @IBOutlet weak var weekView: WRWeekView!
     @IBOutlet weak var segmentDayWeekMonth: UISegmentedControl!
+    @IBOutlet weak var calendar: FSCalendar!
+    @IBOutlet var tableView: UITableView!
     
+    //VARIABLES
     var titleView: DropDownTitleView!
     var navigationBarMenu: DropDownMenu!
-    @IBOutlet weak var calendar: FSCalendar!
-    
-    fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
     fileprivate lazy var dateFormatter1: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd"
@@ -34,22 +34,20 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }()
-    //    let fillSelectionColors = ["2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2015/12/08": UIColor.green, "2015/12/06": UIColor.purple, "2015/12/17": UIColor.gray, "2015/12/21": UIColor.cyan]
-    
     
     var fillDefaultColors = ["2018/05/14": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/16": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/17": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/18": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0),  "2018/05/21": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/22": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0) ]
     var selectedRow = "Assignment"
     
-    
+    // Constants
+    fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
+
     // Data model: These strings will be the data for the table view cells
     let eventsToShow: [String] = ["Assignment", "Events", "Games", "Exams"]
     
     // cell reuse id (cells that scroll out of view can be reused)
     let cellReuseIdentifier = "cell"
     
-    // don't forget to hook this up from the storyboard
-    @IBOutlet var tableView: UITableView!
-    
+    //MARK:- View's Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,26 +55,15 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
         // Do any additional setup after loading the view.
         
         getTimeTable()
-        
         setupCalendarData()
-        MonthViewTimetable.isHidden = true;
-        let title = prepareNavigationBarMenuTitleView()
+        MonthViewTimetable.isHidden = true
+        let title = getNavigationBarTitle()
         prepareNavigationBarMenu(title)
         updateMenuContentOffsets()
         
         //add today button
         let rightButton = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(moveToToday))
         navigationItem.rightBarButtonItem = rightButton
-        
-        //add events
-        weekView.addEvent(event: WREvent.make(date: Date(), chunk: 1.hours, title: "Lunch"))
-        
-        weekView.addEvent(event: WREvent.make(date: Date().add(1.days), chunk: 1.hours, title: "Lunch"))
-         weekView.addEvent(event: WREvent.make(date: Date().add(2.days), chunk: 1.hours, title: "Lunch"))
-         weekView.addEvent(event: WREvent.make(date: Date().add(3.days), chunk: 1.hours, title: "Lunch"))
-         weekView.addEvent(event: WREvent.make(date: Date().add(4.days), chunk: 1.hours, title: "Lunch"))
-         weekView.addEvent(event: WREvent.make(date: Date().add(5.days), chunk: 1.hours, title: "Lunch"))
-         weekView.addEvent(event: WREvent.make(date: Date().add(6.days), chunk: 1.hours, title: "Lunch"))
         
         calendar.dataSource = self
         calendar.delegate = self
@@ -98,20 +85,68 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
         // For UITest
         self.calendar.accessibilityIdentifier = "calendar"
         
-        
-        
         // Register the table view cell class and its reuse id
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
-        
-        // (optional) include this line if you want to remove the extra empty cell divider lines
-        // self.tableView.tableFooterView = UIView()
-        
-        // This view controller itself will provide the delegate methods and row data for the table view.
+
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
     }
+
+    // MARK:- Custom methods
+    func displayEventsInCalender(events: [JSON]) {
     
+        for item in events {
+            let startDateString = item["new_startdate"].stringValue
+            let endTimeString = item["new_endtime"].stringValue
+            
+            guard let startTime = Date.convertSringToDate(dateString: startDateString), let endDate = Date.convertSringToDate(dateString: endTimeString) else {return}
+            
+            let chunk = startTime.chunkBetween(date: endDate)
+            
+            let subjectName = item["new_subject"]["sis_subjectshortname"].stringValue
+             weekView.addEvent(event: WREvent.make(date: startTime, chunk: chunk, title: subjectName))
+        }
+        
+    }
+    
+    func prepareNavigationBarMenu(_ currentChoice: String) {
+        navigationBarMenu = DropDownMenu(frame: view.bounds)
+        navigationBarMenu.delegate = self as! DropDownMenuDelegate
+        
+        let firstCell = DropDownMenuCell()
+        
+        firstCell.textLabel!.text = "Week"
+        firstCell.menuAction = #selector(choose(_:))
+        firstCell.menuTarget = self
+        if currentChoice == "Week" {
+            firstCell.accessoryType = .checkmark
+        }
+        
+        let secondCell = DropDownMenuCell()
+        
+        secondCell.textLabel!.text = "Day"
+        secondCell.menuAction = #selector(choose(_:))
+        secondCell.menuTarget = self
+        if currentChoice == "Day" {
+            firstCell.accessoryType = .checkmark
+        }
+        
+        navigationBarMenu.menuCells = [firstCell, secondCell]
+        navigationBarMenu.selectMenuCell(firstCell)
+        
+        // For a simple gray overlay in background
+        navigationBarMenu.backgroundView = UIView(frame: navigationBarMenu.bounds)
+        navigationBarMenu.backgroundView!.backgroundColor = UIColor.black
+        navigationBarMenu.backgroundAlpha = 0.7
+    }
+    
+    func updateMenuContentOffsets() {
+        //        navigationBarMenu.visibleContentOffset =
+        //            navigationController!.navigationBar.frame.size.height + statusBarHeight()
+    }
+    
+    // web service call
     func getTimeTable() {
         let sessionId = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value")
         let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
@@ -129,16 +164,137 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
         })
     }
     
-    func displayEventsInCalender(events: [JSON]) {
+    func statusBarHeight() -> CGFloat {
+        let statusBarSize = UIApplication.shared.statusBarFrame.size
+        return min(statusBarSize.width, statusBarSize.height)
+    }
     
-        for item in events {
-            let startDate = item["new_startdate"].stringValue
-            let endTime = item["new_endtime"].stringValue
+    // MARK: - WRCalendarView
+    func setupCalendarData() {
+        weekView.setCalendarDate(Date())
+        weekView.delegate = self as! WRWeekViewDelegate
+    }
+    
+    // MARK: - DropDownMenu
+    func getNavigationBarTitle() -> String {
+        titleView = DropDownTitleView(frame: CGRect(x: 0, y: 0, width: 150, height: 40))
+        titleView.addTarget(self,
+                            action: #selector(willToggleNavigationBarMenu(_:)),
+                            for: .touchUpInside)
+        titleView.addTarget(self,
+                            action: #selector(didToggleNavigationBarMenu(_:)),
+                            for: .valueChanged)
+        titleView.titleLabel.textColor = UIColor.black
+        titleView.title = "Week"
+        
+        navigationItem.titleView = titleView
+        
+        return titleView.title!
+    }
+    
+    
+    //MARK:- Selector methods
+    
+    @objc func moveToToday() {
+        weekView.setCalendarDate(Date(), animated: true)
+    }
+    
+    @objc func willToggleNavigationBarMenu(_ sender: DropDownTitleView) {
+        if sender.isUp {
+            navigationBarMenu.hide()
+        } else {
+            navigationBarMenu.show()
+        }
+    }
+
+    @objc func didToggleNavigationBarMenu(_ sender: DropDownTitleView) {
+    }
+    
+    @objc func choose(_ sender: AnyObject) {
+        if let sender = sender as? DropDownMenuCell {
+            titleView.title = sender.textLabel!.text
             
-//            let time = startDate.
+            switch titleView.title! {
+            case "Week":
+                weekView.calendarType = .week
+            case "Day":
+                weekView.calendarType = .day
+            default:
+                break
+            }
         }
         
+        if titleView.isUp {
+            titleView.toggleMenu()
+        }
     }
+    
+    @objc func todayItemClicked(sender: AnyObject) {
+        self.calendar.setCurrentPage(Date(), animated: false)
+    }
+    
+    //MARK:- Button Actions
+    
+    @IBAction func DayViewClick(_ sender: Any) {
+        
+        weekView.calendarType = .day
+    }
+    
+    @IBAction func WeekView(_ sender: Any) {
+        weekView.calendarType = .week
+    }
+    
+    @IBAction func segmentselected(_ sender: Any) {
+   
+        switch segmentDayWeekMonth.selectedSegmentIndex {
+        case 0:
+         weekView.calendarType = .day
+         MonthViewTimetable.isHidden = true;
+        case 1:
+          weekView.calendarType = .week
+            MonthViewTimetable.isHidden = true;
+        case 2:
+           // weekView.calendarType = .week
+            MonthViewTimetable.isHidden = false;
+        default:
+            break
+        }
+    }
+   
+    @IBAction func showMenu(_ sender: Any) {
+        
+        toggleSideMenuView()
+    }
+    
+    @IBAction func backbuttonClicked(_ sender: Any) {
+        
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
+        var destViewController : UIViewController
+        // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
+        //sideMenuController()?.setContentViewController(destViewController)
+        let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
+        if (selectedLogin == "student"){
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        else if(selectedLogin == "E"){
+            
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        else if(selectedLogin == "parent"){
+            
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        hideSideMenuView()
+    }
+}
+
+// MARK:- UITableView Delegate & Datasource
+
+extension TimetableViewController: UITableViewDelegate, UITableViewDataSource {
+    
     // number of rows in table view
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.eventsToShow.count
@@ -206,189 +362,17 @@ class TimetableViewController: UIViewController,FSCalendarDataSource, FSCalendar
         }
         
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-    @objc func moveToToday() {
-        weekView.setCalendarDate(Date(), animated: true)
-    }
-    
-    // MARK: - WRCalendarView
-    func setupCalendarData() {
-        weekView.setCalendarDate(Date())
-        weekView.delegate = self as! WRWeekViewDelegate
-    }
-    
-    // MARK: - DropDownMenu
-    func prepareNavigationBarMenuTitleView() -> String {
-        titleView = DropDownTitleView(frame: CGRect(x: 0, y: 0, width: 150, height: 40))
-        titleView.addTarget(self,
-                            action: #selector(willToggleNavigationBarMenu(_:)),
-                            for: .touchUpInside)
-        titleView.addTarget(self,
-                            action: #selector(didToggleNavigationBarMenu(_:)),
-                            for: .valueChanged)
-        titleView.titleLabel.textColor = UIColor.black
-        titleView.title = "Week"
-        
-        navigationItem.titleView = titleView
-        
-        return titleView.title!
-    }
-    
-    func prepareNavigationBarMenu(_ currentChoice: String) {
-        navigationBarMenu = DropDownMenu(frame: view.bounds)
-        navigationBarMenu.delegate = self as! DropDownMenuDelegate
-        
-        let firstCell = DropDownMenuCell()
-        
-        firstCell.textLabel!.text = "Week"
-        firstCell.menuAction = #selector(choose(_:))
-        firstCell.menuTarget = self
-        if currentChoice == "Week" {
-            firstCell.accessoryType = .checkmark
-        }
-        
-        let secondCell = DropDownMenuCell()
-        
-        secondCell.textLabel!.text = "Day"
-        secondCell.menuAction = #selector(choose(_:))
-        secondCell.menuTarget = self
-        if currentChoice == "Day" {
-            firstCell.accessoryType = .checkmark
-        }
-        
-        navigationBarMenu.menuCells = [firstCell, secondCell]
-        navigationBarMenu.selectMenuCell(firstCell)
-        
-        // If we set the container to the controller view, the value must be set
-        // on the hidden content offset (not the visible one)
-//        navigationBarMenu.visibleContentOffset =
-//            navigationController!.navigationBar.frame.size.height + statusBarHeight()
-        
-        // For a simple gray overlay in background
-        navigationBarMenu.backgroundView = UIView(frame: navigationBarMenu.bounds)
-        navigationBarMenu.backgroundView!.backgroundColor = UIColor.black
-        navigationBarMenu.backgroundAlpha = 0.7
-    }
-    
-    @objc func willToggleNavigationBarMenu(_ sender: DropDownTitleView) {
-        if sender.isUp {
-            navigationBarMenu.hide()
-        } else {
-            navigationBarMenu.show()
-        }
-    }
-    
-    func updateMenuContentOffsets() {
-//        navigationBarMenu.visibleContentOffset =
-//            navigationController!.navigationBar.frame.size.height + statusBarHeight()
-    }
-    
-    @objc func didToggleNavigationBarMenu(_ sender: DropDownTitleView) {
-    }
-    
-    @objc func choose(_ sender: AnyObject) {
-        if let sender = sender as? DropDownMenuCell {
-            titleView.title = sender.textLabel!.text
-            
-            switch titleView.title! {
-            case "Week":
-                weekView.calendarType = .week
-            case "Day":
-                weekView.calendarType = .day
-            default:
-                break
-            }
-        }
-        
-        if titleView.isUp {
-            titleView.toggleMenu()
-        }
-    }
-    
-    func statusBarHeight() -> CGFloat {
-        let statusBarSize = UIApplication.shared.statusBarFrame.size
-        return min(statusBarSize.width, statusBarSize.height)
-    }
-    
-    @IBAction func DayViewClick(_ sender: Any) {
-        
-        weekView.calendarType = .day
-    }
-    
-    @IBAction func WeekView(_ sender: Any) {
-        weekView.calendarType = .week
-    }
-    
-    @IBAction func segmentselected(_ sender: Any) {
-   
-        switch segmentDayWeekMonth.selectedSegmentIndex
-        {
-        case 0:
-         weekView.calendarType = .day
-         MonthViewTimetable.isHidden = true;
-        case 1:
-          weekView.calendarType = .week
-            MonthViewTimetable.isHidden = true;
-        case 2:
-           // weekView.calendarType = .week
-            MonthViewTimetable.isHidden = false;
-        default:
-            break
-        }
-        
-        
-    }
-   
-    @IBAction func showMenu(_ sender: Any) {
-        
-        toggleSideMenuView()
-    }
-    @IBAction func backbuttonClicked(_ sender: Any) {
-        
-        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-        var destViewController : UIViewController
-        // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
-        //sideMenuController()?.setContentViewController(destViewController)
-        let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        else if(selectedLogin == "E"){
-            
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        else if(selectedLogin == "parent"){
-            
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        hideSideMenuView()
-    }
 }
+
+//MARK:- Dropdown delegates
 
 extension TimetableViewController: DropDownMenuDelegate {
     func didTapInDropDownMenuBackground(_ menu: DropDownMenu) {
         titleView.toggleMenu()
     }
 }
+
+//MARK:- WRWeekView delegates
 
 extension TimetableViewController: WRWeekViewDelegate {
     func view(startDate: Date, interval: Int) {
@@ -401,12 +385,6 @@ extension TimetableViewController: WRWeekViewDelegate {
     
     func selectEvent(_ event: WREvent) {
         print(event.title)
-    }
-    
-    
-    @objc
-    func todayItemClicked(sender: AnyObject) {
-        self.calendar.setCurrentPage(Date(), animated: false)
     }
     
     //    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
@@ -426,6 +404,9 @@ extension TimetableViewController: WRWeekViewDelegate {
     //        return nil
     //    }
     //
+}
+extension TimetableViewController: FSCalendarDataSource, FSCalendarDelegate,FSCalendarDelegateAppearance  {
+    
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
         //   let key = self.dateFormatter2.string(from: date)
         //        if self.datesWithMultipleEvents.contains(key) {
@@ -472,9 +453,10 @@ extension TimetableViewController: WRWeekViewDelegate {
     //        }
     //        return 1.0
     //    }
-    func calendar(calendar: FSCalendar!, didSelectDate date: NSDate!) {
+    func calendar(calendar: FSCalendar!, didSelectDate date: Date!) {
         
     }
+    
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
         let formatter = DateFormatter()
@@ -549,13 +531,7 @@ extension TimetableViewController: WRWeekViewDelegate {
             } else {
                 print("No, it doesn't")
             }
-            
         }
-        
-        
-    
     }
-    
-    
     
 }

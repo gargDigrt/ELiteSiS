@@ -8,20 +8,31 @@
 
 import UIKit
 
-class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,FSCalendarDataSource, FSCalendarDelegate,FSCalendarDelegateAppearance,UITableViewDelegate, UITableViewDataSource {
+struct Album {
+    let albumID: String
+    let name: String?
+    let thumbnail: UIImage?
     
+    init(albumID: String, name: String?, thumbnail: UIImage = #imageLiteral(resourceName: "placeholder.png")) {
+        self.albumID = albumID
+        self.name = name
+        self.thumbnail = thumbnail
+    }
+}
+
+
+class EventGalleryViewController: UIViewController{
     
-   
-    
+    //IBOutlet----------
     @IBOutlet weak var segmentEventGallery: UISegmentedControl!
-    
     @IBOutlet weak var collectionViewGallery: UICollectionView!
     @IBOutlet weak var viewEventG: UIView!
     @IBOutlet weak var viewGallery: UIView!
+    @IBOutlet weak var calendar: FSCalendar!
+    @IBOutlet var tableView: UITableView!
     
-    @IBOutlet
-    weak var calendar: FSCalendar!
-    fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
+    //Variables
+    var albums: [Album] = []
     fileprivate lazy var dateFormatter1: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd"
@@ -37,7 +48,8 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
     
     var fillDefaultColors = ["2018/05/14": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/16": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/17": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/18": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0),  "2018/05/21": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/22": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0) ]
     
-    
+    //Constants
+    fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
     
     // Data model: These strings will be the data for the table view cells
     let eventsToShow: [String] = ["PTM", "Awards / Seminar", "Student Wellness Fair", "Exams"]
@@ -45,19 +57,35 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
     // cell reuse id (cells that scroll out of view can be reused)
     let cellReuseIdentifier = "cell"
     
-    // don't forget to hook this up from the storyboard
-    @IBOutlet var tableView: UITableView!
+    //MARK:- View's Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-  viewGallery.isHidden = true
+        viewGallery.isHidden = true
+        
+        getGalleryAlbums()
+        configureCollectionView()
+        configureCalander()
+        
+        let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
+        self.navigationItem.rightBarButtonItem = todayItem
+        
+        configureTableView()
+        
+    }
+    
+    //MARK:- Custom methods
+    
+    fileprivate func configureCollectionView() {
         // Do any additional setup after loading the view.
         
         collectionViewGallery.register(UINib(nibName:"GalleryCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "GalleryCollectionViewCell")
         collectionViewGallery.delegate = self
         collectionViewGallery.dataSource = self
-        
-       // let view = UIView(frame: UIScreen.main.bounds)
+    }
+    
+    fileprivate func configureCalander() {
+        // let view = UIView(frame: UIScreen.main.bounds)
         //        view.backgroundColor = UIColor.groupTableViewBackground
         //        self.view = view
         //
@@ -71,20 +99,15 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
         calendar.appearance.caseOptions = [.headerUsesUpperCase,.weekdayUsesSingleUpperCase]
         //        self.view.addSubview(calendar)
         //        self.calendar = calendar
-        
-        let date = Date()
         let formatter = DateFormatter()
         
         formatter.dateFormat = "yyyy/MM/dd"
-        calendar.select(self.dateFormatter1.date(from: formatter.string(from: date)))
-        let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
-        self.navigationItem.rightBarButtonItem = todayItem
-        
+        calendar.select(self.dateFormatter1.date(from: formatter.string(from: Date())))
         // For UITest
         self.calendar.accessibilityIdentifier = "calendar"
-        
-        
-        
+    }
+    
+    fileprivate func configureTableView() {
         // Register the table view cell class and its reuse id
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
         
@@ -95,9 +118,93 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
+    }
+    
+    // Web service call to get gallery albums
+    func getGalleryAlbums() {
+        ProgressLoader.shared.showLoader(withText: "Loading Gallery")
+        WebServices.shared.getPhotoAlbums(completion: {(response, error ) in
+            
+            if error == nil , let responseDict = response {
+                let albums = responseDict["value"].arrayValue
+                
+                for item in albums {
+                    guard let id = item["new_albumsid"].string  else { return }
+                    let name = item["new_name"].string
+                    if let imgString = item["entityimage"].string{
+                        let image = UIImage.decodeBase64(toImage: imgString)
+                        let album = Album(albumID: id, name: name, thumbnail: image)
+                        self.albums.append(album)
+                    }else{
+                        let album = Album(albumID: id, name: name)
+                        self.albums.append(album)
+                    }
+                }
+                self.collectionViewGallery.reloadData()
+                
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+            ProgressLoader.shared.hideLoader()
+        })
+    }
+    
+    //MARK:- Button action
+    
+    @IBAction func segmentSel(_ sender: Any) {
+        let index = (sender as AnyObject).selectedSegmentIndex
+        if index == 0 {
+            viewGallery.isHidden = true
+            viewEventG.isHidden = false
+        } else {
+            viewGallery.isHidden = false
+            viewEventG.isHidden = true
+        }
         
     }
     
+    @IBAction func showMenu(_ sender: Any) {
+        
+        toggleSideMenuView()
+    }
+    
+    @IBAction func backbuttonClicked(_ sender: Any) {
+        
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
+        var destViewController : UIViewController
+        
+        // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
+        //sideMenuController()?.setContentViewController(destViewController)
+        let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
+        if (selectedLogin == "student"){
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        else if(selectedLogin == "E"){
+            
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        else if(selectedLogin == "parent"){
+            
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        hideSideMenuView()
+    }
+    
+    //MARK:- Selector methods
+    
+    @objc func todayItemClicked(sender: AnyObject) {
+        self.calendar.setCurrentPage(Date(), animated: false)
+    }
+    
+}
+
+//MARK:- UITableView Delegate & Datasource
+extension EventGalleryViewController: UITableViewDelegate, UITableViewDataSource  {
+   
     // number of rows in table view
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.eventsToShow.count
@@ -112,15 +219,15 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
         // set the text from the data model
         cell.textLabel?.text = self.eventsToShow[indexPath.row]
         
-//        let image : UIImage = UIImage(named: "circleEvent.png")!
-//
-//        cell.imageView?.image = image
+        //        let image : UIImage = UIImage(named: "circleEvent.png")!
+        //
+        //        cell.imageView?.image = image
         cell.imageView?.image = UIImage(named:"circleEvent.png")!.withRenderingMode(.alwaysTemplate)
         //UIImage(named: arrMenuImages[indexPath.row])
         
         if(indexPath.row == 0){
             cell.imageView?.tintColor = UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0)
-            }
+        }
         else if(indexPath.row == 1){
             cell.imageView?.tintColor = UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0)
         }
@@ -143,7 +250,7 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
             fillDefaultColors = ["2018/05/14": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/16": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/17": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/18": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0),  "2018/05/21": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0), "2018/05/22": UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0) ]
             //calendar.dataSource = self
             calendar .reloadData()
-                   }
+        }
         else if(indexPath.row == 1){
             
             fillDefaultColors = ["2018/05/01": UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0),  "2018/05/03": UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0), "2018/05/13": UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0), "2018/05/05": UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0), "2018/05/07": UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0), "2018/05/09": UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0) ]
@@ -154,7 +261,7 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
             
             fillDefaultColors = [ "2018/05/02": UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0),  "2018/05/06": UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0), "2018/05/08": UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0), "2018/05/10": UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0) ]
             calendar .reloadData()
-         //   cell.imageView?.tintColor = UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0)
+            //   cell.imageView?.tintColor = UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0)
         }
         else if(indexPath.row == 3){
             
@@ -164,9 +271,13 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
         }
         
     }
+}
+
+//MARK:- UICollectionView Delegate & Datasource
+extension EventGalleryViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return albums.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -176,100 +287,37 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.row {
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCollectionViewCell", for: indexPath) as! GalleryCollectionViewCell
-            cell.imgView.image = UIImage(named:"student_group")
-            cell.lblText.text = "Group Photo"
-            return cell
-            
-        case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCollectionViewCell", for: indexPath) as! GalleryCollectionViewCell
-            cell.imgView.image = UIImage(named:"classroom")
-            cell.lblText.text = "Classroom"
-            return cell
-            
-        case 2:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCollectionViewCell", for: indexPath) as! GalleryCollectionViewCell
-            cell.imgView.image = UIImage(named:"school")
-            cell.lblText.text = "School"
-            return cell
-            
-        default:
-            return UICollectionViewCell()
-        }
-    }
 
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCollectionViewCell", for: indexPath) as! GalleryCollectionViewCell
+            if let image = albums[indexPath.row].thumbnail {
+                cell.imgView.image = image
+            }else{
+                cell.imgView.image = nil
+            }
+            if let nameText = albums[indexPath.row].name {
+                cell.lblText.text = nameText
+            }else{
+                cell.lblText.text = "No name"
+            }
+            return cell
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         
         let galeryVC = storyBoard.instantiateViewController(withIdentifier: "GalleryPhotosViewController") as! GalleryPhotosViewController
+        let albumID = albums[indexPath.row].albumID
+        galeryVC.albumID = albumID
         galeryVC.index = indexPath.item
         self.present(galeryVC, animated:true, completion:nil)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
+}
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-  
-    @IBAction func segmentSel(_ sender: Any) {
-        let index = (sender as AnyObject).selectedSegmentIndex
-        if index == 0 {
-            viewGallery.isHidden = true
-            viewEventG.isHidden = false
-        } else {
-            viewGallery.isHidden = false
-            viewEventG.isHidden = true
-        }
-        
-    }
-    @IBAction func showMenu(_ sender: Any) {
-        
-        toggleSideMenuView()
-    }
-    @IBAction func backbuttonClicked(_ sender: Any) {
-        
-        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-        var destViewController : UIViewController
-       // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
-        //sideMenuController()?.setContentViewController(destViewController)
-        let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-            }
-        else if(selectedLogin == "E"){
-            
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        else if(selectedLogin == "parent"){
-            
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        hideSideMenuView()
-    }
-    
-    @objc
-    func todayItemClicked(sender: AnyObject) {
-        self.calendar.setCurrentPage(Date(), animated: false)
-    }
-    
+//MARK:- FSCalender Delegate & Datasource
+extension EventGalleryViewController:  FSCalendarDataSource, FSCalendarDelegate,FSCalendarDelegateAppearance {
     //    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
     //        let dateString = self.dateFormatter2.string(from: date)
     //        if self.datesWithEvent.contains(dateString) {
@@ -334,5 +382,21 @@ class EventGalleryViewController: UIViewController, UICollectionViewDelegate, UI
     //        return 1.0
     //    }
     
-   
+    
+}
+
+//MARK:- UIImage extension
+
+extension UIImage {
+    
+    /*
+     @brief decode image base64
+     */
+    static func decodeBase64(toImage strEncodeData: String!) -> UIImage {
+        
+        if let decData = Data(base64Encoded: strEncodeData, options: .ignoreUnknownCharacters), strEncodeData.count > 0 {
+            return UIImage(data: decData)!
+        }
+        return UIImage()
+    }
 }

@@ -37,67 +37,17 @@ class MyMenuTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        if (selectedLogin == "S") {
-            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuStudentInfoHeaderView") as! MenuStudentInfoHeaderView
-            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
-            
-            viewHeader.lblClass.text = "Class: " + self.classNameValue
-            
-            if let userID = UserDefaults.standard.string(forKey: "sis_user_id") {
-                viewHeader.lblId.text = "ID: " + userID
-            }
-            if let fatherName = UserDefaults.standard.string(forKey: "sis_fathername") {
-                viewHeader.lblParentName.text = "Parent Name: Mr. " + fatherName
-            }
-            if let sisName = UserDefaults.standard.string(forKey: "sis_name") {
-                viewHeader.lblStudentName.text = "Student Name: " + sisName
-            }
-            
-            return viewHeader
-        }
-        else if (selectedLogin == "E") {
-            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuTeacherInfoHeaderView") as! MenuTeacherInfoHeaderView
-            // let FacultyName = UserDefaults.standard.string(forKey: "FacultyName")!
-            viewHeader.lblName.text = UserDefaults.standard.string(forKey: "FacultyName")!
-            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
-            /*
-             print(self.arrUserProfile)
-             //  viewHeader.lblName.text = self.arrUserProfile ["ApplicantFullName"]!
-             let strClassName = self.arrUserProfile["className"]!
-             let strSection = self.arrUserProfile["Section"]!
-             
-             viewHeader.lblMotherClass.text = " Mother teacher of - " + strClassName + " (" + strSection + ")"
-             
-             let decodedData = NSData(base64Encoded: self.arrUserProfile["Entityimage"]!, options: NSData.Base64DecodingOptions(rawValue: 0) )
-             
-             let decodedimage = UIImage(data: decodedData! as Data)
-             
-             viewHeader.imgView.image = decodedimage
-             viewHeader.imgView.layer.cornerRadius = viewHeader.imgView.frame.size.width/2
-             viewHeader.imgView.clipsToBounds = true
-             //   */
-            return viewHeader
-        }
-        else{
-            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuParentInfoHeaderView") as! MenuParentInfoHeaderView
-            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
-            return viewHeader
-        }
-    }
-    
     func getStudentProfileListingWithAction(actionType: StudentProfileActionType)->StudentProfileListingViewController{
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "StudentProfileListingViewController") as! StudentProfileListingViewController
         vc.screenActionType = actionType
         return vc
     }
     
-    func callForUserProfileData()  {
+    func getUserProfileData()  {
         
-        //  ProgressLoader.shared.showLoader(withText: "Please wait...")
-        
-        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else { return }
+        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else {
+            return
+        }
         
         // Getting USer profile
         WebServices.shared.getProfile(forRegistrationID: regID, completion: { (response, error) in
@@ -115,6 +65,11 @@ class MyMenuTableViewController: UITableViewController {
                 let studentID = responseDict["value"][0]["sis_studentid"].stringValue
                 UserDefaults.standard.set(studentID, forKey: "sis_studentid")
                 
+                if let imgString = responseDict["value"][0]["entityimage"].string {
+                    let studentImage = UIImage.decodeBase64(toImage: imgString)
+                    let imgData = UIImagePNGRepresentation(studentImage)
+                    UserDefaults.standard.set(imgData, forKey: "studentImage")
+                }
                 let parentsName = responseDict["value"][0]["sis_fathername"].stringValue
                 UserDefaults.standard.set(parentsName, forKey: "sis_fathername")
                 
@@ -123,10 +78,9 @@ class MyMenuTableViewController: UITableViewController {
                 
                 let contactID = responseDict["value"][0]["_sis_studentname_value"].stringValue
                 UserDefaults.standard.set(contactID, forKey: "_sis_studentname_value")
-                //  ProgressLoader.shared.hideLoader()
+
                 self.setupDisplay()
             }else{
-                // ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "Getting user profile error")
             }
@@ -136,7 +90,7 @@ class MyMenuTableViewController: UITableViewController {
     func setupDisplay() {
         
         if (self.selectedLogin == "S") {
-            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "notification.png", "calendar.png", "assignment.png", "performance.png", "progress.png", "teacher.png", "attendance.png", "event.png", "health.png", "holiday.png", "s_profile.png", "key.png", "logout.png"]
+            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "notification.png", "calendar.png", "assignment.png", "performance.png", "teacher.png", "attendance.png", "event.png", "health.png", "holiday.png", "s_profile.png", "key.png", "logout.png"]
         }
         
         
@@ -188,25 +142,17 @@ class MyMenuTableViewController: UITableViewController {
     }
     
     func getMenuListItems() {
-        ProgressLoader.shared.showLoader(withText: "")
         
         guard let roleCode = UserDefaults.standard.string(forKey: "new_rolecode") else { return }
         
         WebServices.shared.menuListItem(role: roleCode, completion: {(response,error) in
-            ProgressLoader.shared.hideLoader()
             if error == nil, let responceDict = response {
-                // print(responceDict)
-                let swiftyJsonVar = responceDict
-                print(swiftyJsonVar)
+
                 let schoolID = responceDict["Name"].stringValue
                 UserDefaults.standard.set(schoolID, forKey: "Name")
                 
                 
                 self.sideMenuItems.append("Dashboard")
-                
-                //                if (responceDict["Student"] == true){
-                //                    self.sideMenuItems.append("Student")
-                //                }
                 
                 if (responceDict["PinBoard"] == true){
                     self.sideMenuItems.append("PinBoard")
@@ -232,7 +178,7 @@ class MyMenuTableViewController: UITableViewController {
                     self.sideMenuItems.append("Performance Score")
                 }
                 // need to check it
-                if (responceDict["StudyProgress"] == false){
+                if (responceDict["StudyProgress"] == true){
                     self.sideMenuItems.append("Study Progress")
                 }
                 //
@@ -264,18 +210,16 @@ class MyMenuTableViewController: UITableViewController {
                 self.sideMenuItems.append("Logout")
                 
                 print(self.sideMenuItems)
-                self.callForUserProfileData()
-            }
-                
-            else{
+                self.getUserProfileData()
+            }else{
                 ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
             }
-            
         })
     }
 }
-// MARK: - Table view data source
+// MARK: - UITableview Datasourfce and delegates
+
 extension MyMenuTableViewController {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -297,6 +241,59 @@ extension MyMenuTableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
         
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if (selectedLogin == "S") {
+            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuStudentInfoHeaderView") as! MenuStudentInfoHeaderView
+            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
+            
+            viewHeader.lblClass.text = "Class: " + self.classNameValue
+            
+            if let userID = UserDefaults.standard.string(forKey: "sis_user_id") {
+                viewHeader.lblId.text = "ID: " + userID
+            }
+            if let imageData = UserDefaults.standard.data(forKey: "studentImage"){
+                viewHeader.imgViewStudent.image = UIImage(data: imageData)
+            }
+            if let fatherName = UserDefaults.standard.string(forKey: "sis_fathername") {
+                viewHeader.lblParentName.text = "Parent Name: Mr. " + fatherName
+            }
+            if let sisName = UserDefaults.standard.string(forKey: "sis_name") {
+                viewHeader.lblStudentName.text = "Student Name: " + sisName
+            }
+            
+            return viewHeader
+        }
+        else if (selectedLogin == "E") {
+            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuTeacherInfoHeaderView") as! MenuTeacherInfoHeaderView
+            // let FacultyName = UserDefaults.standard.string(forKey: "FacultyName")!
+            viewHeader.lblName.text = UserDefaults.standard.string(forKey: "FacultyName")!
+            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
+            /*
+             print(self.arrUserProfile)
+             //  viewHeader.lblName.text = self.arrUserProfile ["ApplicantFullName"]!
+             let strClassName = self.arrUserProfile["className"]!
+             let strSection = self.arrUserProfile["Section"]!
+             
+             viewHeader.lblMotherClass.text = " Mother teacher of - " + strClassName + " (" + strSection + ")"
+             
+             let decodedData = NSData(base64Encoded: self.arrUserProfile["Entityimage"]!, options: NSData.Base64DecodingOptions(rawValue: 0) )
+             
+             let decodedimage = UIImage(data: decodedData! as Data)
+             
+             viewHeader.imgView.image = decodedimage
+             viewHeader.imgView.layer.cornerRadius = viewHeader.imgView.frame.size.width/2
+             viewHeader.imgView.clipsToBounds = true
+             //   */
+            return viewHeader
+        }
+        else{
+            let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "MenuParentInfoHeaderView") as! MenuParentInfoHeaderView
+            viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0) //44 154 243
+            return viewHeader
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -411,36 +408,33 @@ extension MyMenuTableViewController {
                 case 6:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "performancescoreview")
                     break
-                    
+
                 case 7:
-                    destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudyProgressViewController")
-                    break
-                case 8:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teachersviewcontroller")
                     break
                     
-                case 9:
+                case 8:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "attendanceview")
                     break
-                case 10:
+                case 9:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "EventGalleryListViewController")
                     break
                     
-                case 11:
+                case 10:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HealthReportViewController")
                     break
-                case 12:
+                case 11:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "HolidayListViewController")
                     break
                     
-                case 13:
+                case 12:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "StudentProfileViewController")
                     break
                     
-                case 14:
+                case 13:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChangePasswordViewController")
                     break
-                case 15:
+                case 14:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginviewcontroller")
                     break
                     

@@ -121,7 +121,7 @@ extension NotificationViewController {
         
         switch indexPath.row {
         case 0:
-            todayDatasource.configureData()
+//            todayDatasource.configureData()
             cell.tblViewDetails.dataSource = todayDatasource
             return cell
             
@@ -131,7 +131,7 @@ extension NotificationViewController {
             return cell
             
         default:
-            missedDataSource.configureData()
+//            missedDataSource.configureData()
             cell.tblViewDetails.dataSource = missedDataSource
             return cell
         }

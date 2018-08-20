@@ -2,7 +2,7 @@
 //  PerformanceScoreViewController.swift
 //  EliteSISSwift
 //
-//  Created by Reetesh Bajpai on 28/02/18.
+//  Created by Vivek Garg on 28/02/18.
 //  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
@@ -12,8 +12,8 @@ import DropDown
 import SwiftyJSON
 
 
-class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+class PerformanceScoreViewController: UIViewController{
+    
     //IBOutlet
     @IBOutlet weak var chtChart: LineChartView!
     @IBOutlet weak var graphChart: LineChartView!
@@ -33,45 +33,27 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
     //Variables
     var dropDownClasses: DropDown!
     let numbers = [60, 80, 92, 70, 77]
-    let exams = ["FA1", "SA1", "FA2", "SA2", "Final"]
+    var exams = ["FA1", "SA1", "FA2", "SA2", "Final"]
     var pickerData: [String] = [String]()
     var arrScoreData = [(String,String,String,String)]()
     var resultPercentage = Int()
+    
     //MARK:- View's Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         updateGraph()
-        
         getPerformanceList()
-        pickerData = ["FA1", "FA2", "SA1", "SA2", "Final"]
-//        var scoreDataHindi = ("Hindi", "77", "100", "A")
-//        var scoreDataEng = ("English", "80", "100", "A")
-//        var scoreDataMaths = ("English", "85", "100", "A")
-//        var scoreDataArt = ("English", "85", "100", "A")
-//        arrScoreData.append(scoreDataHindi)
-//        arrScoreData.append(scoreDataEng)
-//        arrScoreData.append(scoreDataMaths)
-//        arrScoreData.append(scoreDataArt)
+        configureTableView()
         
-         segmentedControlPerformanceScore.addTarget(self, action: #selector(segmentSelected(sender:)), for: .valueChanged)
+        segmentedControlPerformanceScore.addTarget(self, action: #selector(segmentSelected(sender:)), for: .valueChanged)
         
-         tblViewScore.sectionHeaderHeight = 55
-        tblViewScore.sectionFooterHeight = 55
-        
-        tblViewScore.register(UINib(nibName:"AssignmentHeaderReusableView", bundle: nil), forHeaderFooterViewReuseIdentifier: "AssignmentHeaderReusableView")
-        tblViewScore.register(UINib(nibName:"ScoreTableViewCell", bundle:nil), forCellReuseIdentifier: "ScoreTableViewCell")
-        
-        tblViewScore.separatorStyle = .none
-        tblViewScore.delegate = self
-        tblViewScore.dataSource = self
-        // Do any additional setup after loading the view.
-        
-        self.configDropDown()
         self.onCategoryChange(withCategoryIndex: 0)
-        self.lblSelectedOption.text = self.pickerData[0]
+//        self.lblSelectedOption.text = self.pickerData[0]
     }
+    
+    //MARK:- Selector methods
     
     @objc func segmentSelected(sender: UISegmentedControl) {
         let index = sender.selectedSegmentIndex
@@ -86,6 +68,20 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
     
+    //MARK:- Custom methods
+    
+    fileprivate func configureTableView() {
+        tblViewScore.sectionHeaderHeight = 55
+        tblViewScore.sectionFooterHeight = 55
+        
+        tblViewScore.register(UINib(nibName:"AssignmentHeaderReusableView", bundle: nil), forHeaderFooterViewReuseIdentifier: "AssignmentHeaderReusableView")
+        tblViewScore.register(UINib(nibName:"ScoreTableViewCell", bundle:nil), forCellReuseIdentifier: "ScoreTableViewCell")
+        
+        tblViewScore.separatorStyle = .none
+        tblViewScore.delegate = self
+        tblViewScore.dataSource = self
+    }
+    
     func getPerformanceList() {
         let studentId = UserDefaults.standard.string(forKey: "sis_studentid")
         let sessionId = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value")
@@ -94,10 +90,17 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
         WebServices.shared.getPerformancelistFor(studentID: studentId!, sessionID: sessionId!, sectionID: sectionId!, completion: { (response, error) in
             
             if error == nil, let respondeDict = response {
-                 self.resultPercentage = respondeDict["value"][0]["sis_resultsinpercentage"].intValue
+                self.resultPercentage = respondeDict["value"][0]["sis_resultsinpercentage"].intValue
                 let marksID = respondeDict["value"][0]["sis_classsessionwisemarksid"].stringValue
                 UserDefaults.standard.set(marksID, forKey: "sis_classsessionwisemarksid")
                 self.displayCircularProgress()
+                
+                // Set exam picker data
+                let examName = respondeDict["value"][0]["examtype_x002e_sis_name"].stringValue
+                let examAcronym = examName.getAcronyms().uppercased()
+                self.pickerData.removeAll()
+                self.pickerData.append(examAcronym)
+                self.configDropDown()
                 //getStudyProgress
                 WebServices.shared.getStudyProgress(marksID: marksID, completion: { (response, error) in
                     if error == nil, let respondeDict = response {
@@ -143,6 +146,7 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
         dropDownClasses.dataSource = self.pickerData
         
         dropDownClasses.selectionAction = { [unowned self] (index: Int, item: String) in
+            self.lblSelectedOption.text = self.pickerData[index]
             self.onCategoryChange(withCategoryIndex: index)
         }
     }
@@ -167,7 +171,85 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
     
     func onCategoryChange(withCategoryIndex row: Int){
     }
+    
+    func updateGraph(){
+        var lineChartEntry  = [ChartDataEntry]() //this is the Array that will eventually be displayed on the graph.
+        
+        chtChart.xAxis.stringEntries = exams
+        
+        //here is the for loop
+        for i in 0..<numbers.count {
+            
+            let value = ChartDataEntry(x: Double(i), y: Double(numbers[i])) // here we set the X and Y status in a data chart entry
+            lineChartEntry.append(value) // here we add it to the data set
+        }
+        
+        let line1 = LineChartDataSet(values: lineChartEntry, label: "x-axis: Exams/Test and y-axis: Marks") //Here we convert lineChartEntry to a LineChartDataSet
+        
+        line1.colors = [NSUIColor.blue] //Sets the colour to blue
+        
+        
+        let data = LineChartData() //This is the object that will be added to the chart
+        
+        data.addDataSet(line1) //Adds the line to the dataSet
+        
+        
+        chtChart.data = data //finally - it adds the chart data to the chart and causes an update
+        
+        chtChart.chartDescription?.text = "Performance Chart" // Here we set the description for the graph
+        
+        chtChart.leftAxis.axisMinimum = 0
+        chtChart.leftAxis.axisMaximum = 100
+        chtChart.rightAxis.axisMaximum = 0
+        chtChart.animate(xAxisDuration: 1)
+    }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    @IBAction func showMenu(_ sender: Any) {
+        
+        toggleSideMenuView()
+    }
+    @IBAction func backbuttonClicked(_ sender: Any) {
+        
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
+        var destViewController : UIViewController
+        // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
+        //sideMenuController()?.setContentViewController(destViewController)
+        let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
+        if (selectedLogin == "student"){
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        else if(selectedLogin == "E"){
+            
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        else if(selectedLogin == "parent"){
+            
+            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
+            sideMenuController()?.setContentViewController(destViewController)
+        }
+        hideSideMenuView()
+    }
+}
 
+//MARK:- UITableview delegate
+extension PerformanceScoreViewController:  UITableViewDelegate, UITableViewDataSource  {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrScoreData.count
     }
@@ -201,80 +283,14 @@ class PerformanceScoreViewController: UIViewController, UITableViewDelegate, UIT
         cell.lblTotal.text = arrScoreData[indexPath.row].2
         cell.lblGrade.text = arrScoreData[indexPath.row].3
         return cell
-       
-    }
-    
-    func updateGraph(){
-        var lineChartEntry  = [ChartDataEntry]() //this is the Array that will eventually be displayed on the graph.
         
-        chtChart.xAxis.stringEntries = exams
-
-        //here is the for loop
-        for i in 0..<numbers.count {
-
-           let value = ChartDataEntry(x: Double(i), y: Double(numbers[i])) // here we set the X and Y status in a data chart entry
-           lineChartEntry.append(value) // here we add it to the data set
-        }
-
-        let line1 = LineChartDataSet(values: lineChartEntry, label: "x-axis: Exams/Test and y-axis: Marks") //Here we convert lineChartEntry to a LineChartDataSet
-
-        line1.colors = [NSUIColor.blue] //Sets the colour to blue
-
-
-        let data = LineChartData() //This is the object that will be added to the chart
-
-        data.addDataSet(line1) //Adds the line to the dataSet
-
-
-        chtChart.data = data //finally - it adds the chart data to the chart and causes an update
-
-        chtChart.chartDescription?.text = "Performance Chart" // Here we set the description for the graph
-
-        chtChart.leftAxis.axisMinimum = 0
-        chtChart.leftAxis.axisMaximum = 100
-        chtChart.rightAxis.axisMaximum = 0
-        chtChart.animate(xAxisDuration: 1)
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
+}
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    @IBAction func showMenu(_ sender: Any) {
-        
-        toggleSideMenuView()
-    }
-    @IBAction func backbuttonClicked(_ sender: Any) {
-        
-        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-        var destViewController : UIViewController
-        // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
-        //sideMenuController()?.setContentViewController(destViewController)
-        let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        else if(selectedLogin == "E"){
-            
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        else if(selectedLogin == "parent"){
-            
-            destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
-            sideMenuController()?.setContentViewController(destViewController)
-        }
-        hideSideMenuView()
+//MARK:- String extension
+extension String {
+    public func getAcronyms(separator: String = "") -> String {
+        let acronyms = self.components(separatedBy: " ").map({ String($0.first!) }).joined(separator: separator);
+        return acronyms
     }
 }

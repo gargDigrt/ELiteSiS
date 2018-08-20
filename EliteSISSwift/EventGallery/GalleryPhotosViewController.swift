@@ -8,37 +8,90 @@
 
 import UIKit
 
-class GalleryPhotosViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    var arrPhotos:[String]!
-    var index = 0
-    var arrNames = ["Group Photo", "Classroom", "School"]
-    @IBOutlet weak var lblPhotoName: UILabel!
+struct ImageItem {
+    let name: String?
+    let image: UIImage
     
+    init(name: String?, image: UIImage) {
+        self.name = name
+        self.image = image
+    }
+}
+
+class GalleryPhotosViewController: UIViewController{
+    
+    //IBOutlet
+    @IBOutlet weak var lblPhotoName: UILabel!
     @IBOutlet weak var collectionViewPhotos: UICollectionView!
     
+    //Variables
+    var albumID:String!
+    var gallery: [ImageItem] = []
+    var arrPhotos:[String]!
+    var index = 0
+    
+
+    //MARK:- View's Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        getImagesFor(albumID: albumID)
         arrPhotos = ["student_group","classroom","school"]
+        
+        configureImageCollectionView()
+        
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        lblPhotoName.text = "Gallery"
+    }
+    
+    //MARK:- Custom method
+    
+    func getImagesFor(albumID aId : String) {
+        ProgressLoader.shared.showLoader(withText: "Loading images")
+        
+        WebServices.shared.getImagesForAlbum(withId: aId, completion: { (response, error) in
+            if error == nil , let responseDict = response {
+                let images = responseDict["value"].arrayValue
+                
+                for item in images {
+                    let name = item["filename"].string
+                    if let imgString = item["documentbody"].string {
+                        let image = UIImage.decodeBase64(toImage: imgString)
+                        let imgItem = ImageItem(name: name, image: image)
+                        self.gallery.append(imgItem)
+                    }
+                }
+                self.collectionViewPhotos.reloadData()
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+            ProgressLoader.shared.hideLoader()
+        })
+    }
+    
+    fileprivate func configureImageCollectionView() {
         collectionViewPhotos.register(UINib(nibName:"GalleryPhotosCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "GalleryPhotosCollectionViewCell")
         collectionViewPhotos.delegate = self
         collectionViewPhotos.dataSource = self
-        
-        
-        // Do any additional setup after loading the view.
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        lblPhotoName.text = arrNames[index]
-        DispatchQueue.main.async {
-            self.collectionViewPhotos.scrollToItem(at: IndexPath(item:self.index, section:0), at:.right, animated: false)
-        }
-        
-        
+    //MARK:- Button action
+    
+    @IBAction func backBtnClicked(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
     }
+    
+}
+
+//MARK:- UICollection view delegate and datasource
+
+extension GalleryPhotosViewController:  UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout  {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return gallery.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -48,55 +101,24 @@ class GalleryPhotosViewController: UIViewController, UICollectionViewDelegate, U
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.row {
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryPhotosCollectionViewCell", for: indexPath) as! GalleryPhotosCollectionViewCell
-            cell.imgView.image = UIImage(named:"student_group")
-            
-           return cell
-            
-        case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryPhotosCollectionViewCell", for: indexPath) as! GalleryPhotosCollectionViewCell
-            cell.imgView.image = UIImage(named:"classroom")
-            
-           return cell
-            
-        case 2:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryPhotosCollectionViewCell", for: indexPath) as! GalleryPhotosCollectionViewCell
-            cell.imgView.image = UIImage(named:"school")
-            
-            return cell
-            
-        default:
-            return UICollectionViewCell()
-        }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryPhotosCollectionViewCell", for: indexPath) as! GalleryPhotosCollectionViewCell
+        cell.imgView.image = gallery[indexPath.row].image
+        return cell
     }
+    
+}
+
+//MARK:- UIScrollview delegate
+extension GalleryPhotosViewController {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let currentIndex = Int(collectionViewPhotos.contentOffset.x / collectionViewPhotos.frame.size.width)
-        lblPhotoName.text = arrNames[currentIndex]
+//        if let imgName = gallery[currentIndex].name {
+//            let finalName = imgName.split(separator: ".").first
+//            lblPhotoName.text = finalName!
+//        }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    @IBAction func backBtnClicked(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
+
