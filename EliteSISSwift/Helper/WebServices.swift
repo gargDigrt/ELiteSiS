@@ -212,7 +212,6 @@ class WebServices: NSObject {
     
     
     // Get address for the user
-    
     func getAddress(forRegistrationID rID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
         let requestURL = baseURL + "SIS_Student/GetAddress/" + rID + "/MBLE_APP_00001"
@@ -300,7 +299,6 @@ class WebServices: NSObject {
     
     
     // get performanc list
-    
     func getPerformancelistFor(studentID: String, sessionID: String, sectionID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
         let requestURL = baseURL + "SIS_Student/getPerformanceList/" + studentID + "/" + sessionID + "/" + sectionID + "/" + "/MBLE_APP_00001"

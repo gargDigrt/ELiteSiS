@@ -54,6 +54,10 @@ class MyMenuTableViewController: UITableViewController {
             
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)
+                
+              //  UserDefaults.standard.setValue(responseDict, forKey: "DictValue")
+                
+                
                 let className1 = responseDict["value"][0]["sis_currentclasssession"]["sis_name"].stringValue
                 let fullNameArr = className1.split(separator: " ")
                 self.classNameValue = "\(fullNameArr[1])(\(responseDict["value"][0]["sis_section"]["sis_name"]))"

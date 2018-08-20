@@ -42,6 +42,9 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         
         pickerData = ["General Info", "Contact Info", "Class Applied", "Qualification Detail", "Address Detail", "Identity Card Details"]
         
+//      let dictValue =  UserDefaults.standard.value(forKey: "DictValue")
+//        print(dictValue)
+        
         if studentDetail != nil {
             generalDatasource.studentName = studentDetail.name
         }
@@ -182,7 +185,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -191,7 +194,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)

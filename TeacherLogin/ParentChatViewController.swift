@@ -118,13 +118,16 @@ class ParentChatViewController: UIViewController, UITableViewDelegate,UITableVie
         let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value")
         WebServices.shared.getChatMessage(senderID: senderid!, RecipientId: self.myReciepentID, CreatedOn: "nodate", completion: {(response, error) in
                         if error == nil, let responseDict = response {
-                print(responseDict)
-//                let ReceipentID = responseDict.arrayValue
-//
-//                for recepent in ReceipentID {
-//                    self.myReciepentID = recepent["FacultyContactID"].stringValue
-//                    print(self.myReciepentID)
-//                }
+                print(responseDict["value"])
+                let ChatData = responseDict["value"].arrayValue
+
+                for message in ChatData {
+                   
+                    self.myReciepentID = message["new_message"].stringValue
+                     self.arrMsgData.append(self.myReciepentID)
+                    print(self.arrMsgData)
+                    self.tblViewDiscussion.reloadData()
+                }
                 
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")

@@ -229,7 +229,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         //        sideMenuController()?.setContentViewController(destViewController)
         
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
             

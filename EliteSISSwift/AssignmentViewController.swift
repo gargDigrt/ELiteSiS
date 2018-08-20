@@ -39,12 +39,13 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
     
     // WEB Service call
     func getAssignmentReportForUser() {
-        ProgressLoader.shared.showLoader(withText: "Loading")
+        ProgressLoader.shared.showLoader(withText: "Loading...")
         guard let studentId  = UserDefaults.standard.string(forKey: "sis_studentid") else {return}
         
         WebServices.shared.getAssignmentList(studentID: studentId, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
+                print(responseDict)
                 let assignmentArray = responseDict["value"].arrayValue
                 for item in assignmentArray {
                     let assignment = Assignment(json: item)
@@ -77,7 +78,7 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
     
     @objc func downloadAssignment(btn:UIButton) {
         
-        ProgressLoader.shared.showLoader(withText: "Downloading")
+        ProgressLoader.shared.showLoader(withText: "Downloading...")
         let assignment = allAssignments[btn.tag]
         WebServices.shared.downloadAssignment(objectID: assignment.value!, completion: {(response, error) in
             ProgressLoader.shared.hideLoader()
