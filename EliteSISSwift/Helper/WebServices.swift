@@ -31,7 +31,6 @@ class WebServices: NSObject {
     // For Login
     func loginUserWith(username: String, password: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
       
-        debugPrint(headers)
         let requestURL = baseURL + "SIS_Student/Login/" + username + "/" + password + "/MBLE_APP_00001"
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
