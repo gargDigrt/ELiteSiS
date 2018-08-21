@@ -11,7 +11,7 @@ import SwiftyJSON
 
 protocol TeachersViewActionMethods {
     func showTeachersProfile()
-    func showTeachersChat()
+//    func showTeachersChat()
     func showTeachersSendMsg()
 }
 
@@ -24,8 +24,11 @@ class TeachersTableViewCell: UITableViewCell {
     @IBOutlet weak var btnTeacherProfile: UIButton!
     @IBOutlet weak var btnTeacherChat: UIButton!
     @IBOutlet weak var btnTeacherSendMsg: UIButton!
-    var delegateTeachersMethods:TeachersViewActionMethods?
     
+    var delegateTeachersMethods:TeachersViewActionMethods?
+    var techerID: String!
+    
+    var chatAction: (() -> ())? = nil
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -37,6 +40,7 @@ class TeachersTableViewCell: UITableViewCell {
         teacherNameLabel.text = name
         let subject = teacher["new_subject"]["sis_name"].stringValue
         subjectLabel.text = subject
+        techerID = teacher["new_faculty"]["_new_faculty_value"].stringValue
     }
 
     @IBAction func btnTeacherProfileClicked(_ sender: UIButton) {
@@ -44,7 +48,10 @@ class TeachersTableViewCell: UITableViewCell {
     }
     
     @IBAction func btnTeacherChatClicked(_ sender: UIButton) {
-        delegateTeachersMethods?.showTeachersChat()
+        if let action = chatAction {
+            action()
+        }
+//        delegateTeachersMethods?.showTeachersChat()
     }
     
     @IBAction func btnTeacherSendMsgClicked(_ sender: UIButton) {

@@ -148,7 +148,7 @@ class StudentProfileListingViewController: UIViewController {
     
     func moveToChatScreenWithData(data: StudentAttendanceViewModel, nameString:String){
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "TeacherChatViewController") as! TeacherChatViewController
-        vc.nameString = nameString
+        vc.facultyID = nameString
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

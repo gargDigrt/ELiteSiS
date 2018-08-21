@@ -137,12 +137,13 @@ extension LoginViewController {
             return
             
         }
+        UserDefaults.standard.set(username, forKey: "UserName")
         guard let password = passwordCell.textField.text, password != ""  else {
             AlertManager.shared.showAlertWith(title: "Alert", message: "Password can't be left Blank")
             return
             
         }
-        
+        UserDefaults.standard.set(password, forKey: "Pwd")
         ProgressLoader.shared.showLoader(withText: "Login! Please wait...")
         
         self.selectedLogin = self.getUserName()

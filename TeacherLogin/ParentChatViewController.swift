@@ -37,10 +37,11 @@ class ParentChatViewController: UIViewController {
     //Variables
     var nameString:String!
     var dataSourceClassses = [String]()
-    var dropDownStudents: DropDown!
+    lazy var dropDownStudents = DropDown()
     var myReciepentID:String = ""
     var arrMsgData = [String]()
     var faculties:[Faculty] = []
+    var selectedFaculty:Faculty?
     
     //MARK:- View's Lifecycle
     
@@ -76,7 +77,6 @@ class ParentChatViewController: UIViewController {
     }
     
     func configureDropDown(){
-        dropDownStudents = DropDown()
         
         // The view to which the drop down will appear on
         dropDownStudents.anchorView = self.viewClassSelection
@@ -84,8 +84,8 @@ class ParentChatViewController: UIViewController {
         dropDownStudents.selectRow(at: 0)
         dropDownStudents.selectionAction = { [unowned self] (index: Int, item: String) in
             // Handle dropdown selection
-            let facultyName = self.faculties[index].name
-            self.lblSelectedClass.text = facultyName
+            self.selectedFaculty = self.faculties[index]
+            self.lblSelectedClass.text = self.selectedFaculty!.name
             let facultyId = self.faculties[index].facultyID
             self.getChatMessageForFaculty(fID: facultyId)
         }
@@ -106,47 +106,7 @@ class ParentChatViewController: UIViewController {
         }
         
     }
-//    func configDropDown(){
-//        guard let classSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
-//
-//        // call API here
-//        ProgressLoader.shared.showLoader(withText: "Please wait...")
-//
-//        WebServices.shared.getLessionPlansFor(classSession: classSession, completion: { (response, error) in
-//
-//            if error == nil, let responseDict = response {
-//                print("Responce...........\(responseDict)")
-//
-//                let subjects = responseDict["value"].arrayValue
-//
-//                for subject in subjects {
-//                    let SubjectName = subject["new_subject"]["sis_name"].stringValue
-//                    let FacultyName = subject["new_faculty"]["sis_name"].stringValue
-//                    print("\(FacultyName), \(SubjectName)")
-//
-//                    self.dataSourceClassses.append("\(FacultyName), \(SubjectName)")
-//                }
-//
-//                ProgressLoader.shared.hideLoader()
-//                print(self.dataSourceClassses)
-//
-//
-//
-//                // The list of items to display. Can be changed dynamically
-//                self.dropDownStudents.dataSource = self.dataSourceClassses
-//
-//                self.dropDownStudents.selectionAction = { [unowned self] (index: Int, item: String) in
-//                    self.showStudentsClass(classSelected: item)
-//                }
-//            }
-//            else{
-//                ProgressLoader.shared.hideLoader()
-//                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-//                debugPrint(error?.localizedDescription ?? "Getting user profile error")
-//            }
-//        })
-//        // calling new API
-//    }
+    
     
     //MARK:- Web service calls
     func getFacultyList() {
@@ -154,8 +114,8 @@ class ParentChatViewController: UIViewController {
         WebServices.shared.getFacultyList(sectionID: sectionId!, completion: {(response, error) in
             
             if error == nil, let responseDict = response {
-               
-             let facultyData = responseDict.arrayValue
+                
+                let facultyData = responseDict.arrayValue
                 self.dataSourceClassses.removeAll()
                 for item in facultyData {
                     let name = item["FacultyName"].stringValue
@@ -171,11 +131,12 @@ class ParentChatViewController: UIViewController {
             }
         })
     }
-
+    
     func getChatMessageForFaculty(fID: String)  {
         
-        let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value")
-        WebServices.shared.getChatMessage(senderID: senderid!, RecipientId: fID, CreatedOn: "nodate", completion: {(response, error) in
+        guard let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value") else { return}
+        guard let recipentID = selectedFaculty?.facultyID  else { return }
+        WebServices.shared.getChatMessage(senderID: senderid, RecipientId: recipentID, CreatedOn: "nodate", completion: {(response, error) in
             if error == nil, let responseDict = response {
                 
                 self.arrMsgData.removeAll()
@@ -184,15 +145,45 @@ class ParentChatViewController: UIViewController {
                     let msgText = msg["new_message"].stringValue
                     self.arrMsgData.append(msgText)
                 }
-                self.tblViewDiscussion.reloadData()
-                
+                DispatchQueue.main.async {
+                    self.tblViewDiscussion.reloadData()
+                    self.scrollToBottom()
+                }
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "Getting user profile error")
             }
         })
     }
-
+    
+    func sendNewMessage(){
+        guard let msg = textViewMsg.text, msg != "" else { return }
+        guard let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value") else { return}
+        guard let recipentID = selectedFaculty?.facultyID  else { return }
+        
+        WebServices.shared.sendNewMessage(text: msg, senderID: senderid, RecipientId: recipentID, completion: {(success , error) in
+            if error == nil {
+                if success{
+                    self.getChatMessageForFaculty(fID: recipentID)
+                }else{
+                    AlertManager.shared.showAlertWith(title: "Opps!", message: "Message couldn't sent")
+                }
+                
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+            
+        })
+    }
+    
+    func scrollToBottom(){
+        guard arrMsgData.count != 0 else {return}
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: self.arrMsgData.count - 1,section: 0)
+            self.tblViewDiscussion.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
+    }
     
     //MARK:- Button Actions
     @IBAction func btnSelectClassClick(_ sender: Any) {
@@ -221,13 +212,13 @@ class ParentChatViewController: UIViewController {
     
     //MARK:- Button actions
     @IBAction func btnSendClicked(_ sender: UIButton) {
-        if textViewMsg.text != nil && textViewMsg.text.count != 0 {
-            arrMsgData.append(textViewMsg.text!)
-            tblViewDiscussion.reloadData()
-            tblViewDiscussion.scrollToRow(at: IndexPath(row:arrMsgData.count - 1 , section: 0), at: .bottom, animated: false)
-            textViewMsg.text = ""
-        }
-        
+        //        if textViewMsg.text != nil && textViewMsg.text.count != 0 {
+        //            arrMsgData.append(textViewMsg.text!)
+        //            tblViewDiscussion.reloadData()
+        //            tblViewDiscussion.scrollToRow(at: IndexPath(row:arrMsgData.count - 1 , section: 0), at: .bottom, animated: false)
+        //        }
+        sendNewMessage()
+        textViewMsg.text = ""
     }
     
     @IBAction func showMenu(_ sender: Any) {
@@ -274,7 +265,7 @@ extension ParentChatViewController:  UITableViewDelegate,UITableViewDataSource {
         cell.selectionStyle = .none
         return cell
     }
-
+    
 }
 
 //MARK:- UITextView Delegate 
@@ -289,5 +280,6 @@ extension ParentChatViewController: UITextViewDelegate {
     }
     
 }
+
 
 
