@@ -156,6 +156,31 @@ class WebServices: NSObject {
     }
     
     
+    // For discussion API get Chat
+    func sendNewMessage(text: String,senderID: String, RecipientId: String, completion: @escaping (_ success: Bool, _ error:Error? ) -> Void )  {
+        
+        let requestURL = baseURL + "SIS_Student/CreateDiscussion/MBLE_APP_00001"
+        
+//        let sender = "/contacts(\(senderID))"
+        let params = ["new_Sender@odata.bind": "/contacts(\(senderID))",
+            "new_Recipient@odata.bind": "/contacts(\(RecipientId))",
+            "new_message": text]
+        
+//        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        Alamofire.request(requestURL, method: .post, parameters: params, encoding: JSONEncoding.default, headers: nil).responseJSON { (responseData) -> Void in
+           if let statusCode = responseData.response?.statusCode {
+            if statusCode == 200 {
+                completion(true, nil)
+            }else{
+                completion(false, nil)
+            }
+            } else {
+                completion(false, responseData.error)
+            }
+        }
+    }
+    
     // for showing holidayList
     func getHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         

@@ -57,11 +57,13 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
         hideSideMenuView()
     }
     
-    func showTeachersChat() {
+    func showTeachersChatFor(facultyId: String, name: String) {
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-        var destViewController : UIViewController
-        destViewController = mainStoryboard.instantiateViewController(withIdentifier: "TeacherChatViewController")
+        let destViewController = mainStoryboard.instantiateViewController(withIdentifier: "TeacherChatViewController") as! TeacherChatViewController
+        destViewController.facultyID = facultyId
+        destViewController.facultyName = name
         sideMenuController()?.setContentViewController(destViewController)
+        
         hideSideMenuView()
         
 }
@@ -129,6 +131,11 @@ extension TeachersViewController{
         cell.displayDataFrom(teacher: faculties[indexPath.row])
         cell.backgroundColor = UIColor.clear
         cell.selectionStyle = .none
+        cell.chatAction = {
+            let facltyID = cell.techerID
+            let name = cell.teacherNameLabel.text!
+            self.showTeachersChatFor(facultyId: facltyID!,name: name)
+        }
         return cell
     }
     
