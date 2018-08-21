@@ -6,7 +6,6 @@
 //  Copyright © 2018 Vivek Garg. All rights reserved.
 //
 
-import SwiftHash
 import Alamofire
 import SwiftyJSON
 
@@ -20,17 +19,24 @@ class WebServices: NSObject {
     let contactID = "65e99ee3-7669-e811-8157-c4346bdc1f11"
     let schoolID = UserDefaults.standard.string(forKey: "Name")
     
+    var headers : [String: String] {
+        var dict = [String: String]()
+        let username = UserDefaults.standard.string(forKey: "UserName")
+        let pwd = UserDefaults.standard.string(forKey: "Pwd")
+        dict["UserName"] = username!
+        dict["Pwd"] = pwd!
+        return dict
+    }
     
     // For Login
     func loginUserWith(username: String, password: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
-        
-        let md5EncodedPassword = MD5(password)
-        
-        let requestURL = baseURL + "SIS_Student/Login/" + username + "/" + md5EncodedPassword + "/MBLE_APP_00001"
+      
+        debugPrint(headers)
+        let requestURL = baseURL + "SIS_Student/Login/" + username + "/" + password + "/MBLE_APP_00001"
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
@@ -50,7 +56,7 @@ class WebServices: NSObject {
         let requestURL = baseURL + "SIS_Student/GetProfile/" + rID + "/MBLE_APP_00001"
         
         
-        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+        Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
@@ -67,7 +73,7 @@ class WebServices: NSObject {
         
         let requestURL = baseURL + "SIS_Student/GetDashboardData/" + classSession + "/" + studentId + "/MBLE_APP_00001"
         
-        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+        Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
@@ -87,7 +93,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -106,7 +112,7 @@ class WebServices: NSObject {
         )
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -126,7 +132,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -144,7 +150,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -168,7 +174,7 @@ class WebServices: NSObject {
         
 //        let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(requestURL, method: .post, parameters: params, encoding: JSONEncoding.default, headers: nil).responseJSON { (responseData) -> Void in
+        Alamofire.request(requestURL, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers).responseJSON { (responseData) -> Void in
            if let statusCode = responseData.response?.statusCode {
             if statusCode == 200 {
                 completion(true, nil)
@@ -188,7 +194,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -206,7 +212,7 @@ class WebServices: NSObject {
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -224,7 +230,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -241,7 +247,7 @@ class WebServices: NSObject {
         
         let requestURL = baseURL + "SIS_Student/GetAddress/" + rID + "/MBLE_APP_00001"
         
-        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+        Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
@@ -258,7 +264,7 @@ class WebServices: NSObject {
         
         let requestURL = baseURL + "SIS_Student/GetState/" + cID + "/MBLE_APP_00001"
         
-        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+        Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
@@ -275,7 +281,7 @@ class WebServices: NSObject {
         
         let requestURL = baseURL + "SIS_Student/GetCity/" + sID + "/MBLE_APP_00001"
         
-        Alamofire.request(requestURL).responseJSON { (responseData) -> Void in
+        Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
@@ -293,7 +299,7 @@ class WebServices: NSObject {
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -311,7 +317,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -330,7 +336,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -349,7 +355,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -367,7 +373,7 @@ class WebServices: NSObject {
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
 //                debugPrint(responseDict)
@@ -384,7 +390,7 @@ class WebServices: NSObject {
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
                 //                debugPrint(responseDict)
@@ -401,7 +407,7 @@ class WebServices: NSObject {
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        Alamofire.request(encodedURL!).responseJSON { (responseData) -> Void in
+        Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
             if let result = responseData.result.value {
                 let responseDict = JSON(result)
                 //                debugPrint(responseDict)
