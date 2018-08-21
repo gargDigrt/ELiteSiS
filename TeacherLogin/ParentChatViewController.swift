@@ -39,7 +39,7 @@ class ParentChatViewController: UIViewController {
     var dataSourceClassses = [String]()
     lazy var dropDownStudents = DropDown()
     var myReciepentID:String = ""
-    var arrMsgData = [String]()
+    var arrMsgData = [JSON]()
     var faculties:[Faculty] = []
     var selectedFaculty:Faculty?
     
@@ -143,7 +143,7 @@ class ParentChatViewController: UIViewController {
                 let msgData = responseDict["value"].arrayValue
                 for msg in msgData {
                     let msgText = msg["new_message"].stringValue
-                    self.arrMsgData.append(msgText)
+                    self.arrMsgData.append(msg)
                 }
                 DispatchQueue.main.async {
                     self.tblViewDiscussion.reloadData()
@@ -260,9 +260,15 @@ extension ParentChatViewController:  UITableViewDelegate,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ReceiverTableViewCell") as! ReceiverTableViewCell
-        cell.lblMsg.text = arrMsgData[indexPath.row]
-        cell.backgroundColor = UIColor.clear
-        cell.selectionStyle = .none
+        let msgData = arrMsgData[indexPath.row]
+        cell.textLabel?.text = msgData["new_message"].stringValue
+        if selectedFaculty!.facultyID == msgData["_new_recipient_value"].stringValue {
+            cell.textLabel?.textAlignment = .right
+            cell.textLabel?.textColor = .blue
+        }else{
+            cell.textLabel?.textAlignment = .left
+            cell.textLabel?.textColor = .black
+        }
         return cell
     }
     
