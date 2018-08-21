@@ -143,13 +143,14 @@ extension LoginViewController {
             return
             
         }
-        UserDefaults.standard.set(password, forKey: "Pwd")
+        let md5EncodedPassword = MD5(password)
+        UserDefaults.standard.set(md5EncodedPassword, forKey: "Pwd")
         ProgressLoader.shared.showLoader(withText: "Login! Please wait...")
         
         self.selectedLogin = self.getUserName()
         UserDefaults.standard.set(self.selectedLogin, forKey: "selectedLogin")
         
-        WebServices.shared.loginUserWith(username: username, password: password, completion: {(response, error ) in
+        WebServices.shared.loginUserWith(username: username, password: md5EncodedPassword, completion: {(response, error ) in
             
             if error == nil, let responseDict = response {
                 if(responseDict["@odata.count"] == 1){
