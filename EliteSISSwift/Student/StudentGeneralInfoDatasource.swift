@@ -25,7 +25,15 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
-            cell.textField.text = "Male"
+            let genderId:String = UserDefaults.standard.value(forKey: "sis_gender") as! String
+            if (genderId == "1") {
+                cell.textField.text  = "MALE"
+            } else if (genderId == "2") {
+                cell.textField.text = "FEMALE"
+            }
+            else {
+                cell.textField.text  = "Others"
+            }
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -33,6 +41,12 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DateSelectionTableViewCell") as! DateSelectionTableViewCell
+            
+            let DateOfBirth = UserDefaults.standard.object(forKey: "sis_dateofbirth") as? String
+            print(DateOfBirth ?? "cc")
+            let fullNameArr = DateOfBirth?.split(separator: " ")
+            print(fullNameArr)
+            
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             cell.delegate = self
@@ -46,6 +60,7 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             }
             
             cell.textField.placeholder = "Enter your Father's name"
+              cell.textField.text =  UserDefaults.standard.object(forKey: "sis_fathername") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -54,6 +69,7 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
         case 4:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter your Mother's name"
+               cell.textField.text = UserDefaults.standard.object(forKey: "sis_mothername") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear

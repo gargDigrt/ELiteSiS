@@ -75,9 +75,13 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        if studentDetail != nil {
-            lblStudentName.text = studentDetail.name
-        }
+       // if studentDetail != nil {
+        let studentName = UserDefaults.standard.string(forKey: "sis_name")
+        lblStudentName.text = studentName
+        
+        let studentImage = UserDefaults.standard.data(forKey: "studentImage")
+        self.imgViewStudent.image = UIImage(data: studentImage!)
+      // }
     }
     
     func configDropDown(){
