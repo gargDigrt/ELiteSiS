@@ -25,7 +25,7 @@ DEPENDENCIES:
   - WRCalendarView
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Alamofire
     - ALLoadingView
     - CarbonKit
@@ -51,4 +51,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ac729d504a2339145d9effbdb4d1e4aa75563b81
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.2

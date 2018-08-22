@@ -21,10 +21,8 @@ class WebServices: NSObject {
     
     var headers : [String: String] {
         var dict = [String: String]()
-        let username = "MobileApp"
-        let pwd = "7b3639a4ab39765739a5e0ed75bc8016"
-        dict["UserName"] = username
-        dict["Pwd"] = pwd
+        dict["UserName"] = "MobileApp"
+        dict["Pwd"] = "7b3639a4ab39765739a5e0ed75bc8016"
         return dict
     }
     
