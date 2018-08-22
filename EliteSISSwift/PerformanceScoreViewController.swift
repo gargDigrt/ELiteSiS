@@ -90,6 +90,7 @@ class PerformanceScoreViewController: UIViewController{
         WebServices.shared.getPerformancelistFor(studentID: studentId!, sessionID: sessionId!, sectionID: sectionId!, completion: { (response, error) in
             
             if error == nil, let respondeDict = response {
+                print(respondeDict)
                 self.resultPercentage = respondeDict["value"][0]["sis_resultsinpercentage"].intValue
                 let marksID = respondeDict["value"][0]["sis_classsessionwisemarksid"].stringValue
                 UserDefaults.standard.set(marksID, forKey: "sis_classsessionwisemarksid")
@@ -229,7 +230,7 @@ class PerformanceScoreViewController: UIViewController{
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -238,7 +239,7 @@ class PerformanceScoreViewController: UIViewController{
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)

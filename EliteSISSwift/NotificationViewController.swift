@@ -50,7 +50,7 @@ class NotificationViewController: UIViewController,UICollectionViewDataSource, U
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -59,7 +59,7 @@ class NotificationViewController: UIViewController,UICollectionViewDataSource, U
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)
@@ -73,6 +73,7 @@ class NotificationViewController: UIViewController,UICollectionViewDataSource, U
         
         WebServices.shared.getNotificationFor(contactID: contactID, completion: { (response, error) in
             if error == nil , let responseDict = response {
+                print(responseDict)
                 let notifications = responseDict["value"].arrayValue
                 self.allDatasource.configureData(from: notifications)
             }else{

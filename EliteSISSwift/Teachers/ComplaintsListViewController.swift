@@ -97,7 +97,7 @@ self .callForComplaintListData()
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -106,7 +106,7 @@ self .callForComplaintListData()
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)

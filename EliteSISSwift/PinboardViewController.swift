@@ -105,7 +105,7 @@ class PinboardViewController: UIViewController,UICollectionViewDataSource, UICol
         print(UserDefaults.standard.string(forKey: "selectedLogin")!)
         //UserDefaults.standard.string(forKey: "selectedLogin")
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
             
@@ -115,7 +115,7 @@ class PinboardViewController: UIViewController,UICollectionViewDataSource, UICol
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)

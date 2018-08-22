@@ -54,6 +54,10 @@ class MyMenuTableViewController: UITableViewController {
             
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)
+                
+              //  UserDefaults.standard.setValue(responseDict, forKey: "DictValue")
+                
+                
                 let className1 = responseDict["value"][0]["sis_currentclasssession"]["sis_name"].stringValue
                 let fullNameArr = className1.split(separator: " ")
                 self.classNameValue = "\(fullNameArr[1])(\(responseDict["value"][0]["sis_section"]["sis_name"]))"
@@ -73,12 +77,21 @@ class MyMenuTableViewController: UITableViewController {
                 let parentsName = responseDict["value"][0]["sis_fathername"].stringValue
                 UserDefaults.standard.set(parentsName, forKey: "sis_fathername")
                 
+                let motherName = responseDict["value"][0]["sis_mothername"].stringValue
+                UserDefaults.standard.set(motherName, forKey: "sis_mothername")
+                
                 let sectionID = responseDict["value"][0]["_sis_section_value"].stringValue
                 UserDefaults.standard.set(sectionID, forKey: "_sis_section_value")
                 
                 let contactID = responseDict["value"][0]["_sis_studentname_value"].stringValue
                 UserDefaults.standard.set(contactID, forKey: "_sis_studentname_value")
 
+                let GenderId = responseDict["value"][0]["sis_gender"].stringValue
+                UserDefaults.standard.set(GenderId, forKey: "sis_gender")
+                
+                let DOB = responseDict["value"][0]["sis_dateofbirth"].stringValue
+                UserDefaults.standard.set(DOB, forKey: "sis_dateofbirth")
+                
                 self.setupDisplay()
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")

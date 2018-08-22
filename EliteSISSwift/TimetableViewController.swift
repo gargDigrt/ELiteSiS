@@ -153,7 +153,7 @@ class TimetableViewController: UIViewController {
         WebServices.shared.getTimeTableFor(sessionID: sessionId!, sectionID: sectionId!, completion: {(response, error) in
             
             if error == nil , let responseDict = response {
-                
+                print(responseDict)
                 let events = responseDict["value"].arrayValue
                 self.displayEventsInCalender(events: events)
                 
@@ -273,7 +273,7 @@ class TimetableViewController: UIViewController {
         // destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
         //sideMenuController()?.setContentViewController(destViewController)
         let selectedLogin=UserDefaults.standard.string(forKey: "selectedLogin")
-        if (selectedLogin == "student"){
+        if (selectedLogin == "S"){
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "dashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
@@ -282,7 +282,7 @@ class TimetableViewController: UIViewController {
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teacherdashboard")
             sideMenuController()?.setContentViewController(destViewController)
         }
-        else if(selectedLogin == "parent"){
+        else if(selectedLogin == "G"){
             
             destViewController = mainStoryboard.instantiateViewController(withIdentifier: "parentdashboard")
             sideMenuController()?.setContentViewController(destViewController)

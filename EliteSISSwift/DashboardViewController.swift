@@ -109,6 +109,9 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         performancePercentLabel.text = "\(percentage)%"
         let newAngleProgressViewOverallValue = getAngle(value: 75, outOf: 100)
         overallPerformanceProgressView.animate(toAngle: newAngleProgressViewOverallValue, duration: 1.0, completion: nil)
+        
+        let overall = dict["new_obtainedmarks"] as! Double
+        performanceNumberLabel.text = "\(overall)"
     }
     
     private func getDasboardDetailsForUser() {
