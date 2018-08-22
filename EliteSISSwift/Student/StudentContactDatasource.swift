@@ -23,7 +23,7 @@ class StudentContactDatasource: NSObject, UITableViewDataSource {
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
-            cell.textField.text = "8989876543"
+            cell.textField.text = UserDefaults.standard.object(forKey: "sis_primarymobilenumber") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -32,6 +32,7 @@ class StudentContactDatasource: NSObject, UITableViewDataSource {
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter your email address"
+            cell.textField.text = UserDefaults.standard.object(forKey: "emailaddress") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear

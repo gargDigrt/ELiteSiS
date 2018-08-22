@@ -61,7 +61,7 @@ class MyMenuTableViewController: UITableViewController {
                 let className1 = responseDict["value"][0]["sis_currentclasssession"]["sis_name"].stringValue
                 let fullNameArr = className1.split(separator: " ")
                 self.classNameValue = "\(fullNameArr[1])(\(responseDict["value"][0]["sis_section"]["sis_name"]))"
-                // UserDefaults.standard.set(self.classNameValue, forKey: "_sis_class_value")
+                 UserDefaults.standard.set(className1, forKey: "_sis_class_value")
                 
                 let classSession = responseDict["value"][0]["_sis_currentclasssession_value"].stringValue
                 UserDefaults.standard.set(classSession, forKey: "_sis_currentclasssession_value")
@@ -74,6 +74,7 @@ class MyMenuTableViewController: UITableViewController {
                     let imgData = UIImagePNGRepresentation(studentImage)
                     UserDefaults.standard.set(imgData, forKey: "studentImage")
                 }
+                
                 let parentsName = responseDict["value"][0]["sis_fathername"].stringValue
                 UserDefaults.standard.set(parentsName, forKey: "sis_fathername")
                 
@@ -92,6 +93,17 @@ class MyMenuTableViewController: UITableViewController {
                 let DOB = responseDict["value"][0]["sis_dateofbirth"].stringValue
                 UserDefaults.standard.set(DOB, forKey: "sis_dateofbirth")
                 
+                let ContactNo = responseDict["value"][0]["sis_primarymobilenumber"].stringValue
+                UserDefaults.standard.set(ContactNo, forKey: "sis_primarymobilenumber")
+                
+                let emailId = responseDict["value"][0]["emailaddress"].stringValue
+                UserDefaults.standard.set(emailId, forKey: "emailaddress")
+                
+                let admissionDate = responseDict["value"][0]["sis_dateofadmission"].stringValue
+                UserDefaults.standard.set(admissionDate, forKey: "sis_dateofadmission")
+                
+                let RegistrationNo = responseDict["value"][0]["sis_registration"]["sis_name"].stringValue
+                UserDefaults.standard.set(RegistrationNo, forKey: "sis_registration")
                 self.setupDisplay()
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")

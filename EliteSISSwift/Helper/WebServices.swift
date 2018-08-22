@@ -258,6 +258,24 @@ class WebServices: NSObject {
         }
     }
     
+    // Get Id card detail
+    func getID(forRegistrationID rID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
+        
+        let requestURL = baseURL + "SIS_Student/GetID/" + rID + "/MBLE_APP_00001"
+        
+        Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
+            
+            if let result = responseData.result.value {
+                let responseDict = JSON(result)
+                //                debugPrint(responseDict)
+                completion(responseDict, nil)
+            }else{
+                completion(nil, responseData.error)
+            }
+        }
+    }
+    
+    
     //To get states for country id
     func getStates(forCountryID cID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         

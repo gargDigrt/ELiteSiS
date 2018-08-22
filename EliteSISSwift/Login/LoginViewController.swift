@@ -137,14 +137,14 @@ extension LoginViewController {
             return
             
         }
-        UserDefaults.standard.set(username, forKey: "UserName")
+//        UserDefaults.standard.set(username, forKey: "UserName")
         guard let password = passwordCell.textField.text, password != ""  else {
             AlertManager.shared.showAlertWith(title: "Alert", message: "Password can't be left Blank")
             return
             
         }
         let md5EncodedPassword = MD5(password)
-        UserDefaults.standard.set(md5EncodedPassword, forKey: "Pwd")
+       // UserDefaults.standard.set(md5EncodedPassword, forKey: "Pwd")
         ProgressLoader.shared.showLoader(withText: "Login! Please wait...")
         
         self.selectedLogin = self.getUserName()

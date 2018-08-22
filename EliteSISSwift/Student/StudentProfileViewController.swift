@@ -39,8 +39,8 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         tblViewInfo.register(UINib(nibName: "DropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "DropDownTableViewCell")
         tblViewInfo.register(UINib(nibName: "DateSelectionTableViewCell", bundle:nil), forCellReuseIdentifier: "DateSelectionTableViewCell")
 
-        
-        pickerData = ["General Info", "Contact Info", "Class Applied", "Qualification Detail", "Address Detail", "Identity Card Details"]
+        // "Qualification Detail",
+        pickerData = ["General Info", "Contact Info", "Class Applied",  "Address Detail", "Identity Card Details"]
         
 //      let dictValue =  UserDefaults.standard.value(forKey: "DictValue")
 //        print(dictValue)
@@ -82,6 +82,8 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         let studentImage = UserDefaults.standard.data(forKey: "studentImage")
         self.imgViewStudent.image = UIImage(data: studentImage!)
       // }
+        addresssAPIExecute()
+        IDCardAPICall()
     }
     
     func configDropDown(){
@@ -99,7 +101,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         }
     }
     
-    func onStudentCategoryInfoClick(){
+    func onStudentCategoryInfoClick() {
         if dropDownClasses.isHidden{
             dropDownClasses.show()
             hideSideMenuView()
@@ -109,7 +111,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         }
     }
     
-    func onInfoCategoryChange(withCategoryIndex row: Int){
+    func onInfoCategoryChange(withCategoryIndex row: Int) {
         if row == 0 {
             if studentDetail != nil {
                 generalDatasource.studentName = studentDetail.name
@@ -125,19 +127,67 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
             tblViewInfo.dataSource = classAppliedDatasource
             tblViewInfo.reloadData()
             
-        }else if row == 3 {
-            tblViewInfo.dataSource = qualificationDatasource
-            tblViewInfo.reloadData()
-            
-        }else if row == 4 {
+        }
+//        else if row == 3 {
+//            tblViewInfo.dataSource = qualificationDatasource
+//            tblViewInfo.reloadData()
+//
+//        }
+        else if row == 3 {
             tblViewInfo.dataSource = addressDatasource
             tblViewInfo.reloadData()
             
-        }else if row == 5 {
+        }else if row == 4 {
             tblViewInfo.dataSource = identityCardDatasource
             tblViewInfo.reloadData()
             
         }
+    }
+    
+    func IDCardAPICall()  {
+        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else {
+            return
+        }
+        
+        WebServices.shared.getID(forRegistrationID: regID, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                UserDefaults.standard.set(responseDict["value"][0]["sis_licensingauthority"].stringValue, forKey: "sis_licensingauthority")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_issuedon"].stringValue, forKey: "sis_issuedon")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_identitycard"].stringValue, forKey: "sis_identitycard")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_expirydate"].stringValue, forKey: "sis_expirydate")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_description"].stringValue, forKey: "sis_description")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_identity1"].stringValue, forKey: "sis_identity1")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_identityid"].stringValue, forKey: "sis_identityid")
+            } else {
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+    }
+    
+    func addresssAPIExecute()  {
+        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else {
+            return
+        }
+        
+        WebServices.shared.getAddress(forRegistrationID: regID, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                UserDefaults.standard.set(responseDict["value"][0]["sis_houseno"].stringValue, forKey: "sis_houseno")
+               UserDefaults.standard.set(responseDict["value"][0]["sis_addresssubtype"].stringValue, forKey: "sis_addresssubtype")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_city"]["sis_name"].stringValue, forKey: "sis_city")
+                 UserDefaults.standard.set(responseDict["value"][0]["sis_state"]["sis_name"].stringValue, forKey: "sis_state")
+               UserDefaults.standard.set(responseDict["value"][0]["sis_country"]["sis_name"].stringValue, forKey: "sis_country")
+                UserDefaults.standard.set(responseDict["value"][0]["sis_postalcode"].stringValue, forKey: "sis_postalcode")
+                
+            } else {
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
@@ -219,7 +269,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
     }
 }
 
-extension StudentProfileViewController: GeneralInfoDelegate, DatePickerProtocol{
+extension StudentProfileViewController: GeneralInfoDelegate, DatePickerProtocol {
     func showDatePicker(){
         let vcPicker = self.storyboard?.instantiateViewController(withIdentifier: "DatePickerViewController") as! DatePickerViewController
         vcPicker.modalPresentationStyle = .overCurrentContext

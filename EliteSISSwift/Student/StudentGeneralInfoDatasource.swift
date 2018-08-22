@@ -43,10 +43,13 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DateSelectionTableViewCell") as! DateSelectionTableViewCell
             
             let DateOfBirth = UserDefaults.standard.object(forKey: "sis_dateofbirth") as? String
-            print(DateOfBirth ?? "cc")
-            let fullNameArr = DateOfBirth?.split(separator: " ")
-            print(fullNameArr)
+           
             
+            let fullNameArr = DateOfBirth?.split(separator: "T")
+            let DOB = fullNameArr?[0].split(separator: "-")
+           
+           
+            cell.textLabel?.text = "\(DOB![2])-\(DOB![1])-\(DOB![0])"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             cell.delegate = self

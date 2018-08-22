@@ -22,7 +22,7 @@ class StudentClassAppliedDatasource: NSObject, UITableViewDataSource {
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
-            cell.textField.text = "S|S|S|1718|0164"
+            cell.textField.text = UserDefaults.standard.object(forKey: "sis_registration") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -30,7 +30,7 @@ class StudentClassAppliedDatasource: NSObject, UITableViewDataSource {
             
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
-            cell.textField.text = "Nursery"
+            cell.textField.text = UserDefaults.standard.object(forKey: "_sis_class_value") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -38,7 +38,13 @@ class StudentClassAppliedDatasource: NSObject, UITableViewDataSource {
             
         case 3:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldwithCalendarTableCell") as! TextFieldWithCalendarTableViewCell
-            cell.textfield.text = "1-Jul-2017"
+            let admiDate = UserDefaults.standard.object(forKey: "sis_dateofadmission") as? String
+           
+           
+            let fullNameArr = admiDate?.split(separator: "T")
+            let DOB = fullNameArr?[0].split(separator: "-")
+           
+            cell.textfield.text = "\(DOB![2])-\(DOB![1])-\(DOB![0])"
             cell.textfield.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
