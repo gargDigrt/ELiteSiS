@@ -30,10 +30,10 @@ class MyMenuTableViewController: UITableViewController {
         tableView.delegate = nil
         tableView.dataSource = nil
         if (!(arrUserProfile.count > 0)) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                //                            self.callForUserProfileData()
-                self.getMenuListItems()
-            }
+            //            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            //                            self.callForUserProfileData()
+            self.getMenuListItems()
+            //            }
         }
     }
     
@@ -55,7 +55,7 @@ class MyMenuTableViewController: UITableViewController {
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)
                 
-              //  UserDefaults.standard.setValue(responseDict, forKey: "DictValue")
+                //  UserDefaults.standard.setValue(responseDict, forKey: "DictValue")
                 
                 
                 let className1 = responseDict["value"][0]["sis_currentclasssession"]["sis_name"].stringValue
@@ -85,7 +85,7 @@ class MyMenuTableViewController: UITableViewController {
                 
                 let contactID = responseDict["value"][0]["_sis_studentname_value"].stringValue
                 UserDefaults.standard.set(contactID, forKey: "_sis_studentname_value")
-
+                
                 let GenderId = responseDict["value"][0]["sis_gender"].stringValue
                 UserDefaults.standard.set(GenderId, forKey: "sis_gender")
                 
@@ -160,7 +160,7 @@ class MyMenuTableViewController: UITableViewController {
         
         WebServices.shared.menuListItem(role: roleCode, completion: {(response,error) in
             if error == nil, let responceDict = response {
-
+                
                 let schoolID = responceDict["Name"].stringValue
                 UserDefaults.standard.set(schoolID, forKey: "Name")
                 
@@ -421,7 +421,7 @@ extension MyMenuTableViewController {
                 case 6:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "performancescoreview")
                     break
-
+                    
                 case 7:
                     destViewController = mainStoryboard.instantiateViewController(withIdentifier: "teachersviewcontroller")
                     break

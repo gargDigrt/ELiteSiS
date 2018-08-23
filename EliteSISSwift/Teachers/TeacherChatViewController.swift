@@ -69,6 +69,7 @@ class TeacherChatViewController: UIViewController {
     func getChatMessageForFaculty(fID: String)  {
         
         guard let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value") else { return}
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getChatMessage(senderID: senderid, RecipientId: fID, CreatedOn: "nodate", completion: {(response, error) in
             if error == nil, let responseDict = response {
                 
@@ -80,10 +81,12 @@ class TeacherChatViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.tblViewDiscussion.reloadData()
                     self.scrollToBottom()
+                    ProgressLoader.shared.hideLoader()
                 }
             }else{
+                ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting faculty chat error")
             }
         })
     }
@@ -93,6 +96,7 @@ class TeacherChatViewController: UIViewController {
         guard let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value") else { return}
         guard let recipentID = facultyID  else { return }
         
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.sendNewMessage(text: msg, senderID: senderid, RecipientId: recipentID, completion: {(success , error) in
             if error == nil {
                 if success{
@@ -100,12 +104,11 @@ class TeacherChatViewController: UIViewController {
                 }else{
                     AlertManager.shared.showAlertWith(title: "Opps!", message: "Message couldn't sent")
                 }
-                
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Sending new message error")
             }
-            
+            ProgressLoader.shared.hideLoader()
         })
     }
     
@@ -139,12 +142,12 @@ class TeacherChatViewController: UIViewController {
     }
     
     @IBAction func btnSendClicked(_ sender: UIButton) {
-//        if textViewMsg.text != nil && textViewMsg.text.count != 0 {
-//            arrMsgData.append(textViewMsg.text!)
-//            tblViewDiscussion.reloadData()
-//            tblViewDiscussion.scrollToRow(at: IndexPath(row:arrMsgData.count - 1 , section: 0), at: .bottom, animated: false)
-//            textViewMsg.text = ""
-//        }
+        //        if textViewMsg.text != nil && textViewMsg.text.count != 0 {
+        //            arrMsgData.append(textViewMsg.text!)
+        //            tblViewDiscussion.reloadData()
+        //            tblViewDiscussion.scrollToRow(at: IndexPath(row:arrMsgData.count - 1 , section: 0), at: .bottom, animated: false)
+        //            textViewMsg.text = ""
+        //        }
         sendNewMessage()
         textViewMsg.text = ""
         
@@ -208,6 +211,6 @@ extension TeacherChatViewController: UITableViewDelegate,UITableViewDataSource {
         }
         return cell
     }
-
+    
     
 }

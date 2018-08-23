@@ -7,12 +7,12 @@ target 'EliteSISSwift' do
 
   # Pods for EliteSISSwift
 pod 'Charts'
-pod "WRCalendarView"
+pod 'WRCalendarView'
 pod 'DropDownMenuKit'
 pod 'CarbonKit'
 pod 'DropDown'
-pod ‘Alamofire’
+pod 'Alamofire'
 pod 'SwiftyJSON'
 pod 'SwiftHash'
-pod 'ALLoadingView'
+pod 'MBProgressHUD'
 end

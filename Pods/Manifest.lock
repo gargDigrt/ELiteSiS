@@ -1,6 +1,5 @@
 PODS:
   - Alamofire (4.7.2)
-  - ALLoadingView (1.1.4)
   - CarbonKit (2.2.2)
   - Charts (3.1.1):
     - Charts/Core (= 3.1.1)
@@ -8,6 +7,7 @@ PODS:
   - DateToolsSwift (4.0.0)
   - DropDown (2.3.2)
   - DropDownMenuKit (0.8.4)
+  - MBProgressHUD (1.1.0)
   - SwiftHash (2.0.1)
   - SwiftyJSON (4.1.0)
   - WRCalendarView (1.0.1):
@@ -15,11 +15,11 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
-  - ALLoadingView
   - CarbonKit
   - Charts
   - DropDown
   - DropDownMenuKit
+  - MBProgressHUD
   - SwiftHash
   - SwiftyJSON
   - WRCalendarView
@@ -27,28 +27,28 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
-    - ALLoadingView
     - CarbonKit
     - Charts
     - DateToolsSwift
     - DropDown
     - DropDownMenuKit
+    - MBProgressHUD
     - SwiftHash
     - SwiftyJSON
     - WRCalendarView
 
 SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
-  ALLoadingView: 86aea5ee564f034296e76a49f53779e0a85fe846
   CarbonKit: 0dec4738fa489b4c043a5f850c27fd0dbefb57cc
   Charts: 90a4d61da0f6e06684c591e3bcab11940fe61736
   DateToolsSwift: 875d97ff9e3a5d54abdd67a269b3f51c757b71ab
   DropDown: 7f87abecc28f9b4edad810fe1211c5c018c257e5
   DropDownMenuKit: 3800deee46883bb09725376d987900768532f588
+  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   SwiftHash: c805de5a434eacfa0dac7210745a50c55d7fe33d
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   WRCalendarView: 80051cb13087892eac70edf2028664cae7bae718
 
-PODFILE CHECKSUM: ac729d504a2339145d9effbdb4d1e4aa75563b81
+PODFILE CHECKSUM: 1a9038e24cf45fb8105b2ad343bf75f78e73834b
 
 COCOAPODS: 1.5.2

@@ -13,7 +13,7 @@ import SwiftyJSON
 
 
 class TimetableViewController: UIViewController {
-
+    
     //IBOUTLETS
     @IBOutlet weak var MonthViewTimetable: UIView!
     @IBOutlet weak var weekView: WRWeekView!
@@ -40,7 +40,7 @@ class TimetableViewController: UIViewController {
     
     // Constants
     fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
-
+    
     // Data model: These strings will be the data for the table view cells
     let eventsToShow: [String] = ["Assignment", "Events", "Games", "Exams"]
     
@@ -51,7 +51,7 @@ class TimetableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         
         getTimeTable()
@@ -87,15 +87,15 @@ class TimetableViewController: UIViewController {
         
         // Register the table view cell class and its reuse id
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
-
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
     }
-
+    
     // MARK:- Custom methods
     func displayEventsInCalender(events: [JSON]) {
-    
+        
         for item in events {
             let startDateString = item["new_startdate"].stringValue
             let endTimeString = item["new_endtime"].stringValue
@@ -105,7 +105,7 @@ class TimetableViewController: UIViewController {
             let chunk = startTime.chunkBetween(date: endDate)
             
             let subjectName = item["new_subject"]["sis_subjectshortname"].stringValue
-             weekView.addEvent(event: WREvent.make(date: startTime, chunk: chunk, title: subjectName))
+            weekView.addEvent(event: WREvent.make(date: startTime, chunk: chunk, title: subjectName))
         }
         
     }
@@ -150,17 +150,18 @@ class TimetableViewController: UIViewController {
     func getTimeTable() {
         let sessionId = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value")
         let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getTimeTableFor(sessionID: sessionId!, sectionID: sectionId!, completion: {(response, error) in
             
             if error == nil , let responseDict = response {
                 print(responseDict)
                 let events = responseDict["value"].arrayValue
                 self.displayEventsInCalender(events: events)
-                
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting time table error")
             }
+            ProgressLoader.shared.hideLoader()
         })
     }
     
@@ -206,7 +207,7 @@ class TimetableViewController: UIViewController {
             navigationBarMenu.show()
         }
     }
-
+    
     @objc func didToggleNavigationBarMenu(_ sender: DropDownTitleView) {
     }
     
@@ -245,22 +246,22 @@ class TimetableViewController: UIViewController {
     }
     
     @IBAction func segmentselected(_ sender: Any) {
-   
+        
         switch segmentDayWeekMonth.selectedSegmentIndex {
         case 0:
-         weekView.calendarType = .day
-         MonthViewTimetable.isHidden = true;
+            weekView.calendarType = .day
+            MonthViewTimetable.isHidden = true;
         case 1:
-          weekView.calendarType = .week
+            weekView.calendarType = .week
             MonthViewTimetable.isHidden = true;
         case 2:
-           // weekView.calendarType = .week
+            // weekView.calendarType = .week
             MonthViewTimetable.isHidden = false;
         default:
             break
         }
     }
-   
+    
     @IBAction func showMenu(_ sender: Any) {
         
         toggleSideMenuView()
@@ -467,10 +468,10 @@ extension TimetableViewController: FSCalendarDataSource, FSCalendarDelegate,FSCa
         let myStringafd = formatter.string(from: date)
         
         print(myStringafd)
-       //
+        //
         
         if (selectedRow == "Assignment" ){
-        
+            
             let   dict = ["2018/05/14": "Counting 1 to 10", "2018/05/16": "Counting 10 to 50", "2018/05/17":"Counting 50 to 100", "2018/05/18": "Write A-Z",  "2018/05/21": "Write a-z", "2018/05/22": "Learn Hindi letters" ]
             //var dict = ["key1": "value1", "key2": "value2"]
             if dict.keys.contains(myStringafd) {
@@ -484,11 +485,11 @@ extension TimetableViewController: FSCalendarDataSource, FSCalendarDelegate,FSCa
             } else {
                 print("No, it doesn't")
             }
-
             
-        
+            
+            
         }
-       else if (selectedRow == "Events" ){
+        else if (selectedRow == "Events" ){
             let   dict =   ["2018/05/01": "Parents teacher meeting", "2018/05/03": "Sports Day","2018/05/13": "Exhibition", "2018/05/05": "Science day", "2018/05/07": "Founders day", "2018/05/09": "Orientation"]
             if dict.keys.contains(myStringafd) {
                 // contains key

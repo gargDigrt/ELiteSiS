@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ALLoadingView
+import MBProgressHUD
 
 class ProgressLoader {
     
@@ -15,22 +15,15 @@ class ProgressLoader {
     
     func showLoader(withText text:String){
         
-        // https://www.cocoacontrols.com/controls/alloadingview
-        
-        ALLoadingView.manager.resetToDefaults()
-        ALLoadingView.manager.blurredBackground = true
-        ALLoadingView.manager.animationDuration = 1.0
-        ALLoadingView.manager.itemSpacing = 30.0
-        ALLoadingView.manager.messageText = text
-        ALLoadingView.manager.showLoadingView(ofType: .messageWithIndicator, windowMode: .fullscreen)
+        let window = UIApplication.shared.windows.last
+        let hud = MBProgressHUD.showAdded(to: window!, animated: true)
+        hud.label.text = text
         
     }
     
     func hideLoader(){
-        
-        ALLoadingView.manager.hideLoadingView(withDelay: 0.0)
-        ALLoadingView.manager.resetToDefaults()
-        
+        let window = UIApplication.shared.windows.last
+        MBProgressHUD.hide(for: window!, animated: true)
     }
-    
+
 }

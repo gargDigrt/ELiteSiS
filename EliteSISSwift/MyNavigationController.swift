@@ -9,6 +9,7 @@
 import UIKit
 
 class MyNavigationController: ENSideMenuNavigationController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

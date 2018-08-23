@@ -9,7 +9,6 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
-import ALLoadingView
 
 class HolidayListViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
     
@@ -32,7 +31,7 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
         self.tblViewHolidayList.dataSource = self
         self.tblViewHolidayList.register(UINib(nibName:"HolidaylistHeaderReusableviewTableViewCell", bundle: nil), forHeaderFooterViewReuseIdentifier: "HolidaylistHeaderReusableviewTableViewCell")
         self.tblViewHolidayList.register(UINib(nibName:"HolidayListTableViewCell", bundle:nil), forCellReuseIdentifier: "HolidayListTableViewCell")
-        self .callForHolidayListData()
+        self .getHolidayList()
         // Do any additional setup after loading the view.
     }
     
@@ -105,25 +104,22 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
         hideSideMenuView()
     }
     
-    func callForHolidayListData() {
-        ProgressLoader.shared.showLoader(withText: "Please wait... ")
+    func getHolidayList() {
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getHolidayList(completion: { (response, error) in
             
             if error == nil, let responseDict = response {
-                debugPrint(responseDict)
-                print("Responce...........\(responseDict)")
-                
                 self.arrHolidayList = responseDict["value"].arrayObject as! [[String : Any]]
                 print(self.arrHolidayList)
                 DispatchQueue.main.async {
                     self.tblViewHolidayList.reloadData()
+                    ProgressLoader.shared.hideLoader()
                 }
-                ProgressLoader.shared.hideLoader()
             }
             else{
                 ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting Holiday list error")
             }
         })
         

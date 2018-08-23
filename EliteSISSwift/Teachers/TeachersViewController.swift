@@ -34,6 +34,7 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
     func getFacultyListToDisplay() {
         
         guard let classSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getLessionPlansFor(classSession: classSession, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
@@ -41,9 +42,9 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
                 self.tblViewTeachers.reloadData()
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "fetching dashboard error")
-                
+                debugPrint(error?.localizedDescription ?? "Getting faculty list error")
             }
+            ProgressLoader.shared.hideLoader()
         })
     }
     

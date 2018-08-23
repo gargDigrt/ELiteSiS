@@ -145,6 +145,7 @@ extension LoginViewController {
         }
         let md5EncodedPassword = MD5(password)
         UserDefaults.standard.set(md5EncodedPassword, forKey: "Pwd")
+        
         ProgressLoader.shared.showLoader(withText: "Login! Please wait...")
         
         self.selectedLogin = self.getUserName()
@@ -168,24 +169,20 @@ extension LoginViewController {
                     let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
                     //                    print(regId)
                     
-                    ProgressLoader.shared.hideLoader()
                     
                     UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
                     UserDefaults.standard.set(loginRole, forKey: "new_rolecode")
                     if(loginRole == "1") {
-                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController
-                        {
+                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController{
                             self.present(vc, animated: true, completion: nil)
                         }
                     } else if(loginRole == "2"){
-                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController
-                        {
+                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController{
                             self.present(vc, animated: true, completion: nil)
                         }
                         
                     } else if(loginRole == "3") {
-                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController
-                        {
+                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController{
                             self.present(vc, animated: true, completion: nil)
                         }
                     }
