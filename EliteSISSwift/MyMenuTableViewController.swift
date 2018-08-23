@@ -90,6 +90,9 @@ class MyMenuTableViewController: UITableViewController {
                 let GenderId = responseDict["value"][0]["sis_gender"].stringValue
                 UserDefaults.standard.set(GenderId, forKey: "sis_gender")
                 
+                let categoryID = responseDict["value"][0]["sis_category"].stringValue
+                UserDefaults.standard.set(categoryID, forKey: "sis_category")
+                
                 let DOB = responseDict["value"][0]["sis_dateofbirth"].stringValue
                 UserDefaults.standard.set(DOB, forKey: "sis_dateofbirth")
                 

@@ -80,7 +80,17 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             
         case 5:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
-            cell.textField.text = "General"
+            
+            let categoryID:String = UserDefaults.standard.value(forKey: "sis_category") as! String
+            if (categoryID == "1") {
+                cell.textField.text  = "BPL"
+            } else if (categoryID == "2") {
+                cell.textField.text = "APL"
+            }
+            else {
+                cell.textField.text  = "EPL"
+            }
+           
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
