@@ -10,7 +10,6 @@ import UIKit
 import DropDown
 import Alamofire
 import SwiftyJSON
-import ALLoadingView
 
 class TeacherProfileViewController: UIViewController,UITableViewDelegate {
     
@@ -46,12 +45,12 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
         tblViewInfo.register(UINib(nibName: "DateSelectionTableViewCell", bundle:nil), forCellReuseIdentifier: "DateSelectionTableViewCell")
         
         pickerData = ["General Info", "Contact Info", "Qualification Detail", "Address Detail"]
-        self .showLoader()
+        ProgressLoader.shared.showLoader(withText: "Loading")
         DispatchQueue.global().async {
             
             Alamofire.request("http://43.224.136.81:5015/SIS/GetProfiledetails/" + self.regid).responseJSON { (responseData) -> Void in
                 if((responseData.result.value) != nil) {
-                    self .hideLoader()
+                   ProgressLoader.shared.hideLoader()
                     let swiftyJsonVar = JSON(responseData.result.value!)
                     let profileDataMain = swiftyJsonVar.dictionaryObject! as! [String: String]
                     self.generalDatasource.profileData = profileDataMain
@@ -76,7 +75,7 @@ class TeacherProfileViewController: UIViewController,UITableViewDelegate {
                     self.onInfoCategoryChange(withCategoryIndex: 0)
                     
                 }else{
-                    self .hideLoader()
+                    ProgressLoader.shared.hideLoader()
                     let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
@@ -261,24 +260,6 @@ extension TeacherProfileViewController: UIImagePickerControllerDelegate, UINavig
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true, completion: nil)
         self.stackViewProfileChangeOptions.isHidden = true
-    }
-    func showLoader(){
-        
-        // https://www.cocoacontrols.com/controls/alloadingview
-        
-        ALLoadingView.manager.resetToDefaults()
-        ALLoadingView.manager.blurredBackground = true
-        ALLoadingView.manager.animationDuration = 1.0
-        ALLoadingView.manager.itemSpacing = 30.0
-        ALLoadingView.manager.messageText = "Loading...."
-        ALLoadingView.manager.showLoadingView(ofType: .messageWithIndicator, windowMode: .fullscreen)
-        
-    }
-    func hideLoader(){
-        
-        ALLoadingView.manager.hideLoadingView(withDelay: 0.0)
-        ALLoadingView.manager.resetToDefaults()
-        
     }
 }
 

@@ -123,6 +123,7 @@ class EventGalleryViewController: UIViewController{
     // Web service call to get gallery albums
     func getGalleryAlbums() {
         ProgressLoader.shared.showLoader(withText: "Loading Gallery")
+        
         WebServices.shared.getPhotoAlbums(completion: {(response, error ) in
             
             if error == nil , let responseDict = response {
@@ -140,13 +141,15 @@ class EventGalleryViewController: UIViewController{
                         self.albums.append(album)
                     }
                 }
-                self.collectionViewGallery.reloadData()
-                
+                DispatchQueue.main.async {
+                    self.collectionViewGallery.reloadData()
+                    ProgressLoader.shared.hideLoader()
+                }
             }else{
+                ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting gallery album error")
             }
-            ProgressLoader.shared.hideLoader()
         })
     }
     
@@ -204,7 +207,7 @@ class EventGalleryViewController: UIViewController{
 
 //MARK:- UITableView Delegate & Datasource
 extension EventGalleryViewController: UITableViewDelegate, UITableViewDataSource  {
-   
+    
     // number of rows in table view
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.eventsToShow.count
@@ -287,19 +290,19 @@ extension EventGalleryViewController: UICollectionViewDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCollectionViewCell", for: indexPath) as! GalleryCollectionViewCell
-            if let image = albums[indexPath.row].thumbnail {
-                cell.imgView.image = image
-            }else{
-                cell.imgView.image = nil
-            }
-            if let nameText = albums[indexPath.row].name {
-                cell.lblText.text = nameText
-            }else{
-                cell.lblText.text = "No name"
-            }
-            return cell
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCollectionViewCell", for: indexPath) as! GalleryCollectionViewCell
+        if let image = albums[indexPath.row].thumbnail {
+            cell.imgView.image = image
+        }else{
+            cell.imgView.image = nil
+        }
+        if let nameText = albums[indexPath.row].name {
+            cell.lblText.text = nameText
+        }else{
+            cell.lblText.text = "No name"
+        }
+        return cell
     }
     
     

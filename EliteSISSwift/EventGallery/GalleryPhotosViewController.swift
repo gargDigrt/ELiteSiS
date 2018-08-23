@@ -30,9 +30,9 @@ class GalleryPhotosViewController: UIViewController{
     var arrPhotos:[String]!
     var index = 0
     
-
+    
     //MARK:- View's Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         getImagesFor(albumID: albumID)
@@ -63,12 +63,15 @@ class GalleryPhotosViewController: UIViewController{
                         self.gallery.append(imgItem)
                     }
                 }
-                self.collectionViewPhotos.reloadData()
+                DispatchQueue.main.async{
+                    self.collectionViewPhotos.reloadData()
+                    ProgressLoader.shared.hideLoader()
+                }
             }else{
+                ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting gallary photos error")
             }
-            ProgressLoader.shared.hideLoader()
         })
     }
     
@@ -114,10 +117,10 @@ extension GalleryPhotosViewController {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let currentIndex = Int(collectionViewPhotos.contentOffset.x / collectionViewPhotos.frame.size.width)
-//        if let imgName = gallery[currentIndex].name {
-//            let finalName = imgName.split(separator: ".").first
-//            lblPhotoName.text = finalName!
-//        }
+        //        if let imgName = gallery[currentIndex].name {
+        //            let finalName = imgName.split(separator: ".").first
+        //            lblPhotoName.text = finalName!
+        //        }
     }
     
 }

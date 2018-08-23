@@ -21,11 +21,7 @@ class TeacherNavigationController: ENSideMenuNavigationController {
         // make navigation bar showing over side menu
         view.bringSubview(toFront: navigationBar)
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+
 }
 
 extension TeacherNavigationController: ENSideMenuDelegate {

@@ -9,7 +9,6 @@
 import UIKit
 import DropDown
 import Alamofire
-import ALLoadingView
 import SwiftyJSON
 
 class StudentAttendanceViewController: UIViewController {
@@ -124,7 +123,7 @@ func callForDropDownData() {
                     print(encodedString!)
                     Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
                         if((responseData.result.value) != nil) {
-                            self .hideLoader()
+                            ProgressLoader.shared.hideLoader()
                             let swiftyJsonVar = JSON(responseData.result.value!)
                             self.arrClassName = JSON(responseData.result.value!).arrayObject! as [AnyObject]
             
@@ -157,7 +156,7 @@ func callForDropDownData() {
                             }
                             
                         } else {
-                            self .hideLoader()
+                            ProgressLoader.shared.hideLoader()
                             let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                             self.present(alert, animated: true, completion: nil)
@@ -177,13 +176,13 @@ func callForStudentList()  {
         print(encodedString!)
         Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
             if((responseData.result.value) != nil) {
-                self .hideLoader()
+                ProgressLoader.shared.hideLoader()
                 let swiftyJsonVar = JSON(responseData.result.value!)
                 self.arrClassName = JSON(responseData.result.value!).arrayObject! as [AnyObject]
                 
                 print(swiftyJsonVar)
             } else {
-                self .hideLoader()
+                ProgressLoader.shared.hideLoader()
                 let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
@@ -238,21 +237,6 @@ extension StudentAttendanceViewController: UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     }
     
-    func showLoader(){
-        
-        // https://www.cocoacontrols.com/controls/alloadingview
-        ALLoadingView.manager.resetToDefaults()
-        ALLoadingView.manager.blurredBackground = true
-        ALLoadingView.manager.animationDuration = 1.0
-        ALLoadingView.manager.itemSpacing = 30.0
-        ALLoadingView.manager.messageText = "Fetching data......."
-        ALLoadingView.manager.showLoadingView(ofType: .messageWithIndicator, windowMode: .fullscreen)
-        
-    }
-    func hideLoader(){
-        ALLoadingView.manager.hideLoadingView(withDelay: 0.0)
-        
-    }
 
 }
 

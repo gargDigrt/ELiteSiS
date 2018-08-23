@@ -9,7 +9,6 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
-import ALLoadingView
 
 class TeacherDashboardViewController: UIViewController {
     @IBOutlet weak var lblTodaySchedule: UILabel!
@@ -59,7 +58,7 @@ class TeacherDashboardViewController: UIViewController {
                     print(self.arrTeacherDashboard)
                     self.tblViewAssignments.reloadData()
                 }else{
-                     self .hideLoader()
+                     ProgressLoader.shared.hideLoader()
                     let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
@@ -233,14 +232,14 @@ extension TeacherDashboardViewController: UICollectionViewDelegate, UICollection
             print(encodedString!)
             Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
                 if((responseData.result.value) != nil) {
-                    self .hideLoader()
+                    ProgressLoader.shared.hideLoader()
                      let swiftyJsonVar = JSON(responseData.result.value!)
                     self.arrDailySchedule = JSON(responseData.result.value!).arrayObject! as [AnyObject]
                     print(self.arrDailySchedule)
                     print(swiftyJsonVar)
                  self.collectionViewClass.reloadData()
                 } else {
-                     self .hideLoader()
+                     ProgressLoader.shared.hideLoader()
                     let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
@@ -261,7 +260,7 @@ extension TeacherDashboardViewController: UICollectionViewDelegate, UICollection
             print(encodedString!)
             Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
                 if((responseData.result.value) != nil) {
-                    self .hideLoader()
+                   ProgressLoader.shared.hideLoader()
                     let swiftyJsonVar = JSON(responseData.result.value!)
                    print(swiftyJsonVar)
                     self.strFacultyName = swiftyJsonVar ["FacultyName"].stringValue
@@ -271,7 +270,7 @@ extension TeacherDashboardViewController: UICollectionViewDelegate, UICollection
                     
                     self .callForDashboardData()
                 }else{
-                    self .hideLoader()
+                    ProgressLoader.shared.hideLoader()
                     let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
@@ -279,22 +278,6 @@ extension TeacherDashboardViewController: UICollectionViewDelegate, UICollection
             }
         }
         
-        
-    }
-    
-    func showLoader(){
-        
-        // https://www.cocoacontrols.com/controls/alloadingview
-        ALLoadingView.manager.resetToDefaults()
-        ALLoadingView.manager.blurredBackground = true
-        ALLoadingView.manager.animationDuration = 1.0
-        ALLoadingView.manager.itemSpacing = 30.0
-        ALLoadingView.manager.messageText = "Fetching data......."
-        ALLoadingView.manager.showLoadingView(ofType: .messageWithIndicator, windowMode: .fullscreen)
-        
-    }
-    func hideLoader(){
-        ALLoadingView.manager.hideLoadingView(withDelay: 0.0)
         
     }
 }

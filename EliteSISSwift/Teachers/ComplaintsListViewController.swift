@@ -9,7 +9,6 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
-import ALLoadingView
 
 class ComplaintsListViewController: UIViewController,UITableViewDataSource, UITableViewDelegate {
 
@@ -127,7 +126,8 @@ self .callForComplaintListData()
     */
 
     func callForComplaintListData(){
-        self .showLoader()
+        
+        ProgressLoader.shared.showLoader(withText: "Loading")
         DispatchQueue.global().async {
             
             let stringComplaintDataCall = "http://43.224.136.81:5015/SIS/Compliance/" + self.regid
@@ -136,7 +136,7 @@ self .callForComplaintListData()
             print(encodedString!)
             Alamofire.request(encodedString!).responseJSON { (responseData) -> Void in
                 if((responseData.result.value) != nil) {
-                    self .hideLoader()
+                    ProgressLoader.shared.hideLoader()
                     let swiftyJsonVar = JSON(responseData.result.value!)
                     //  self.arrHolidayList = swiftyJsonVar["value"]
                     print(swiftyJsonVar ["value"])
@@ -150,7 +150,7 @@ self .callForComplaintListData()
                     
                     
                 }else{
-                    self .hideLoader()
+                    ProgressLoader.shared.hideLoader()
                     let alert = UIAlertController(title: "Error Occured!", message: "Please try after some time", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
@@ -159,23 +159,6 @@ self .callForComplaintListData()
         }
         
     }
-    func showLoader(){
-        
-        // https://www.cocoacontrols.com/controls/alloadingview
-        
-        ALLoadingView.manager.resetToDefaults()
-        ALLoadingView.manager.blurredBackground = true
-        ALLoadingView.manager.animationDuration = 1.0
-        ALLoadingView.manager.itemSpacing = 30.0
-        ALLoadingView.manager.messageText = "Loading...."
-        ALLoadingView.manager.showLoadingView(ofType: .messageWithIndicator, windowMode: .fullscreen)
-        
-    }
-    func hideLoader(){
-        
-        ALLoadingView.manager.hideLoadingView(withDelay: 0.0)
-        ALLoadingView.manager.resetToDefaults()
-        
-    }
+
     
 }

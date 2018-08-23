@@ -10,7 +10,6 @@ import UIKit
 import DropDown
 import Alamofire
 import SwiftyJSON
-import ALLoadingView
 
 struct Faculty {
     let name: String
@@ -110,6 +109,7 @@ class ParentChatViewController: UIViewController {
     
     //MARK:- Web service calls
     func getFacultyList() {
+        ProgressLoader.shared.showLoader(withText: "")
         let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
         WebServices.shared.getFacultyList(sectionID: sectionId!, completion: {(response, error) in
             
@@ -127,8 +127,9 @@ class ParentChatViewController: UIViewController {
                 self.configureDropDown()
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting faculty list error")
             }
+            ProgressLoader.shared.hideLoader()
         })
     }
     
@@ -136,22 +137,25 @@ class ParentChatViewController: UIViewController {
         
         guard let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value") else { return}
         guard let recipentID = selectedFaculty?.facultyID  else { return }
+        
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getChatMessage(senderID: senderid, RecipientId: recipentID, CreatedOn: "nodate", completion: {(response, error) in
             if error == nil, let responseDict = response {
                 
                 self.arrMsgData.removeAll()
                 let msgData = responseDict["value"].arrayValue
                 for msg in msgData {
-                    let msgText = msg["new_message"].stringValue
                     self.arrMsgData.append(msg)
                 }
                 DispatchQueue.main.async {
                     self.tblViewDiscussion.reloadData()
                     self.scrollToBottom()
+                    ProgressLoader.shared.hideLoader()
                 }
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting chat message error")
+                ProgressLoader.shared.hideLoader()
             }
         })
     }
@@ -160,7 +164,7 @@ class ParentChatViewController: UIViewController {
         guard let msg = textViewMsg.text, msg != "" else { return }
         guard let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value") else { return}
         guard let recipentID = selectedFaculty?.facultyID  else { return }
-        
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.sendNewMessage(text: msg, senderID: senderid, RecipientId: recipentID, completion: {(success , error) in
             if error == nil {
                 if success{
@@ -168,12 +172,11 @@ class ParentChatViewController: UIViewController {
                 }else{
                     AlertManager.shared.showAlertWith(title: "Opps!", message: "Message couldn't sent")
                 }
-                
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Sending new message error")
             }
-            
+            ProgressLoader.shared.hideLoader()
         })
     }
     

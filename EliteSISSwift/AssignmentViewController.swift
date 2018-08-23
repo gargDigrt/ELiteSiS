@@ -39,9 +39,8 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
     
     // WEB Service call
     func getAssignmentReportForUser() {
-        ProgressLoader.shared.showLoader(withText: "Loading...")
         guard let studentId  = UserDefaults.standard.string(forKey: "sis_studentid") else {return}
-        
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getAssignmentList(studentID: studentId, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
@@ -53,12 +52,11 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
                 }
                 self.displayingAssignments = self.allAssignments
                 self.assignmentTableView.reloadData()
-                ProgressLoader.shared.hideLoader()
             }else{
-                ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "fetching dashboard error")
             }
+            ProgressLoader.shared.hideLoader()
         })
         
     }

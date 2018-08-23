@@ -50,11 +50,9 @@ class PerformanceScoreViewController: UIViewController{
         segmentedControlPerformanceScore.addTarget(self, action: #selector(segmentSelected(sender:)), for: .valueChanged)
         
         self.onCategoryChange(withCategoryIndex: 0)
-//        self.lblSelectedOption.text = self.pickerData[0]
     }
     
     //MARK:- Selector methods
-    
     @objc func segmentSelected(sender: UISegmentedControl) {
         let index = sender.selectedSegmentIndex
         if index == 0 {
@@ -87,6 +85,7 @@ class PerformanceScoreViewController: UIViewController{
         let sessionId = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value")
         let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
         
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getPerformancelistFor(studentID: studentId!, sessionID: sessionId!, sectionID: sectionId!, completion: { (response, error) in
             
             if error == nil, let respondeDict = response {
@@ -108,13 +107,14 @@ class PerformanceScoreViewController: UIViewController{
                         self.displayStudyProgress(withDict: respondeDict)
                     }else{
                         AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                        debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                        debugPrint(error?.localizedDescription ?? "Getting user performance error")
                     }
-                    
+                    ProgressLoader.shared.hideLoader()
                 })
             }else{
+                ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+                debugPrint(error?.localizedDescription ?? "Getting user performance error")
             }
         })
     }
@@ -150,10 +150,6 @@ class PerformanceScoreViewController: UIViewController{
             self.lblSelectedOption.text = self.pickerData[index]
             self.onCategoryChange(withCategoryIndex: index)
         }
-    }
-    
-    @IBAction func btnCategoryClick(_ sender: Any) {
-        self.onStudentCategoryInfoClick()
     }
     
     func onStudentCategoryInfoClick(){
@@ -204,25 +200,18 @@ class PerformanceScoreViewController: UIViewController{
         chtChart.rightAxis.axisMaximum = 0
         chtChart.animate(xAxisDuration: 1)
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
+    //MARK:- Button actions
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     @IBAction func showMenu(_ sender: Any) {
         
         toggleSideMenuView()
     }
+    
+    @IBAction func btnCategoryClick(_ sender: Any) {
+        self.onStudentCategoryInfoClick()
+    }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)

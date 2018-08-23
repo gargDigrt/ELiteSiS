@@ -70,7 +70,7 @@ class NotificationViewController: UIViewController,UICollectionViewDataSource, U
     // MARK:- Web service call
     
     func getAllNotificationForUser() {
-        
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getNotificationFor(contactID: contactID, completion: { (response, error) in
             if error == nil , let responseDict = response {
                 print(responseDict)
@@ -79,8 +79,8 @@ class NotificationViewController: UIViewController,UICollectionViewDataSource, U
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "fetching dashboard error")
-                
             }
+            ProgressLoader.shared.hideLoader()
         })
     }
 }

@@ -119,8 +119,13 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         guard let classSession = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value"),
             let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else {
                 
-                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                return
+                if UserDefaults.standard.bool(forKey: "isFirstTime") {
+                    self.getUserProfileData()
+                    return
+                }else{
+                    AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                    return
+                }
         }
         // getting dashboard details
         WebServices.shared.getDashboardDetailsFor(classSession: classSession, studentId: studentID, completion: { (response, error) in
@@ -131,10 +136,36 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
                 self.setupProgressCircles(withData: dashboardDict!)
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                debugPrint(error?.localizedDescription ?? "fetching dashboard error")
+                debugPrint(error?.localizedDescription ?? "Getting dashboard details error")
             }
+            ProgressLoader.shared.hideLoader()
         })
         
+    }
+    
+    func getUserProfileData()  {
+        
+        guard let regID = UserDefaults.standard.object(forKey: "_sis_registration_value") as? String else {
+            return
+        }
+        
+        // Getting USer profile
+        WebServices.shared.getProfile(forRegistrationID: regID, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                debugPrint(responseDict)
+                
+                let classSession = responseDict["value"][0]["_sis_currentclasssession_value"].stringValue
+                UserDefaults.standard.set(classSession, forKey: "_sis_currentclasssession_value")
+                
+                let studentID = responseDict["value"][0]["sis_studentid"].stringValue
+                UserDefaults.standard.set(studentID, forKey: "sis_studentid")
+                self.getDasboardDetailsForUser()
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
     }
     
     
