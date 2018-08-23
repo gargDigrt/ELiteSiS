@@ -15,15 +15,19 @@ class ProgressLoader {
     
     func showLoader(withText text:String){
         
-        let window = UIApplication.shared.windows.last
-        let hud = MBProgressHUD.showAdded(to: window!, animated: true)
-        hud.label.text = text
-        
+        DispatchQueue.main.async {
+            let window = UIApplication.shared.windows.last
+            let hud = MBProgressHUD.showAdded(to: window!, animated: true)
+            hud.label.text = text
+            hud.backgroundView.color = UIColor.black.withAlphaComponent(0.5)
+        }
     }
     
     func hideLoader(){
-        let window = UIApplication.shared.windows.last
-        MBProgressHUD.hide(for: window!, animated: true)
+        DispatchQueue.main.async {
+            let window = UIApplication.shared.windows.last
+            MBProgressHUD.hide(for: window!, animated: true)
+        }
     }
-
+    
 }
