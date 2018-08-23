@@ -32,7 +32,7 @@ class StudentIdentityCardDatasource: NSObject, UITableViewDataSource {
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the card number"
-             cell.textField.text = UserDefaults.standard.object(forKey: "sis_identityid") as? String
+             cell.textField.text = UserDefaults.standard.object(forKey: "sis_identity1") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -41,6 +41,7 @@ class StudentIdentityCardDatasource: NSObject, UITableViewDataSource {
         case 3:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldwithCalendarTableCell") as! TextFieldWithCalendarTableViewCell
             cell.textfield.placeholder = "Enter the issued date"
+            cell.textfield.text = ""
            // cell.textField.text = UserDefaults.standard.object(forKey: "sis_issuedon") as? String
             cell.textfield.isUserInteractionEnabled = true
             cell.selectionStyle = .none
@@ -76,7 +77,7 @@ class StudentIdentityCardDatasource: NSObject, UITableViewDataSource {
         case 7:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the id for"
-            cell.textField.text = UserDefaults.standard.object(forKey: "sis_identity1") as? String
+            //cell.textField.text = UserDefaults.standard.object(forKey: "sis_identity1") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
