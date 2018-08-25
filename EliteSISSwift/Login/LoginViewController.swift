@@ -119,6 +119,40 @@ class LoginViewController: UIViewController, LoginButtonDelegate {
             return requiredLoginType!
         }
     }
+    
+    func askForSchoolID() {
+        let alert = UIAlertController(title: "Welcome to eLiteSIS !",
+                                      message: "Users installing the app for first timeshall enter the School ID received on their registered Email / Mobileto continue...",
+                                      preferredStyle: .alert)
+        // Submit button
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+            // Get 1st TextField's text
+            let schoolID = alert.textFields![0].text
+            if schoolID == "" {
+                AlertManager.shared.showAlertWith(title: "Alert", message: "School ID cannot be left blank")
+            }else{
+                UserDefaults.standard.set(schoolID!, forKey: "SchoolID")
+                self.buttonClicked()
+            }
+        })
+        
+        // Cancel button
+        let cancel = UIAlertAction(title: "Cancel", style: .destructive, handler: { (action) -> Void in })
+       
+        // Add 1 textField and customize it
+        alert.addTextField { (textField: UITextField) in
+            textField.keyboardAppearance = .dark
+            textField.keyboardType = .default
+            textField.autocorrectionType = .no
+            textField.placeholder = "Type school ID here"
+            textField.clearButtonMode = .whileEditing
+        }
+        
+        // Add action buttons and present the Alert
+        alert.addAction(cancel)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 //MARK: - LoginButtonDelegate
@@ -127,74 +161,85 @@ extension LoginViewController {
     
     func buttonClicked() {
         
-        let passwordCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 2, section: 0)) as! LoginCredentialsTableViewCell
-        // return passwordCell.textField.text ?? ""
-        let userNameCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 1, section: 0)) as! LoginCredentialsTableViewCell
-        
-        
-        guard let username = userNameCell.textField.text, username != ""  else {
-            AlertManager.shared.showAlertWith(title: "Alert", message: "User Name cannot be left blank")
-            return
+        if let _ = UserDefaults.standard.string(forKey: "SchoolID") {
             
-        }
-        UserDefaults.standard.set(username, forKey: "UserName")
-        guard let password = passwordCell.textField.text, password != ""  else {
-            AlertManager.shared.showAlertWith(title: "Alert", message: "Password can't be left Blank")
-            return
+            let passwordCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 2, section: 0)) as! LoginCredentialsTableViewCell
+            // return passwordCell.textField.text ?? ""
+            let userNameCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 1, section: 0)) as! LoginCredentialsTableViewCell
             
-        }
-        let md5EncodedPassword = MD5(password)
-        UserDefaults.standard.set(md5EncodedPassword, forKey: "Pwd")
-        
-        ProgressLoader.shared.showLoader(withText: "Please wait...")
-        
-        self.selectedLogin = self.getUserName()
-        UserDefaults.standard.set(self.selectedLogin, forKey: "selectedLogin")
-        
-        WebServices.shared.loginUserWith(username: username, password: md5EncodedPassword, completion: {(response, error ) in
             
-            if error == nil, let responseDict = response {
-                if(responseDict["@odata.count"] == 1){
-                    
-                    print(responseDict["value"] [0]["_sis_registration_value"])
-                    
-                    let sisName = responseDict["value"][0]["sis_name"].stringValue
-                    UserDefaults.standard.set(sisName, forKey: "sis_name")
-                    
-                    let userID = responseDict["value"][0]["sis_user_id"].stringValue
-                     UserDefaults.standard.set(userID, forKey: "sis_user_id")
-                    
-                    let loginRole = responseDict["value"] [0]["new_rolecode"].stringValue
-                    //                    print(loginRole)
-                    let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
-                    //                    print(regId)
-                    
-                    
-                    UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
-                    UserDefaults.standard.set(loginRole, forKey: "new_rolecode")
-                    if(loginRole == "1") {
-                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController{
-                            self.present(vc, animated: true, completion: nil)
-                        }
-                    } else if(loginRole == "2"){
-                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController{
-                            self.present(vc, animated: true, completion: nil)
-                        }
+            guard let username = userNameCell.textField.text, username != ""  else {
+                AlertManager.shared.showAlertWith(title: "Alert", message: "User Name cannot be left blank")
+                return
+                
+            }
+            UserDefaults.standard.set(username, forKey: "UserName")
+            guard let password = passwordCell.textField.text, password != ""  else {
+                AlertManager.shared.showAlertWith(title: "Alert", message: "Password can't be left Blank")
+                return
+                
+            }
+            let md5EncodedPassword = MD5(password)
+            UserDefaults.standard.set(md5EncodedPassword, forKey: "Pwd")
+            
+            ProgressLoader.shared.showLoader(withText: "Please wait...")
+            
+            self.selectedLogin = self.getUserName()
+            UserDefaults.standard.set(self.selectedLogin, forKey: "selectedLogin")
+            
+            WebServices.shared.loginUserWith(username: username, password: md5EncodedPassword, completion: {(response, error ) in
+                
+                if error == nil, let responseDict = response {
+                    debugPrint(responseDict)
+                    if(responseDict["@odata.count"] == 1){
                         
-                    } else if(loginRole == "3") {
-                        if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController{
-                            self.present(vc, animated: true, completion: nil)
+                        print(responseDict["value"] [0]["_sis_registration_value"])
+                        
+                        let sisName = responseDict["value"][0]["sis_name"].stringValue
+                        UserDefaults.standard.set(sisName, forKey: "sis_name")
+                        
+                        let userID = responseDict["value"][0]["sis_user_id"].stringValue
+                        UserDefaults.standard.set(userID, forKey: "sis_user_id")
+                        
+                        let loginRole = responseDict["value"] [0]["new_rolecode"].stringValue
+                        //                    print(loginRole)
+                        let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
+                        //                    print(regId)
+                        
+                        
+                        UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
+                        UserDefaults.standard.set(loginRole, forKey: "new_rolecode")
+                        if(loginRole == "1") {
+                            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "myNavi") as? MyNavigationController{
+                                self.present(vc, animated: true, completion: nil)
+                            }
+                        } else if(loginRole == "2"){
+                            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TeacherNavi") as? TeacherNavigationController{
+                                self.present(vc, animated: true, completion: nil)
+                            }
+                            
+                        } else if(loginRole == "3") {
+                            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ParentNavi") as? ParentViewController{
+                                self.present(vc, animated: true, completion: nil)
+                            }
                         }
+                    }else
+                        if let responseDict = response, responseDict["Status"] == "Invalid SchoolId" {
+                            ProgressLoader.shared.hideLoader()
+                            AlertManager.shared.showAlertWith(title: "Login Failed!", message: "Invalid SchoolId")
+                            UserDefaults.standard.removeObject(forKey: "SchoolID")
+                    }else{
+                        ProgressLoader.shared.hideLoader()
+                        AlertManager.shared.showAlertWith(title: "Login Failed!", message: "Please check your Username and Password")
                     }
                 }else{
                     ProgressLoader.shared.hideLoader()
-                    AlertManager.shared.showAlertWith(title: "Login Failed!", message: "Please check your Username and Password")
+                    AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
                 }
-            }else{
-                ProgressLoader.shared.hideLoader()
-                AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
-            }
-        })
+            })
+        }else{
+            self.askForSchoolID()
+        }
     }
     
 }

@@ -139,7 +139,7 @@ class ParentChatViewController: UIViewController {
         guard let recipentID = selectedFaculty?.facultyID  else { return }
         
         ProgressLoader.shared.showLoader(withText: "")
-        WebServices.shared.getChatMessage(senderID: senderid, RecipientId: recipentID, CreatedOn: "nodate", completion: {(response, error) in
+        WebServices.shared.getChatMessage(senderID: senderid, recipientId: recipentID, createdOn: "nodate", completion: {(response, error) in
             if error == nil, let responseDict = response {
                 
                 self.arrMsgData.removeAll()

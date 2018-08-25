@@ -70,7 +70,7 @@ class TeacherChatViewController: UIViewController {
         
         guard let senderid = UserDefaults.standard.string(forKey: "_sis_studentname_value") else { return}
         ProgressLoader.shared.showLoader(withText: "")
-        WebServices.shared.getChatMessage(senderID: senderid, RecipientId: fID, CreatedOn: "nodate", completion: {(response, error) in
+        WebServices.shared.getChatMessage(senderID: senderid, recipientId: fID, createdOn: "nodate", completion: {(response, error) in
             if error == nil, let responseDict = response {
                 
                 self.arrMsgData.removeAll()
