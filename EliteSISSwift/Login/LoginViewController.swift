@@ -53,9 +53,17 @@ class LoginViewController: UIViewController, LoginButtonDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+
         if((self.navigationController) != nil){
             self.navigationController?.dismiss(animated: false, completion:nil)
-            
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if (UserDefaults.standard.string(forKey: "SchoolID") == nil) {
+            askForSchoolID()
         }
     }
     
@@ -141,6 +149,7 @@ class LoginViewController: UIViewController, LoginButtonDelegate {
        
         // Add 1 textField and customize it
         alert.addTextField { (textField: UITextField) in
+            textField.text = "MBLE_APP_00001"
             textField.keyboardAppearance = .dark
             textField.keyboardType = .default
             textField.autocorrectionType = .no
@@ -161,8 +170,6 @@ extension LoginViewController {
     
     func buttonClicked() {
         
-        if let _ = UserDefaults.standard.string(forKey: "SchoolID") {
-            
             let passwordCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 2, section: 0)) as! LoginCredentialsTableViewCell
             // return passwordCell.textField.text ?? ""
             let userNameCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 1, section: 0)) as! LoginCredentialsTableViewCell
@@ -237,9 +244,6 @@ extension LoginViewController {
                     AlertManager.shared.showAlertWith(title: "Error Occured!", message: "Please try after some time")
                 }
             })
-        }else{
-            self.askForSchoolID()
-        }
     }
     
 }
