@@ -15,7 +15,8 @@ class WebServices: NSObject {
     //Shared instance
     static var shared = WebServices()
     //Constant
-    let baseURL = "http://43.224.136.81:5015/"
+//    let baseURL = "http://43.224.136.81:5015/"
+    let baseURL = "http://104.211.88.67:5147/"
     let contactID = "65e99ee3-7669-e811-8157-c4346bdc1f11"
     //Varibales
     var schoolId : String {   //MBLE_APP_00001
