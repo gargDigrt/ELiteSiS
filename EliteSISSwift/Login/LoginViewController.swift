@@ -170,6 +170,10 @@ extension LoginViewController {
     
     func buttonClicked() {
         
+        guard UserDefaults.standard.string(forKey: "SchoolID") != nil else {
+           return askForSchoolID()
+        }
+        
             let passwordCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 2, section: 0)) as! LoginCredentialsTableViewCell
             // return passwordCell.textField.text ?? ""
             let userNameCell = self.tblViewLogin.cellForRow(at: IndexPath(row: 1, section: 0)) as! LoginCredentialsTableViewCell
