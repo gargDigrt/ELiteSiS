@@ -12,14 +12,18 @@ import SwiftyJSON
 
 class WebServices: NSObject {
     
-    
+    //Shared instance
     static var shared = WebServices()
-    
+    //Constant
     let baseURL = "http://43.224.136.81:5015/"
-    let schoolId = "/MBLE_APP_00001"
     let contactID = "65e99ee3-7669-e811-8157-c4346bdc1f11"
-//    let schoolID = UserDefaults.standard.string(forKey: "Name")
-    
+    //Varibales
+    var schoolId : String {   //MBLE_APP_00001
+        guard let id = UserDefaults.standard.string(forKey: "SchoolID") else {
+            return ""
+        }
+        return id
+    }
     var headers : [String: String] {
         var dict = [String: String]()
         dict["UserName"] = "MobileApp"
@@ -30,8 +34,8 @@ class WebServices: NSObject {
     // For Login
     func loginUserWith(username: String, password: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
       
-        let requestURL = baseURL + "SIS_Student/Login/" + username + "/" + password + schoolId
-        print(requestURL)
+        let requestURL = baseURL + "SIS_Student/Login/" + username + "/" + password + "/" + schoolId
+        
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
@@ -51,7 +55,7 @@ class WebServices: NSObject {
     // To get user profile
     func getProfile(forRegistrationID rID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetProfile/" + rID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetProfile/" + rID + "/" + schoolId
         
         
         Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
@@ -69,7 +73,7 @@ class WebServices: NSObject {
     //To get user dashboard
     func getDashboardDetailsFor(classSession: String, studentId: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetDashboardData/" + classSession + "/" + studentId + schoolId
+        let requestURL = baseURL + "SIS_Student/GetDashboardData/" + classSession + "/" + studentId + "/" + schoolId
         
         Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
@@ -84,10 +88,9 @@ class WebServices: NSObject {
         
     }
     
-    
     // for menu list
     func menuListItem(role: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
-        let requestURL = baseURL + "SIS/GetConfigurations/" + role + schoolId
+        let requestURL = baseURL + "SIS/GetConfigurations/" + role + "/" + schoolId
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -105,7 +108,7 @@ class WebServices: NSObject {
     // for Discussion API
     func getLessionPlansFor(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         
-        let requestURL = baseURL + "SIS_Student/GetLessonPlan/" + classSession + schoolId
+        let requestURL = baseURL + "SIS_Student/GetLessonPlan/" + classSession + "/" + schoolId
         print(
         )
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
@@ -123,10 +126,9 @@ class WebServices: NSObject {
    
 
     // For getting Faculty List
-    
     func getFacultyList(sectionID: String,  completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         
-        let requestURL = baseURL + "SIS/getFacultyList/" + sectionID + schoolId
+        let requestURL = baseURL + "SIS/getFacultyList/" + sectionID + "/" + schoolId
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -142,9 +144,9 @@ class WebServices: NSObject {
     }
     
     // For discussion API get Chat
-    func getChatMessage(senderID: String, RecipientId: String, CreatedOn: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
+    func getChatMessage(senderID: String, recipientId: String, createdOn: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         
-        let requestURL = baseURL + "SIS_Student/GetChat/" + senderID + "/" + RecipientId + "/" + CreatedOn + schoolId
+        let requestURL = baseURL + "SIS_Student/GetChat/" + senderID + "/" + recipientId + "/" + createdOn + "/" + schoolId
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -160,12 +162,11 @@ class WebServices: NSObject {
     }
     
     
-    // For discussion API get Chat
+    // For sending new message
     func sendNewMessage(text: String,senderID: String, RecipientId: String, completion: @escaping (_ success: Bool, _ error:Error? ) -> Void )  {
         
-        let requestURL = baseURL + "SIS_Student/CreateDiscussion/MBLE_APP_00001"
+        let requestURL = baseURL + "SIS_Student/CreateDiscussion/" + schoolId
         
-//        let sender = "/contacts(\(senderID))"
         let params = ["new_Sender@odata.bind": "/contacts(\(senderID))",
             "new_Recipient@odata.bind": "/contacts(\(RecipientId))",
             "new_message": text]
@@ -188,7 +189,7 @@ class WebServices: NSObject {
     // for showing holidayList
     func getHolidayList(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/Holidays/MBLE_APP_00001"
+        let requestURL = baseURL + "SIS_Student/Holidays/" + schoolId
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -206,7 +207,7 @@ class WebServices: NSObject {
     // for showing Assignment
     func getAssignmentList(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetAssignmentList/" + studentID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetAssignmentList/" + studentID + "/" + schoolId
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -224,7 +225,7 @@ class WebServices: NSObject {
     // To download assignment
     func downloadAssignment(objectID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/DownloadAssignment/" + objectID + schoolId
+        let requestURL = baseURL + "SIS_Student/DownloadAssignment/" + objectID + "/" + schoolId
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -243,7 +244,7 @@ class WebServices: NSObject {
     // Get address for the user
     func getAddress(forRegistrationID rID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetAddress/" + rID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetAddress/" + rID + "/" + schoolId
         
         Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
@@ -260,7 +261,7 @@ class WebServices: NSObject {
     // Get Id card detail
     func getID(forRegistrationID rID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetID/" + rID + "/MBLE_APP_00001"
+        let requestURL = baseURL + "SIS_Student/GetID/" + rID + "/" + schoolId
         
         Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
@@ -278,7 +279,7 @@ class WebServices: NSObject {
     //To get states for country id
     func getStates(forCountryID cID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetState/" + cID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetState/" + cID + "/" + schoolId
         
         Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
@@ -295,7 +296,7 @@ class WebServices: NSObject {
     //To get cities for state id
     func getCities(forStateID sID: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetCity/" + sID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetCity/" + sID + "/" + schoolId
         
         Alamofire.request(requestURL, headers: headers).responseJSON { (responseData) -> Void in
             
@@ -311,7 +312,7 @@ class WebServices: NSObject {
     
     //To get attendence status
     func getAttendenceStatusFor(studentID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
-        let requestURL = baseURL + "SIS_Student/GetStudentAttendance/" + studentID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetStudentAttendance/" + studentID + "/" + schoolId
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -329,7 +330,7 @@ class WebServices: NSObject {
     // To get notification list
     func getNotificationFor(contactID: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
         
-        let requestURL = baseURL + "SIS_Student/GetNotificationList/" + contactID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetNotificationList/" + contactID + "/" + schoolId
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -367,7 +368,7 @@ class WebServices: NSObject {
     // To Get Study Progress
     func getStudyProgress(marksID: String, completion:@escaping (_ success: JSON?, _ error:Error? ) -> Void ) {
        
-        let requestURL = baseURL + "SIS_Student/GetStudyProgress/" + marksID + schoolId
+        let requestURL = baseURL + "SIS_Student/GetStudyProgress/" + marksID + "/" + schoolId
 
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -402,7 +403,7 @@ class WebServices: NSObject {
     
     func getPhotoAlbums(completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void  ){
         
-        let requestURL = baseURL + "SIS_Student/GetGalleryFolders/MBLE_APP_00001"
+        let requestURL = baseURL + "SIS_Student/GetGalleryFolders/" + schoolId
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -419,7 +420,7 @@ class WebServices: NSObject {
     
     func getImagesForAlbum(withId id: String,completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void  ){
         
-        let requestURL = baseURL + "SIS_Student/GetImages/" + id + schoolId
+        let requestURL = baseURL + "SIS_Student/GetImages/" + id + "/" + schoolId
         
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
