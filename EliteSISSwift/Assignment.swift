@@ -28,10 +28,10 @@ class Assignment {
             self.name = name
         }
         if let duedate = json["new_duedate"].string {
-            self.dueDate = Date.getFormattedDate(string: duedate, formatter: "MMM dd,yyyy")
+            self.dueDate = Date.getFormattedDate(string: duedate, formatter: "dd-MMM")
         }
         if let new_submitdate = json["new_submitdate"].string {
-            self.submitDate = Date.getFormattedDate(string: new_submitdate, formatter: "MMM dd,yyyy")
+            self.submitDate = Date.getFormattedDate(string: new_submitdate, formatter: "dd-MMM")
         }
         if let new_taskdescription = json["new_taskdescription"].string {
             self.description = new_taskdescription

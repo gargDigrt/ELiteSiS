@@ -12,8 +12,8 @@ extension Date{
     
     static func getFormattedDate(string: String , formatter:String) -> String{
         let dateFormatterGet = DateFormatter()
-        dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        
+      //  dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+         dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
         let dateFormatterPrint = DateFormatter()
         dateFormatterPrint.dateFormat = formatter
         

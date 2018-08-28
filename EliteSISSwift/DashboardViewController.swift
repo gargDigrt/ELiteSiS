@@ -87,8 +87,9 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let dueAssignment = totalAssignment - completAssignment
         dueAssignmentLabel.text = "\(dueAssignment)"
         assignmentPercentLabel.text = "\((completAssignment * 100 ) / totalAssignment)% COMPLETE"
-        
-        let newAngleValue = getAngle(value: Double(dueAssignment), outOf: Double(totalAssignment))
+        // totalAssignment
+        // dueAssignment
+        let newAngleValue = getAngle(value: Double(totalAssignment), outOf: Double(dueAssignment))
         assignmentProgressView.animate(toAngle: newAngleValue, duration: 1.0, completion: nil)
         
         let totalSubject = dict["new_totalsubjects"] as! Int
@@ -99,10 +100,15 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let newAngleProfressViewSubjectValue = getAngle(value: studyProgress, outOf: 100)
         studyProgressView.animate(toAngle: newAngleProfressViewSubjectValue, duration: 1.0, completion: nil)
         
-        let totalClasses = dict["new_totalclasses"] as! Double
+        let attendence = dict["new_presentdays"] as! Double
+        attendencePercentLabel.text = " \(attendence)%"
+        let newAngleProfressViewAttendenceValue = getAngle(value: attendence, outOf: 100)
+        attendenceProgressView.animate(toAngle: newAngleProfressViewAttendenceValue, duration: 1.0, completion: nil)
+        
+        let totalClasses = dict["new_totalclasses"] as! Int
         totalDayLabel.text = "\(totalClasses)"
         let presentDays = dict["new_presentdays"] as! Double
-        let newAngleProgressViewDayValue = getAngle(value: presentDays, outOf: totalClasses)
+        let newAngleProgressViewDayValue = getAngle(value: presentDays, outOf: Double(totalClasses))
         attendenceProgressView.animate(toAngle: newAngleProgressViewDayValue, duration: 1.0, completion: nil)
         
         let percentage = dict["new_percentage"] as! Double
@@ -110,7 +116,7 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let newAngleProgressViewOverallValue = getAngle(value: 75, outOf: 100)
         overallPerformanceProgressView.animate(toAngle: newAngleProgressViewOverallValue, duration: 1.0, completion: nil)
         
-        let overall = dict["new_obtainedmarks"] as! Double
+        let overall = dict["new_obtainedmarks"] as! Int
         performanceNumberLabel.text = "\(overall)"
     }
     

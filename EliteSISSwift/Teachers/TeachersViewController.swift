@@ -36,8 +36,9 @@ class TeachersViewController: UIViewController, UITableViewDelegate,UITableViewD
         guard let classSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
         ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getLessionPlansFor(classSession: classSession, completion: { (response, error) in
-            
+          
             if error == nil, let responseDict = response {
+                  print(responseDict)
                 self.faculties = responseDict["value"].arrayValue
                 self.tblViewTeachers.reloadData()
             }else{

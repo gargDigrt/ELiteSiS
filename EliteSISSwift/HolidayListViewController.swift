@@ -53,7 +53,9 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
         let cell = tableView.dequeueReusableCell(withIdentifier: "HolidayListTableViewCell") as! HolidayListTableViewCell
         print(self.arrHolidayList[indexPath.row]["sis_name"] as Any)
         cell.lblHolidayName.text = self.arrHolidayList[indexPath.row]["sis_name"] as? String
+        
         cell.lblHolidayDate.text = self.arrHolidayList[indexPath.row]["new_startdate"] as? String
+        
         cell.lblHolidayDay.text = self.arrHolidayList[indexPath.row]["new_dayname"] as? String
         cell.selectionStyle = .none
         return cell
@@ -105,7 +107,7 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
     }
     
     func getHolidayList() {
-        ProgressLoader.shared.showLoader(withText: "")
+        ProgressLoader.shared.showLoader(withText: "Fetching Data, Please Wait")
         WebServices.shared.getHolidayList(completion: { (response, error) in
             
             if error == nil, let responseDict = response {

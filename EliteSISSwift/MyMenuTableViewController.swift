@@ -183,7 +183,7 @@ class MyMenuTableViewController: UITableViewController {
                 self.sideMenuItems.append("Dashboard")
                 
                 if (responceDict["PinBoard"] == true){
-                    self.sideMenuItems.append("PinBoard")
+                    self.sideMenuItems.append("Pinboard")
                 }
                 
                 if (responceDict["Discussion"] == true){
@@ -203,7 +203,7 @@ class MyMenuTableViewController: UITableViewController {
                 }
                 
                 if (responceDict["PerformanceScore"] == true){
-                    self.sideMenuItems.append("Performance Score")
+                    self.sideMenuItems.append("Performance/Score")
                 }
                 // need to check it
                 if (responceDict["StudyProgress"] == true){
@@ -219,7 +219,7 @@ class MyMenuTableViewController: UITableViewController {
                 }
                 
                 if (responceDict["EventGallery"] == true){
-                    self.sideMenuItems.append("Event Gallery")
+                    self.sideMenuItems.append("Event/Gallery")
                 }
                 
                 if (responceDict["HealthReport"] == true){

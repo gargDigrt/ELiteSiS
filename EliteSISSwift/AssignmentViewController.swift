@@ -82,19 +82,22 @@ class AssignmentViewController: UIViewController, UITableViewDelegate,UITableVie
             ProgressLoader.shared.hideLoader()
             if error == nil, let responseDict = response {
                 if responseDict["value"].arrayValue.count == 0 {
-                    AlertManager.shared.showAlertWith(title: "Error!", message: "Assignment not found")
-                }else{
+                    AlertManager.shared.showAlertWith(title: "", message: "Assignment not found")
+                     ProgressLoader.shared.hideLoader()
+                } else {
                     AlertManager.shared.showAlertWith(title: "Assignment Downloaded!", message: "")
+                     ProgressLoader.shared.hideLoader()
                 }
-            }else{
+            } else {
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "fetching dashboard error")
             }
         })
+        ProgressLoader.shared.hideLoader()
     }
     
     @objc func showAssignmentDetails(btn:UIButton) {
-        let alert = UIAlertController(title: "Assignment", message: allAssignments[btn.tag].name!, preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: allAssignments[btn.tag].name!, preferredStyle: .alert)
         let dismiss = UIAlertAction(title: "OK", style: .cancel, handler: nil)
         alert.addAction(dismiss)
         self.present(alert, animated: true, completion: nil)

@@ -31,7 +31,7 @@ class WebServices: NSObject {
     func loginUserWith(username: String, password: String, completion: @escaping (_ success: JSON?, _ error: Error? ) -> Void ) {
       
         let requestURL = baseURL + "SIS_Student/Login/" + username + "/" + password + schoolId
-        
+        print(requestURL)
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in

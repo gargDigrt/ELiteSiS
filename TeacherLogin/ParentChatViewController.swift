@@ -109,12 +109,12 @@ class ParentChatViewController: UIViewController {
     
     //MARK:- Web service calls
     func getFacultyList() {
-        ProgressLoader.shared.showLoader(withText: "")
+        ProgressLoader.shared.showLoader(withText: "Fetch Teachers, Please Wait!")
         let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
         WebServices.shared.getFacultyList(sectionID: sectionId!, completion: {(response, error) in
             
             if error == nil, let responseDict = response {
-                
+                print(responseDict)
                 let facultyData = responseDict.arrayValue
                 self.dataSourceClassses.removeAll()
                 for item in facultyData {

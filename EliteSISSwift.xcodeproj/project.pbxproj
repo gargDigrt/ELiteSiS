@@ -1225,7 +1225,7 @@
 				TargetAttributes = {
 					6AA150C5203B2834007CBD99 = {
 						CreatedOnToolsVersion = 9.1;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -1734,9 +1734,9 @@
 				CODE_SIGN_ENTITLEMENTS = EliteSISSwift/EliteSISSwift.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Abhishek Sharma (ALPHJXKGGP)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 9UJ38R4J79;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				INFOPLIST_FILE = EliteSISSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1762,9 +1762,9 @@
 				CODE_SIGN_ENTITLEMENTS = EliteSISSwift/EliteSISSwift.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Abhishek Sharma (ALPHJXKGGP)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 9UJ38R4J79;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				INFOPLIST_FILE = EliteSISSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
