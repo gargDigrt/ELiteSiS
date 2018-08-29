@@ -107,7 +107,7 @@ class PerformanceScoreViewController: UIViewController{
                         self.displayStudyProgress(withDict: respondeDict)
                     }else{
                         AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
-                        debugPrint(error?.localizedDescription ?? "Getting user performance error")
+                        debugPrint(error?.localizedDescription ?? "Getting user study progress error")
                     }
                     ProgressLoader.shared.hideLoader()
                 })
