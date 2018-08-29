@@ -10,76 +10,28 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
-class HolidayListViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
+class HolidayListViewController: UIViewController {
     
     @IBOutlet weak var tblViewHolidayList: UITableView!
-    var arrHolidayName = [String]()
-    var arrHolidayDate = [String]()
-    var arrHolidayDay = [String]()
     var arrHolidayList = [[String: Any]]()
+    
+    
+    //MARK:- View's Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tblViewHolidayList.separatorStyle = .none
-        tblViewHolidayList.sectionHeaderHeight = 45
-        tblViewHolidayList.rowHeight = UITableViewAutomaticDimension
-        
-        //        arrHolidayName = ["Republic Day","Maha Shivratri","Holika Dahan","Holi","Ram Navami","Rakshabandhan","Dussehra","Chhoti Diwali","Badi Diwali","Christmas"]
-        //        arrHolidayDate = ["26-Jan-2018", "13-Feb-2018", "01-Mar-2018", "02-Mar-2018", "25-Mar-2018", "26-Aug-2018","19-Oct-2018", "06-Nov-2018", "07-Nov-2018", "25-Dec-2018"]
-        //        arrHolidayDay = ["Friday", "Tuesday", "Thursday", "Friday", "Sunday", "Sunday","Friday", "Tuesday", "Wednesday", "Monday"]
-        self.tblViewHolidayList.delegate = self
-        self.tblViewHolidayList.dataSource = self
-        self.tblViewHolidayList.register(UINib(nibName:"HolidaylistHeaderReusableviewTableViewCell", bundle: nil), forHeaderFooterViewReuseIdentifier: "HolidaylistHeaderReusableviewTableViewCell")
-        self.tblViewHolidayList.register(UINib(nibName:"HolidayListTableViewCell", bundle:nil), forCellReuseIdentifier: "HolidayListTableViewCell")
+        configureTableView()
         self .getHolidayList()
         // Do any additional setup after loading the view.
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.arrHolidayList.count
-    }
+    // MARK: - Button Actions
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HolidaylistHeaderReusableviewTableViewCell") as! HolidaylistHeaderReusableviewTableViewCell
-        viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0)
-        return viewHeader
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "HolidayListTableViewCell") as! HolidayListTableViewCell
-        print(self.arrHolidayList[indexPath.row]["sis_name"] as Any)
-        cell.lblHolidayName.text = self.arrHolidayList[indexPath.row]["sis_name"] as? String
-        
-        cell.lblHolidayDate.text = self.arrHolidayList[indexPath.row]["new_startdate"] as? String
-        
-        cell.lblHolidayDay.text = self.arrHolidayList[indexPath.row]["new_dayname"] as? String
-        cell.selectionStyle = .none
-        return cell
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     @IBAction func showMenu(_ sender: Any) {
         
         toggleSideMenuView()
     }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
@@ -106,8 +58,22 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
         hideSideMenuView()
     }
     
+    
+    // MARK: - Custom methods
+    
+    fileprivate func configureTableView() {
+        
+        tblViewHolidayList.separatorStyle = .none
+        tblViewHolidayList.sectionHeaderHeight = 45
+        tblViewHolidayList.rowHeight = UITableViewAutomaticDimension
+        self.tblViewHolidayList.delegate = self
+        self.tblViewHolidayList.dataSource = self
+        self.tblViewHolidayList.register(UINib(nibName:"HolidaylistHeaderReusableviewTableViewCell", bundle: nil), forHeaderFooterViewReuseIdentifier: "HolidaylistHeaderReusableviewTableViewCell")
+        self.tblViewHolidayList.register(UINib(nibName:"HolidayListTableViewCell", bundle:nil), forCellReuseIdentifier: "HolidayListTableViewCell")
+    }
+    
     func getHolidayList() {
-        ProgressLoader.shared.showLoader(withText: "Fetching Data, Please Wait")
+        ProgressLoader.shared.showLoader(withText: "")
         WebServices.shared.getHolidayList(completion: { (response, error) in
             
             if error == nil, let responseDict = response {
@@ -127,6 +93,33 @@ class HolidayListViewController: UIViewController, UITableViewDelegate,UITableVi
         
     }
     
+}
+
+//MARK:- UITableView Delegate & DAtasource
+
+extension HolidayListViewController:  UITableViewDelegate,UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.arrHolidayList.count
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let viewHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HolidaylistHeaderReusableviewTableViewCell") as! HolidaylistHeaderReusableviewTableViewCell
+        viewHeader.contentView.backgroundColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+        return viewHeader
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "HolidayListTableViewCell") as! HolidayListTableViewCell
+        print(self.arrHolidayList[indexPath.row]["sis_name"] as Any)
+        
+        cell.configureCell(data: arrHolidayList[indexPath.row])
+        return cell
+    }
     
 }
 
