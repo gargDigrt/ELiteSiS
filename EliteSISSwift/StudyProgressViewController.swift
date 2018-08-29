@@ -8,14 +8,19 @@
 
 import UIKit
 import DropDown
+import SwiftyJSON
 
-class StudyProgressViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
+class StudyProgressViewController: UIViewController{
     
-    
-    @IBOutlet weak var tblViewStudyProgress: UITableView!
+    //IBOutlet----
+    @IBOutlet weak var subjectsTableView: UITableView!
     @IBOutlet weak var lblSelectedOption: UILabel!
+    @IBOutlet weak var viewOptions: UIView!
     
+    //Varibale---
     var pickerData: [String] = [String]()
+    var subjectDataAry = [(String,String,String,String)]()
+    var exam = ["Select exam"]
     var arrFA1 = [[String:String]]()
     var arrFA2 = [[String:String]]()
     var arrSA1 = [[String:String]]()
@@ -24,86 +29,73 @@ class StudyProgressViewController: UIViewController, UITableViewDelegate,UITable
     
     var arrValuesForTable = [[String:String]]()
     var dropDownClasses: DropDown!
-    @IBOutlet weak var viewOptions: UIView!
+    
+    //MARK:- View's Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+                // Do any additional setup after loading the view.
+        
         getStudyProgress()
-        tblViewStudyProgress.register(UINib(nibName:"StudyProgressTableViewCell", bundle: nil), forCellReuseIdentifier: "StudyProgressTableViewCell")
-        tblViewStudyProgress.separatorStyle = .none
-        
-        if UserDefaults.standard.string(forKey: "selectedLogin") == LoginUserType.TEACHER.rawValue{
-            pickerData = ["4th", "6th", "7th", "10th"]
-        }
-        else{
-            pickerData = ["FA1", "FA2", "SA1", "SA2", "Final"]
-        }
-
-
-        var dict1 = [String:String]()
-        dict1["sub"] = "English"
-        dict1["per"] = "88"
-        
-        var dict2 = [String:String]()
-        dict2["sub"] = "Maths"
-        dict2["per"] = "77"
-        
-        var dict3 = [String:String]()
-        dict3["sub"] = "Hindi"
-        dict3["per"] = "65"
-        
-        var dict4 = [String:String]()
-        dict4["sub"] = "Art"
-        dict4["per"] = "90"
-        
-        arrFA1.append(dict1)
-        arrFA1.append(dict2)
-        arrFA1.append(dict3)
-        arrFA1.append(dict4)
-        
-        var dict11 = [String:String]()
-        dict11["sub"] = "English"
-        dict11["per"] = "55"
-        
-        var dict22 = [String:String]()
-        dict22["sub"] = "Maths"
-        dict22["per"] = "66"
-        
-        var dict33 = [String:String]()
-        dict33["sub"] = "Hindi"
-        dict33["per"] = "77"
-        
-        var dict44 = [String:String]()
-        dict44["sub"] = "Art"
-        dict44["per"] = "88"
-        
-        arrFA2.append(dict11)
-        arrFA2.append(dict22)
-        arrFA2.append(dict33)
-        arrFA2.append(dict44)
-        
-        arrValuesForTable = arrFA1
-        
-        tblViewStudyProgress.delegate = self
-        tblViewStudyProgress.dataSource = self
-        
-        
-        // Do any additional setup after loading the view.
-        
+        configureTableView()
         self.configDropDown()
+        
+//        if UserDefaults.standard.string(forKey: "selectedLogin") == LoginUserType.TEACHER.rawValue{
+//            pickerData = ["4th", "6th", "7th", "10th"]
+//        }
+//        else{
+//            pickerData = ["FA1", "FA2", "SA1", "SA2", "Final"]
+//        }
+
         self.onCategoryChange(withCategoryIndex: 0)
-        self.lblSelectedOption.text = self.pickerData[0]
+        self.lblSelectedOption.text = "Select exam"
+    }
+    
+    //MARK:- Custom methods
+    fileprivate func configureTableView() {
+        subjectsTableView.register(UINib(nibName:"StudyProgressTableViewCell", bundle: nil), forCellReuseIdentifier: "StudyProgressTableViewCell")
+        subjectsTableView.separatorStyle = .none
+        subjectsTableView.delegate = self
+        subjectsTableView.dataSource = self
     }
     
     func getStudyProgress() {
-        guard let marksID = UserDefaults.standard.string(forKey: "sis_classsessionwisemarksid") else { return }
+        let studentId = UserDefaults.standard.string(forKey: "sis_studentid")
+        let sessionId = UserDefaults.standard.string(forKey: "_sis_currentclasssession_value")
+        let sectionId = UserDefaults.standard.string(forKey: "_sis_section_value")
         
-        WebServices.shared.getStudyProgress(marksID: marksID, completion: {(response, error) in
-            if error == nil, let responseDict = response{
-                
+        ProgressLoader.shared.showLoader(withText: "")
+        WebServices.shared.getPerformancelistFor(studentID: studentId!, sessionID: sessionId!, sectionID: sectionId!, completion: { (response, error) in
+            
+            if error == nil, let respondeDict = response {
+                print(respondeDict)
+
+                let marksID = respondeDict["value"][0]["sis_classsessionwisemarksid"].stringValue
+                UserDefaults.standard.set(marksID, forKey: "sis_classsessionwisemarksid")
+
+                // Set exam picker data
+                let examName = respondeDict["value"][0]["examtype_x002e_sis_name"].stringValue
+                self.pickerData.removeAll()
+                self.pickerData.append(examName)
+                self.configDropDown()
+                //getStudyProgress
+                WebServices.shared.getStudyProgress(marksID: marksID, completion: { (response, error) in
+                    if error == nil, let respondeDict = response {
+                        self.displayStudyProgress(withDict: respondeDict)
+                    }else{
+                        AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                        debugPrint(error?.localizedDescription ?? "Getting user study progress error")
+                    }
+                    ProgressLoader.shared.hideLoader()
+                })
+            }else{
+                ProgressLoader.shared.hideLoader()
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user performance error")
             }
         })
     }
+    
     func configDropDown(){
         dropDownClasses = DropDown()
         
@@ -114,12 +106,19 @@ class StudyProgressViewController: UIViewController, UITableViewDelegate,UITable
         dropDownClasses.dataSource = self.pickerData
         
         dropDownClasses.selectionAction = { [unowned self] (index: Int, item: String) in
+            self.lblSelectedOption.text = self.pickerData[index]
             self.onCategoryChange(withCategoryIndex: index)
         }
     }
     
-    @IBAction func btnCategoryClick(_ sender: Any) {
-        self.onStudentCategoryInfoClick()
+    func displayStudyProgress(withDict json:JSON) {
+        let subjects = json["value"].arrayValue
+        
+        for item in subjects {
+            let sub = (item["sis_name"].stringValue, item["sis_obtainedmarks"].stringValue, item["sis_totalmarks"].stringValue, item["new_performance"].stringValue)
+            subjectDataAry.append(sub)
+        }
+        
     }
     
     func onStudentCategoryInfoClick(){
@@ -139,62 +138,24 @@ class StudyProgressViewController: UIViewController, UITableViewDelegate,UITable
             arrValuesForTable = arrFA1
         }
         
-        tblViewStudyProgress.reloadData()
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrValuesForTable.count
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "StudyProgressTableViewCell") as! StudyProgressTableViewCell
-        cell.lblSubject.text = arrValuesForTable[indexPath.row]["sub"]
-        cell.lblPercentage.text = "\(String(describing: arrValuesForTable[indexPath.row]["per"]!))%"
-        
-        let count = Double(arrValuesForTable[indexPath.row]["per"]!)
-        let newAngleValue = newAngle(count!)
-        cell.circularProgress.animate(toAngle: newAngleValue, duration: 1.0, completion: nil)
-        cell.selectionStyle = .none
-        cell.backgroundColor = UIColor.clear
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-        var destViewController : UIViewController
-        destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChapterStatusViewController")
-        sideMenuController()?.setContentViewController(destViewController)
-        hideSideMenuView()
-    }
-    
-    func newAngle(_ currentCount:Double) -> Double {
-        let maxCount = 100.0
-        return 360 * (currentCount / maxCount)
+        subjectsTableView.reloadData()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func getAngle(value: Double, outOf: Double) -> Double {
+        return 360 * (value / outOf)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // MARK: - Button actions
+    
+    @IBAction func btnCategoryClick(_ sender: Any) {
+        self.onStudentCategoryInfoClick()
     }
-    */
+    
     @IBAction func showMenu(_ sender: Any) {
         
         toggleSideMenuView()
     }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
@@ -218,4 +179,42 @@ class StudyProgressViewController: UIViewController, UITableViewDelegate,UITable
         }
         hideSideMenuView()
     }
+}
+
+//MARK:- UITableView Delegate & Datasource
+
+extension StudyProgressViewController:  UITableViewDelegate,UITableViewDataSource  {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return subjectDataAry.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "StudyProgressTableViewCell") as! StudyProgressTableViewCell
+        cell.lblSubject.text = subjectDataAry[indexPath.row].0
+//        cell.lblSubject.text = arrValuesForTable[indexPath.row]["sub"]
+        cell.lblPercentage.text = subjectDataAry[indexPath.row].3
+//        cell.lblPercentage.text = "\(String(describing: arrValuesForTable[indexPath.row]["per"]!))%"
+        
+        let obtainMarks = Double(subjectDataAry[indexPath.row].1)
+        let totalMarks = Double(subjectDataAry[indexPath.row].2)
+        let newAngleValue = getAngle(value: obtainMarks!, outOf: totalMarks!)
+        cell.circularProgress.animate(toAngle: newAngleValue, duration: 1.0, completion: nil)
+        cell.selectionStyle = .none
+        cell.backgroundColor = UIColor.clear
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
+        var destViewController : UIViewController
+        destViewController = mainStoryboard.instantiateViewController(withIdentifier: "ChapterStatusViewController")
+        sideMenuController()?.setContentViewController(destViewController)
+        hideSideMenuView()
+    }
+
 }
