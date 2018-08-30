@@ -15,4 +15,5 @@ pod 'Alamofire'
 pod 'SwiftyJSON'
 pod 'SwiftHash'
 pod 'MBProgressHUD'
+pod 'FSCalendar'
 end

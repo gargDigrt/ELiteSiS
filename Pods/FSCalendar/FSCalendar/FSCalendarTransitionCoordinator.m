@@ -20,7 +20,7 @@
 - (void)performTransitionCompletionAnimated:(BOOL)animated;
 - (void)performTransitionCompletion:(FSCalendarTransition)transition animated:(BOOL)animated;
 
-- (void)performAlphaAnimationFrom:(CGFloat)fromAlpha to:(CGFloat)toAlpha duration:(CGFloat)duration exception:(NSInteger)exception completion:(void(^)(void))completion;
+- (void)performAlphaAnimationFrom:(CGFloat)fromAlpha to:(CGFloat)toAlpha duration:(CGFloat)duration exception:(NSInteger)exception completion:(void(^)())completion;
 - (void)performForwardTransition:(FSCalendarTransition)transition fromProgress:(CGFloat)progress;
 - (void)performBackwardTransition:(FSCalendarTransition)transition fromProgress:(CGFloat)progress;
 - (void)performAlphaAnimationWithProgress:(CGFloat)progress;
@@ -62,9 +62,15 @@
             [self scopeTransitionDidUpdate:sender];
             break;
         }
-        case UIGestureRecognizerStateEnded:
-        case UIGestureRecognizerStateCancelled:
-        case UIGestureRecognizerStateFailed:{
+        case UIGestureRecognizerStateEnded: {
+            [self scopeTransitionDidEnd:sender];
+            break;
+        }
+        case UIGestureRecognizerStateCancelled: {
+            [self scopeTransitionDidEnd:sender];
+            break;
+        }
+        case UIGestureRecognizerStateFailed: {
             [self scopeTransitionDidEnd:sender];
             break;
         }
@@ -668,7 +674,7 @@
     }
 }
 
-- (void)performAlphaAnimationFrom:(CGFloat)fromAlpha to:(CGFloat)toAlpha duration:(CGFloat)duration exception:(NSInteger)exception completion:(void(^)(void))completion;
+- (void)performAlphaAnimationFrom:(CGFloat)fromAlpha to:(CGFloat)toAlpha duration:(CGFloat)duration exception:(NSInteger)exception completion:(void(^)())completion;
 {
     [self.calendar.visibleCells enumerateObjectsUsingBlock:^(FSCalendarCell *cell, NSUInteger idx, BOOL *stop) {
         if (CGRectContainsPoint(self.collectionView.bounds, cell.center)) {
