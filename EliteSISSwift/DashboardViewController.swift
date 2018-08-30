@@ -105,10 +105,11 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let newAngleProfressViewAttendenceValue = getAngle(value: attendence, outOf: 100)
         attendenceProgressView.animate(toAngle: newAngleProfressViewAttendenceValue, duration: 1.0, completion: nil)
         
-        let totalClasses = dict["new_totalclasses"] as! Int
-        totalDayLabel.text = "\(totalClasses)"
+        let totalDays = dict["new_presentdays"] as! Int
+        totalDayLabel.text = "\(totalDays)"
         let presentDays = dict["new_presentdays"] as! Double
-        let newAngleProgressViewDayValue = getAngle(value: presentDays, outOf: Double(totalClasses))
+        
+        let newAngleProgressViewDayValue = getAngle(value: presentDays, outOf: 100)
         attendenceProgressView.animate(toAngle: newAngleProgressViewDayValue, duration: 1.0, completion: nil)
         
         let percentage = dict["new_percentage"] as! Double
