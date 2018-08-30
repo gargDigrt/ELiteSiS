@@ -11,7 +11,7 @@ import DropDown
 
 class StudentProfileViewController: UIViewController, UITableViewDelegate {
     
-    
+    //IBOutlet
     @IBOutlet weak var lblStudentName: UILabel!
     
     @IBOutlet weak var imgViewStudent: UIImageView!
@@ -19,7 +19,11 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
     @IBOutlet weak var tblViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var pickerheightConstant: NSLayoutConstraint?
     @IBOutlet weak var tblViewInfo: UITableView!
+    @IBOutlet weak var stackViewProfileChangeOptions: UIStackView!
+    
+    //VAriables
     var pickerData: [String] = [String]()
+    var profileImage:UIImage?
     var studentDetail:StudentAttendanceViewModel!
     var generalDatasource = StudentGeneralInfoDatasource()
     var contactDatasource = StudentContactDatasource()
@@ -28,33 +32,46 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
     var addressDatasource = StudentAddressDatasource()
     var identityCardDatasource = StudentIdentityCardDatasource()
     var dropDownClasses: DropDown!
-    @IBOutlet weak var stackViewProfileChangeOptions: UIStackView!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    //MARK:- View's Lifecycle
+    
+    fileprivate func configureTableView() {
         tblViewInfo.separatorStyle = .none
         tblViewInfo.register(UINib(nibName: "TextfieldTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldTableCell")
         tblViewInfo.register(UINib(nibName: "TextFieldWithCalendarTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldwithCalendarTableCell")
         tblViewInfo.register(UINib(nibName: "DropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "DropDownTableViewCell")
         tblViewInfo.register(UINib(nibName: "DateSelectionTableViewCell", bundle:nil), forCellReuseIdentifier: "DateSelectionTableViewCell")
-
-        // "Qualification Detail",
-        pickerData = ["General Info", "Contact Info", "Class Applied",  "Address Detail", "Identity Card Details"]
         
-//      let dictValue =  UserDefaults.standard.value(forKey: "DictValue")
-//        print(dictValue)
-        
-        if studentDetail != nil {
-            generalDatasource.studentName = studentDetail.name
-        }
         tblViewInfo.dataSource = generalDatasource
         tblViewInfo.delegate = self
         tblViewInfo.reloadData()
+    }
+    
+    fileprivate func configureProfileImageView() {
         imgViewStudent.layer.borderWidth = 1.0
         imgViewStudent.layer.borderColor = UIColor.lightGray.cgColor
         imgViewStudent.layer.cornerRadius = (imgViewStudentHeightConstraint?.constant)!/2
         imgViewStudent.clipsToBounds = true
+        //Make profile image circular
+        self.imgViewStudent.layer.cornerRadius = self.imgViewStudent.bounds.width/2.0
+        self.imgViewStudent.clipsToBounds = true
+        
+        if let imgData = UserDefaults.standard.data(forKey: "studentImage") {
+            profileImage = UIImage(data: imgData)
+        }
+        
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configureTableView()
+        // "Qualification Detail",
+        pickerData = ["General Info", "Contact Info", "Class Applied",  "Address Detail", "Identity Card Details"]
+
+        if studentDetail != nil {
+            generalDatasource.studentName = studentDetail.name
+        }
         // Do any additional setup after loading the view.
         
         self.configDropDown()
@@ -63,15 +80,15 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         //Add delegate to listen for profile tap event
         generalDatasource.delegate = self
         
-        //Make profile image circular
-        self.imgViewStudent.layer.cornerRadius = self.imgViewStudent.bounds.width/2.0
-        self.imgViewStudent.clipsToBounds = true
+        
+        configureProfileImageView()
         
         //Hide profile change options
         stackViewProfileChangeOptions.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
@@ -79,8 +96,11 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         let studentName = UserDefaults.standard.string(forKey: "sis_name")
         lblStudentName.text = studentName
         
-        let studentImage = UserDefaults.standard.data(forKey: "studentImage")
-        self.imgViewStudent.image = UIImage(data: studentImage!)
+        if let img = profileImage {
+        self.imgViewStudent.image = img
+        }else{
+            self.imgViewStudent.image = nil // Placeholder image
+        }
       // }
         addresssAPIExecute()
         IDCardAPICall()
@@ -306,16 +326,20 @@ extension StudentProfileViewController: UIImagePickerControllerDelegate, UINavig
     }
     
     func openCamera(vc: UIViewController){
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true
-        imagePicker.sourceType = .camera
-        vc.present(imagePicker, animated: true, completion: nil)
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+            imagePicker.sourceType = .camera
+            vc.present(imagePicker, animated: true, completion: nil)
+        }else{
+            AlertManager.shared.showAlertWith(title: "Sorry!", message: "Camera not available.")
+        }
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]){
-        let image = info[UIImagePickerControllerEditedImage]
-        self.imgViewStudent.image = image as? UIImage
+        let image = info[UIImagePickerControllerEditedImage] as! UIImage
+        self.profileImage = image 
         self.dismiss(animated: true, completion: nil)
         self.stackViewProfileChangeOptions.isHidden = true
     }

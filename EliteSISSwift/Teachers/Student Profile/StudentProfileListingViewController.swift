@@ -34,11 +34,6 @@ class StudentProfileListingViewController: UIViewController {
         self.configDropDown()
         self.configCollectionView()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     func configDropDown(){
         dropDownStudents = DropDown()
