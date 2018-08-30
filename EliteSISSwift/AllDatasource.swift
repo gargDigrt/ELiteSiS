@@ -38,7 +38,7 @@ class AllDatasource: NSObject, UITableViewDataSource {
             let title = item["new_title"].stringValue
             arrAllEvent.append(title)
             var crationDate = item["createdon"].stringValue
-            crationDate = Date.getFormattedDate(string: crationDate, formatter: "MMM dd")
+            crationDate = Date.getFormattedDate(string: crationDate, formatter: "dd-MMM")
             arrDate.append(crationDate)
             let desc = item["new_description"].stringValue
             arrAllTiming.append(desc)
