@@ -13,7 +13,7 @@ struct Album {
     let name: String?
     let thumbnail: UIImage?
     
-    init(albumID: String, name: String?, thumbnail: UIImage = #imageLiteral(resourceName: "placeholder.png")) {
+    init(albumID: String, name: String?, thumbnail: UIImage = #imageLiteral(resourceName: "ic_gallery_black")) {
         self.albumID = albumID
         self.name = name
         self.thumbnail = thumbnail

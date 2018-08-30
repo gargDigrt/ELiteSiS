@@ -193,7 +193,7 @@ extension LoginViewController {
             let md5EncodedPassword = MD5(password)
             UserDefaults.standard.set(md5EncodedPassword, forKey: "Pwd")
             
-            ProgressLoader.shared.showLoader(withText: "Please wait...")
+            ProgressLoader.shared.showLoader(withText: "Logging...")
             
             self.selectedLogin = self.getUserName()
             UserDefaults.standard.set(self.selectedLogin, forKey: "selectedLogin")

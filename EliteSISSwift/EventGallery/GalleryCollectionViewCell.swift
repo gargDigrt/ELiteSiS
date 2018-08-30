@@ -15,8 +15,8 @@ class GalleryCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        imgView.layer.cornerRadius = floor(((UIScreen.main.bounds.width - 70)/3))/2
-        imgView.clipsToBounds = true
+//        imgView.layer.cornerRadius = floor(((UIScreen.main.bounds.width - 70)/3))/2
+//        imgView.clipsToBounds = true
     }
     
     override func prepareForReuse() {

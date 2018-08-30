@@ -110,8 +110,7 @@ class WebServices: NSObject {
     func getLessionPlansFor(classSession: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         
         let requestURL = baseURL + "SIS_Student/GetLessonPlan/" + classSession + "/" + schoolId
-        print(
-        )
+      print(requestURL)
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
@@ -130,7 +129,7 @@ class WebServices: NSObject {
     func getFacultyList(sectionID: String,  completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         
         let requestURL = baseURL + "SIS/getFacultyList/" + sectionID + "/" + schoolId
-
+print(requestURL)
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in
@@ -148,7 +147,7 @@ class WebServices: NSObject {
     func getChatMessage(senderID: String, recipientId: String, createdOn: String, completion: @escaping (_ success: JSON?, _ error:Error? ) -> Void )  {
         
         let requestURL = baseURL + "SIS_Student/GetChat/" + senderID + "/" + recipientId + "/" + createdOn + "/" + schoolId
-
+print(requestURL)
         let encodedURL = requestURL.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         Alamofire.request(encodedURL!, headers: headers).responseJSON { (responseData) -> Void in

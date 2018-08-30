@@ -125,16 +125,17 @@ extension NotificationViewController {
 //            todayDatasource.configureData()
             cell.tblViewDetails.dataSource = todayDatasource
             return cell
-            
+        
         case 1:
             //            allDatasource.configureData()
             cell.tblViewDetails.dataSource = allDatasource
             return cell
-            
+          
         default:
 //            missedDataSource.configureData()
             cell.tblViewDetails.dataSource = missedDataSource
             return cell
+           
         }
         
     }

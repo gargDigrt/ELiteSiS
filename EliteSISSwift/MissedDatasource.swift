@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class MissedDatasource: NSObject, UITableViewDataSource {
     
@@ -31,6 +32,21 @@ class MissedDatasource: NSObject, UITableViewDataSource {
         arrDate.append("5 days ago")
         arrDate.append("5 days ago")
         arrDate.append("5 days ago")
+    }
+    
+    
+    func configureData(from json: [JSON] ) {
+        for item in json {
+            let heading = item["new_heading"].stringValue
+            arrMissedClass.append(heading)
+            let title = item["new_title"].stringValue
+            arrMissedTeacher.append(title)
+            var crationDate = item["createdon"].stringValue
+            crationDate = Date.getFormattedDate(string: crationDate, formatter: "dd-MMM")
+            arrDate.append(crationDate)
+            let desc = item["new_description"].stringValue
+            arrMissedAssignment.append(desc)
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
