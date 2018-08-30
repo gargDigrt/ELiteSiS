@@ -9,6 +9,7 @@
 
 //https://github.com/WenchaoD/FSCalendar/blob/master/MOREUSAGE.md
 import UIKit
+import FSCalendar
 
 class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalendarDelegate, FSCalendarDelegateAppearance,ENSideMenuDelegate {
    // fileprivate weak var calendar: FSCalendar!
