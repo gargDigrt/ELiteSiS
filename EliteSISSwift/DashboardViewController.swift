@@ -100,16 +100,14 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let newAngleProfressViewSubjectValue = getAngle(value: studyProgress, outOf: 100)
         studyProgressView.animate(toAngle: newAngleProfressViewSubjectValue, duration: 1.0, completion: nil)
         
-        let attendence = dict["new_presentdays"] as! Double
-        attendencePercentLabel.text = " \(attendence)%"
-        let newAngleProfressViewAttendenceValue = getAngle(value: attendence, outOf: 100)
-        attendenceProgressView.animate(toAngle: newAngleProfressViewAttendenceValue, duration: 1.0, completion: nil)
         
+        let presentDay = dict["new_presentdays"] as! Double
+        let totalDay = dict["new_totalclasses"] as! Double
         let totalDays = dict["new_presentdays"] as! Int
         totalDayLabel.text = "\(totalDays)"
-        let presentDays = dict["new_presentdays"] as! Double
-        
-        let newAngleProgressViewDayValue = getAngle(value: presentDays, outOf: 100)
+        let perCent = 100*presentDay/totalDay
+        attendencePercentLabel.text = " \(perCent)%"
+        let newAngleProgressViewDayValue = getAngle(value: perCent, outOf: 100)
         attendenceProgressView.animate(toAngle: newAngleProgressViewDayValue, duration: 1.0, completion: nil)
         
         let percentage = dict["new_percentage"] as! Double
