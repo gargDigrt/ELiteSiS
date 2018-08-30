@@ -11,15 +11,15 @@
 import UIKit
 
 class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalendarDelegate, FSCalendarDelegateAppearance,ENSideMenuDelegate {
-   // fileprivate weak var calendar: FSCalendar!
     
+    //IBOutlet
     @IBOutlet weak var lblPresencePercentMonth: UILabel!
     @IBOutlet weak var lblAbsentNumber: UILabel!
     @IBOutlet weak var lblPresentnumber: UILabel!
     @IBOutlet weak var presencePercentSession: UILabel!
     
-    @IBOutlet
-    weak var calendar: FSCalendar!
+    @IBOutlet weak var calendar: FSCalendar!
+    
     fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
     fileprivate lazy var dateFormatter1: DateFormatter = {
         let formatter = DateFormatter()
@@ -31,6 +31,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }()
+    
 //    let fillSelectionColors = ["2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2015/12/08": UIColor.green, "2015/12/06": UIColor.purple, "2015/12/17": UIColor.gray, "2015/12/21": UIColor.cyan]
     
     
@@ -42,20 +43,29 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
     
    // var datesWithEvent = ["2015-10-03", "2015-10-06", "2015-10-12", "2015-10-25"]
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-//        let view = UIView(frame: UIScreen.main.bounds)
-//        view.backgroundColor = UIColor.groupTableViewBackground
-//        self.view = view
-//
-//        let height: CGFloat = UIDevice.current.model.hasPrefix("iPad") ? 450 : 300
-//        let calendar = FSCalendar(frame: CGRect(x:0, y:64, width:self.view.bounds.size.width, height:height))
+    fileprivate func configureCalender() {
+        //        let view = UIView(frame: UIScreen.main.bounds)
+        //        view.backgroundColor = UIColor.groupTableViewBackground
+        //        self.view = view
+        //
+        //        let height: CGFloat = UIDevice.current.model.hasPrefix("iPad") ? 450 : 300
+        //        let calendar = FSCalendar(frame: CGRect(x:0, y:64, width:self.view.bounds.size.width, height:height))
         calendar.dataSource = self
         calendar.delegate = self
         //calendar.allowsMultipleSelection = true
         calendar.swipeToChooseGesture.isEnabled = true
         calendar.backgroundColor = UIColor.white
         calendar.appearance.caseOptions = [.headerUsesUpperCase,.weekdayUsesSingleUpperCase]
+        
+        // For UITest
+        self.calendar.accessibilityIdentifier = "calendar"
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        getAttendeceData()
+        configureCalender()
+        
 //        self.view.addSubview(calendar)
 //        self.calendar = calendar
         
@@ -67,8 +77,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
         self.navigationItem.rightBarButtonItem = todayItem
         
-        // For UITest
-        self.calendar.accessibilityIdentifier = "calendar"
+
         // Do any additional setup after loading the view.
         
         lblPresentnumber.text = "Present: 0"
@@ -76,25 +85,31 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         lblPresencePercentMonth.text = "- 0% presence in this month."
         presencePercentSession.text = "- 0% presence in this session."
     }
+    
+    func getAttendeceData() {
+        guard let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else { return }
+        WebServices.shared.getAttendenceStatusFor(studentID: studentID, completion: {(response, error) in
+            
+            if error == nil, let respondeDict = response {
+                let attandenseString = respondeDict["value"][0]["new_attendancedata"].stringValue
+                self.prepareAttandenceData(text: attandenseString)
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user performance error")
+            }
+            ProgressLoader.shared.hideLoader()
+        })
+    }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func prepareAttandenceData(text:String) {
+    
+        let result = getMonthAndString(text: text)
+        debugPrint(result.months)
+        debugPrint(result.days)
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-    @objc
-    func todayItemClicked(sender: AnyObject) {
+    @objc func todayItemClicked(sender: AnyObject) {
         self.calendar.setCurrentPage(Date(), animated: false)
     }
     
@@ -221,6 +236,18 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         sideMenuController()?.setContentViewController(destViewController)
         hideSideMenuView()
     }
+    
+    func getMonthAndString(text: String) -> (months: [String],days: [String]) {
+        
+        var trimmedText = text.replacingOccurrences(of: "]", with: "")
+        trimmedText = trimmedText.replacingOccurrences(of: "[", with: "")
+        
+        let monthArray = (trimmedText.components(separatedBy: CharacterSet.decimalDigits.inverted)).filter{ $0 != "" }
+        let dayAry = (trimmedText.components(separatedBy: CharacterSet.decimalDigits)).filter{ $0 != "" }
+        
+        return (monthArray,dayAry)
+    }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
