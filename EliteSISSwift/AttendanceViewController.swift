@@ -12,15 +12,15 @@ import UIKit
 import FSCalendar
 
 class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalendarDelegate, FSCalendarDelegateAppearance,ENSideMenuDelegate {
-   // fileprivate weak var calendar: FSCalendar!
     
+    //IBOutlet
     @IBOutlet weak var lblPresencePercentMonth: UILabel!
     @IBOutlet weak var lblAbsentNumber: UILabel!
     @IBOutlet weak var lblPresentnumber: UILabel!
     @IBOutlet weak var presencePercentSession: UILabel!
     
-    @IBOutlet
-    weak var calendar: FSCalendar!
+    @IBOutlet weak var calendar: FSCalendar!
+    
     fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
     fileprivate lazy var dateFormatter1: DateFormatter = {
         let formatter = DateFormatter()
@@ -32,33 +32,34 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }()
-//    let fillSelectionColors = ["2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2015/12/08": UIColor.green, "2015/12/06": UIColor.purple, "2015/12/17": UIColor.gray, "2015/12/21": UIColor.cyan]
     
+    
+    var attndenceDict:[String:UIColor] = [:]
     
     let fillDefaultColors = ["2018/04/04": UIColor.green, "2018/04/02": UIColor.green, "2018/04/03": UIColor.green, "2018/04/13": UIColor.green, "2018/04/05": UIColor.green, "2018/04/06": UIColor.green, "2018/04/07": UIColor.red, "2018/04/11": UIColor.red, "2018/04/09": UIColor.red, "2018/04/10": UIColor.red, "2018/04/12": UIColor.green, "2018/04/18": UIColor.green, "2018/04/14": UIColor.green, "2018/04/16": UIColor.red, "2018/04/17": UIColor.red, "2018/04/19": UIColor.green, "2018/04/20": UIColor.green, "2018/04/25": UIColor.green, "2018/04/23": UIColor.green, "2018/04/24": UIColor.green, "2018/04/26": UIColor.green, "2018/04/27": UIColor.green,"2018/04/21": UIColor.green]
-
-//    let borderDefaultColors = ["2018/02/08": UIColor.brown, "2018/02/17": UIColor.magenta, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.black, "2018/02/08": UIColor.brown, "2018/02/17": UIColor.magenta, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.black, "2015/12/08": UIColor.brown, "2015/12/17": UIColor.magenta, "2015/12/21": UIColor.purple, "2015/12/25": UIColor.black]
-//
-//    let borderSelectionColors = ["2018/02/08": UIColor.red, "2018/02/17": UIColor.purple, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.magenta, "2018/02/08": UIColor.red, "2018/02/17": UIColor.purple, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.purple, "2015/12/08": UIColor.red, "2015/12/17": UIColor.purple, "2015/12/21": UIColor.cyan, "2015/12/25": UIColor.magenta]
     
-   // var datesWithEvent = ["2015-10-03", "2015-10-06", "2015-10-12", "2015-10-25"]
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-//        let view = UIView(frame: UIScreen.main.bounds)
-//        view.backgroundColor = UIColor.groupTableViewBackground
-//        self.view = view
-//
-//        let height: CGFloat = UIDevice.current.model.hasPrefix("iPad") ? 450 : 300
-//        let calendar = FSCalendar(frame: CGRect(x:0, y:64, width:self.view.bounds.size.width, height:height))
+    fileprivate func configureCalender() {
+        //        let view = UIView(frame: UIScreen.main.bounds)
+        //        view.backgroundColor = UIColor.groupTableViewBackground
+        //        self.view = view
+        //
+        //        let height: CGFloat = UIDevice.current.model.hasPrefix("iPad") ? 450 : 300
+        //        let calendar = FSCalendar(frame: CGRect(x:0, y:64, width:self.view.bounds.size.width, height:height))
         calendar.dataSource = self
         calendar.delegate = self
         //calendar.allowsMultipleSelection = true
         calendar.swipeToChooseGesture.isEnabled = true
-        calendar.backgroundColor = UIColor.white
+        calendar.backgroundColor = .white
         calendar.appearance.caseOptions = [.headerUsesUpperCase,.weekdayUsesSingleUpperCase]
-//        self.view.addSubview(calendar)
-//        self.calendar = calendar
+        // For UITest
+        self.calendar.accessibilityIdentifier = "calendar"
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        getAttendeceData()
+        configureCalender()
+        
         
         let date = Date()
         let formatter = DateFormatter()
@@ -68,8 +69,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
         self.navigationItem.rightBarButtonItem = todayItem
         
-        // For UITest
-        self.calendar.accessibilityIdentifier = "calendar"
+
         // Do any additional setup after loading the view.
         
         lblPresentnumber.text = "Present: 0"
@@ -77,25 +77,76 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         lblPresencePercentMonth.text = "- 0% presence in this month."
         presencePercentSession.text = "- 0% presence in this session."
     }
+    
+    func getAttendeceData() {
+        guard let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else { return }
+        WebServices.shared.getAttendenceStatusFor(studentID: studentID, completion: {(response, error) in
+            
+            if error == nil, let respondeDict = response {
+                let attandenseString = respondeDict["value"][0]["new_attendancedata"].stringValue
+                self.prepareAttandenceData(text: attandenseString)
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user performance error")
+            }
+            ProgressLoader.shared.hideLoader()
+        })
+    }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func prepareAttandenceData(text:String) {
+        let result = getMonthAndString(text: text)
+        
+        for (index, month) in result.months.enumerated() {
+            let dateArray = getAllDatesFor(month: Int(month)!)
+            let colors = getColorFor(string: result.days[index])
+            attndenceDict[dateArray[index]] = colors[index]
+        }
+        debugPrint(attndenceDict)
+        calendar.reloadData()
+    }
+
+    func getAllDatesFor(month: Int) -> [String] {
+
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: Date())
+        
+        let dateComponents = DateComponents(year: year, month: month)
+        let date = calendar.date(from: dateComponents)!
+        
+        let range = calendar.range(of: .day, in: .month, for: date)!
+        let numDays = range.count
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy MM dd"
+        formatter.timeZone = TimeZone(abbreviation: "GMT+0:00")
+        var arrDates = [String]()
+        for day in 1...numDays {
+            let dateString = "\(year)/\(String(format:"%02d",month))/\(String(format:"%02d",day))"
+            arrDates.append(dateString)
+        }
+        return arrDates
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func getColorFor(string: String) -> [UIColor] {
+        
+        var colors = [UIColor]()
+        for (_, char) in string.enumerated() {
+            
+            switch (char) {
+            case "P":
+                colors.append(UIColor.green)
+                break
+            case "U":
+                colors.append(UIColor.red)
+                break
+            default:
+                colors.append(UIColor.clear)
+                break
+            }
+        }
+        return colors
     }
-    */
-
-    @objc
-    func todayItemClicked(sender: AnyObject) {
+    
+    @objc func todayItemClicked(sender: AnyObject) {
         self.calendar.setCurrentPage(Date(), animated: false)
     }
     
@@ -134,7 +185,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillDefaultColorFor date: Date) -> UIColor? {
         let key = self.dateFormatter1.string(from: date)
-        if let color = self.fillDefaultColors[key] {
+        if let color = self.attndenceDict[key] {
             return color
         }
         return nil
@@ -222,6 +273,18 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         sideMenuController()?.setContentViewController(destViewController)
         hideSideMenuView()
     }
+    
+    func getMonthAndString(text: String) -> (months: [String],days: [String]) {
+        
+        var trimmedText = text.replacingOccurrences(of: "]", with: "")
+        trimmedText = trimmedText.replacingOccurrences(of: "[", with: "")
+        
+        let monthArray = (trimmedText.components(separatedBy: CharacterSet.decimalDigits.inverted)).filter{ $0 != "" }
+        let dayAry = (trimmedText.components(separatedBy: CharacterSet.decimalDigits)).filter{ $0 != "" }
+        
+        return (monthArray,dayAry)
+    }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
