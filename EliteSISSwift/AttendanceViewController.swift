@@ -32,16 +32,10 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         return formatter
     }()
     
-//    let fillSelectionColors = ["2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2018/02/08": UIColor.green, "2018/02/06": UIColor.purple, "2018/02/17": UIColor.gray, "2018/02/21": UIColor.cyan, "2015/12/08": UIColor.green, "2015/12/06": UIColor.purple, "2015/12/17": UIColor.gray, "2015/12/21": UIColor.cyan]
     
+    var attndenceDict:[String:UIColor] = [:]
     
     let fillDefaultColors = ["2018/04/04": UIColor.green, "2018/04/02": UIColor.green, "2018/04/03": UIColor.green, "2018/04/13": UIColor.green, "2018/04/05": UIColor.green, "2018/04/06": UIColor.green, "2018/04/07": UIColor.red, "2018/04/11": UIColor.red, "2018/04/09": UIColor.red, "2018/04/10": UIColor.red, "2018/04/12": UIColor.green, "2018/04/18": UIColor.green, "2018/04/14": UIColor.green, "2018/04/16": UIColor.red, "2018/04/17": UIColor.red, "2018/04/19": UIColor.green, "2018/04/20": UIColor.green, "2018/04/25": UIColor.green, "2018/04/23": UIColor.green, "2018/04/24": UIColor.green, "2018/04/26": UIColor.green, "2018/04/27": UIColor.green,"2018/04/21": UIColor.green]
-
-//    let borderDefaultColors = ["2018/02/08": UIColor.brown, "2018/02/17": UIColor.magenta, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.black, "2018/02/08": UIColor.brown, "2018/02/17": UIColor.magenta, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.black, "2015/12/08": UIColor.brown, "2015/12/17": UIColor.magenta, "2015/12/21": UIColor.purple, "2015/12/25": UIColor.black]
-//
-//    let borderSelectionColors = ["2018/02/08": UIColor.red, "2018/02/17": UIColor.purple, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.magenta, "2018/02/08": UIColor.red, "2018/02/17": UIColor.purple, "2018/02/21": UIColor.cyan, "2018/02/25": UIColor.purple, "2015/12/08": UIColor.red, "2015/12/17": UIColor.purple, "2015/12/21": UIColor.cyan, "2015/12/25": UIColor.magenta]
-    
-   // var datesWithEvent = ["2015-10-03", "2015-10-06", "2015-10-12", "2015-10-25"]
     
     fileprivate func configureCalender() {
         //        let view = UIView(frame: UIScreen.main.bounds)
@@ -54,9 +48,8 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         calendar.delegate = self
         //calendar.allowsMultipleSelection = true
         calendar.swipeToChooseGesture.isEnabled = true
-        calendar.backgroundColor = UIColor.white
+        calendar.backgroundColor = .white
         calendar.appearance.caseOptions = [.headerUsesUpperCase,.weekdayUsesSingleUpperCase]
-        
         // For UITest
         self.calendar.accessibilityIdentifier = "calendar"
     }
@@ -66,8 +59,6 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         getAttendeceData()
         configureCalender()
         
-//        self.view.addSubview(calendar)
-//        self.calendar = calendar
         
         let date = Date()
         let formatter = DateFormatter()
@@ -102,11 +93,56 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
     }
 
     func prepareAttandenceData(text:String) {
-    
         let result = getMonthAndString(text: text)
-        debugPrint(result.months)
-        debugPrint(result.days)
         
+        for (index, month) in result.months.enumerated() {
+            let dateArray = getAllDatesFor(month: Int(month)!)
+            let colors = getColorFor(string: result.days[index])
+            attndenceDict[dateArray[index]] = colors[index]
+        }
+        debugPrint(attndenceDict)
+        calendar.reloadData()
+    }
+
+    func getAllDatesFor(month: Int) -> [String] {
+
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: Date())
+        
+        let dateComponents = DateComponents(year: year, month: month)
+        let date = calendar.date(from: dateComponents)!
+        
+        let range = calendar.range(of: .day, in: .month, for: date)!
+        let numDays = range.count
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy MM dd"
+        formatter.timeZone = TimeZone(abbreviation: "GMT+0:00")
+        var arrDates = [String]()
+        for day in 1...numDays {
+            let dateString = "\(year)/\(String(format:"%02d",month))/\(String(format:"%02d",day))"
+            arrDates.append(dateString)
+        }
+        return arrDates
+    }
+    
+    func getColorFor(string: String) -> [UIColor] {
+        
+        var colors = [UIColor]()
+        for (_, char) in string.enumerated() {
+            
+            switch (char) {
+            case "P":
+                colors.append(UIColor.green)
+                break
+            case "U":
+                colors.append(UIColor.red)
+                break
+            default:
+                colors.append(UIColor.clear)
+                break
+            }
+        }
+        return colors
     }
     
     @objc func todayItemClicked(sender: AnyObject) {
@@ -148,7 +184,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillDefaultColorFor date: Date) -> UIColor? {
         let key = self.dateFormatter1.string(from: date)
-        if let color = self.fillDefaultColors[key] {
+        if let color = self.attndenceDict[key] {
             return color
         }
         return nil
