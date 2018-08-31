@@ -46,7 +46,7 @@ class ParentChatViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        getFacultyListToDisplay()
         getFacultyList()
         configureTableView()
         
@@ -75,7 +75,7 @@ class ParentChatViewController: UIViewController {
         textViewMsg.delegate = self
     }
     
-    func configureDropDown(){
+    func configureDropDown() {
         
         // The view to which the drop down will appear on
         dropDownStudents.anchorView = self.viewClassSelection
@@ -106,6 +106,23 @@ class ParentChatViewController: UIViewController {
         
     }
     
+    func getFacultyListToDisplay() {
+        
+        guard let classSession = UserDefaults.standard.object(forKey: "_sis_currentclasssession_value") as? String else { return }
+        ProgressLoader.shared.showLoader(withText: "")
+        WebServices.shared.getLessionPlansFor(classSession: classSession, completion: { (response, error) in
+            
+            if error == nil, let responseDict = response {
+                print(responseDict)
+//                self.faculties = responseDict["value"].arrayValue
+//                self.tblViewTeachers.reloadData()
+            }else{
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting faculty list error")
+            }
+            ProgressLoader.shared.hideLoader()
+        })
+    }
     
     //MARK:- Web service calls
     func getFacultyList() {
