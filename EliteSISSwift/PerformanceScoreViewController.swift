@@ -279,8 +279,20 @@ extension PerformanceScoreViewController:  UITableViewDelegate, UITableViewDataS
 
 //MARK:- String extension
 extension String {
+    
     public func getAcronyms(separator: String = "") -> String {
         let acronyms = self.components(separatedBy: " ").map({ String($0.first!) }).joined(separator: separator);
         return acronyms
+    }
+
+    /// stringToFind must be at least 1 character.
+    func countInstances(of stringToFind: String) -> Int {
+        var stringToSearch = self
+        var count = 0
+        while let foundRange = stringToSearch.range(of: stringToFind, options: .diacriticInsensitive) {
+            stringToSearch = stringToSearch.replacingCharacters(in: foundRange, with: "")
+            count += 1
+        }
+        return count
     }
 }

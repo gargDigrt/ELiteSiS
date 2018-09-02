@@ -33,7 +33,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         return formatter
     }()
     
-    var result:(months: [String],days: [String]) = ([],[])
+    var monthlyRecord:[String: (Int,Int)] = [:]
     var attndenceDict:[String:UIColor] = [:]
     
     let fillDefaultColors = ["2018/04/04": UIColor.green, "2018/04/02": UIColor.green, "2018/04/03": UIColor.green, "2018/04/13": UIColor.green, "2018/04/05": UIColor.green, "2018/04/06": UIColor.green, "2018/04/07": UIColor.red, "2018/04/11": UIColor.red, "2018/04/09": UIColor.red, "2018/04/10": UIColor.red, "2018/04/12": UIColor.green, "2018/04/18": UIColor.green, "2018/04/14": UIColor.green, "2018/04/16": UIColor.red, "2018/04/17": UIColor.red, "2018/04/19": UIColor.green, "2018/04/20": UIColor.green, "2018/04/25": UIColor.green, "2018/04/23": UIColor.green, "2018/04/24": UIColor.green, "2018/04/26": UIColor.green, "2018/04/27": UIColor.green,"2018/04/21": UIColor.green]
@@ -109,12 +109,13 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         prepareMonthlyRecord(record: result)
         ProgressLoader.shared.hideLoader()
     }
-    func prepareMonthlyRecord(record: ([String], [String])) {
-//        
-//        for (days, month) in zip(result.days, result.months ){
-//            
-//        }
+    func prepareMonthlyRecord(record: (months:[String],days: [String])) {
         
+        for (days, month) in zip(record.days, record.months ){
+            let presents = days.countInstances(of: "P")
+            let absent = days.countInstances(of: "A")
+            monthlyRecord[month] = (presents,absent)
+        }
     }
 
     func getAllDatesFor(month: Int) -> [String] {
@@ -216,15 +217,14 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         
         print(calendar.currentPage)
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let myString = formatter.string(from: calendar.currentPage as Date)
-        print(myString)
-        
-        if (myString == "2018-04-01"){
-            lblPresentnumber.text = "Present: 17"
-            lblAbsentNumber.text = "Absent: 6"
-            lblPresencePercentMonth.text = "- 75% presence in this month."
-            presencePercentSession.text = "- 75% presence in this session."
+        formatter.dateFormat = "MM"
+        let month = formatter.string(from: calendar.currentPage as Date)
+        print(month)
+        if let data  = monthlyRecord[month] {
+            lblPresentnumber.text = "Present: \(data.0)"
+            lblAbsentNumber.text = "Absent: \(data.1)"
+            lblPresencePercentMonth.text = "- 0% presence in this month."
+            presencePercentSession.text = "- 0% presence in this session."
         }else{
             
             lblPresentnumber.text = "Present: 0"
