@@ -67,7 +67,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         
         configureTableView()
         // "Qualification Detail",
-        pickerData = ["General Info", "Contact Info", "Class Applied",  "Address Detail", "Identity Card Details"]
+        pickerData = ["General Info", "Contact Info", "Class Details",  "Address Detail", "Identity Card Detail"]
 
         if studentDetail != nil {
             generalDatasource.studentName = studentDetail.name
@@ -170,7 +170,6 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         }
         
         WebServices.shared.getID(forRegistrationID: regID, completion: { (response, error) in
-            
             if error == nil, let responseDict = response {
                 debugPrint(responseDict)
                 UserDefaults.standard.set(responseDict["value"][0]["sis_licensingauthority"].stringValue, forKey: "sis_licensingauthority")

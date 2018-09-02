@@ -14,10 +14,12 @@ import SwiftyJSON
 struct Faculty {
     let name: String
     let facultyID: String
+    let subject: String
     
-    init(name:String, id: String) {
+    init(name:String, id: String, subject:String) {
         self.name = name
         self.facultyID = id
+        self.subject = subject
     }
 }
 
@@ -41,13 +43,12 @@ class ParentChatViewController: UIViewController {
     var arrMsgData = [JSON]()
     var faculties:[Faculty] = []
     var selectedFaculty:Faculty?
-    
+    var subjectArray = [String]()
     //MARK:- View's Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         getFacultyListToDisplay()
-        getFacultyList()
         configureTableView()
         
         if nameString != nil {
@@ -113,9 +114,16 @@ class ParentChatViewController: UIViewController {
         WebServices.shared.getLessionPlansFor(classSession: classSession, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
-                print(responseDict)
-//                self.faculties = responseDict["value"].arrayValue
-//                self.tblViewTeachers.reloadData()
+            let myData = responseDict["value"].arrayValue
+               print(myData)
+                for myValue in myData {
+                   
+                   let subject = myValue["new_subject"]["sis_name"].stringValue
+                    self.subjectArray.append(subject)
+                    print(self.subjectArray)
+                    self.getFacultyList()
+                }
+
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "Getting faculty list error")
@@ -134,12 +142,16 @@ class ParentChatViewController: UIViewController {
                 print(responseDict)
                 let facultyData = responseDict.arrayValue
                 self.dataSourceClassses.removeAll()
-                for item in facultyData {
-                    let name = item["FacultyName"].stringValue
-                    self.dataSourceClassses.append(name)
+                for (item, subName) in zip(facultyData,self.subjectArray) {
+   
+                  let name = item["FacultyName"].stringValue
+                  
                     let id = item["FacultyContactID"].stringValue
-                    let faculty = Faculty(name: name, id: id)
+                    let faculty = Faculty(name: name, id: id, subject: subName)
+                    let teacherInfo =  "\(faculty.name), \(faculty.subject)"
+                    self.dataSourceClassses.append(teacherInfo)
                     self.faculties.append(faculty)
+ 
                 }
                 self.configureDropDown()
             }else{

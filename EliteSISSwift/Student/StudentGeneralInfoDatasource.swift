@@ -27,9 +27,9 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             let genderId:String = UserDefaults.standard.value(forKey: "sis_gender") as! String
             if (genderId == "1") {
-                cell.textField.text  = "MALE"
+                cell.textField.text  = "Male"
             } else if (genderId == "2") {
-                cell.textField.text = "FEMALE"
+                cell.textField.text = "Female"
             }
             else {
                 cell.textField.text  = "Others"

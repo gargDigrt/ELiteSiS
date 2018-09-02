@@ -801,15 +801,53 @@
                                             <constraint firstAttribute="height" constant="20" id="lYK-FF-ebC"/>
                                         </constraints>
                                     </imageView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5fp-cb-fXA">
+                                        <rect key="frame" x="-1" y="48" width="374" height="2"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="2" id="dcm-Eo-Mgg"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BtA-9z-ETA">
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="2"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I2K-ny-uxr">
+                                        <rect key="frame" x="0.0" y="0.0" width="2" height="50"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="2" id="qgI-wJ-P4c"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1I4-K6-gZ9">
+                                        <rect key="frame" x="371" y="0.0" width="2" height="50"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="2" id="ky2-kx-hZw"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="3M4-JN-URw"/>
+                                    <constraint firstAttribute="bottom" secondItem="Hoq-cZ-2Hb" secondAttribute="bottom" constant="15" id="0KR-tT-bPM"/>
+                                    <constraint firstItem="1I4-K6-gZ9" firstAttribute="bottom" secondItem="5fp-cb-fXA" secondAttribute="bottom" id="2SE-qx-B8s"/>
+                                    <constraint firstItem="I2K-ny-uxr" firstAttribute="leading" secondItem="WH6-Le-woM" secondAttribute="leading" id="97p-5U-MOj"/>
+                                    <constraint firstItem="Hoq-cZ-2Hb" firstAttribute="top" secondItem="BtA-9z-ETA" secondAttribute="bottom" constant="12" id="9nk-gH-0JI"/>
                                     <constraint firstItem="Hoq-cZ-2Hb" firstAttribute="leading" secondItem="WH6-Le-woM" secondAttribute="leading" constant="10" id="A1e-cj-WA0"/>
+                                    <constraint firstAttribute="bottom" secondItem="5fp-cb-fXA" secondAttribute="bottom" id="AJS-QT-RtS"/>
+                                    <constraint firstItem="I2K-ny-uxr" firstAttribute="height" secondItem="WH6-Le-woM" secondAttribute="height" id="BY5-HT-MjL"/>
+                                    <constraint firstAttribute="bottom" secondItem="I2K-ny-uxr" secondAttribute="bottom" id="Clo-kQ-LzS"/>
+                                    <constraint firstAttribute="trailing" secondItem="1I4-K6-gZ9" secondAttribute="trailing" constant="1" id="FQ7-hZ-nJN"/>
+                                    <constraint firstItem="5fp-cb-fXA" firstAttribute="width" secondItem="WH6-Le-woM" secondAttribute="width" id="FXx-Ht-3h6"/>
                                     <constraint firstItem="jYD-kp-ZRI" firstAttribute="leading" secondItem="Hoq-cZ-2Hb" secondAttribute="trailing" constant="8" id="I6i-hY-85r"/>
+                                    <constraint firstItem="BtA-9z-ETA" firstAttribute="top" secondItem="WH6-Le-woM" secondAttribute="top" id="J0G-il-AEX"/>
                                     <constraint firstItem="Hoq-cZ-2Hb" firstAttribute="centerY" secondItem="WH6-Le-woM" secondAttribute="centerY" id="KW2-Ih-yFJ"/>
                                     <constraint firstAttribute="trailing" secondItem="jYD-kp-ZRI" secondAttribute="trailing" constant="6" id="LtY-nc-KtR"/>
+                                    <constraint firstItem="1I4-K6-gZ9" firstAttribute="top" secondItem="I2K-ny-uxr" secondAttribute="top" id="LxH-vU-XKq"/>
+                                    <constraint firstItem="BtA-9z-ETA" firstAttribute="centerX" secondItem="WH6-Le-woM" secondAttribute="centerX" id="ScJ-tH-GBO"/>
+                                    <constraint firstItem="BtA-9z-ETA" firstAttribute="width" secondItem="WH6-Le-woM" secondAttribute="width" id="Toz-t2-RYT"/>
+                                    <constraint firstItem="BtA-9z-ETA" firstAttribute="leading" secondItem="5fp-cb-fXA" secondAttribute="leading" constant="1" id="lnv-to-aKT"/>
                                     <constraint firstItem="jYD-kp-ZRI" firstAttribute="centerY" secondItem="WH6-Le-woM" secondAttribute="centerY" id="mho-4P-3lt"/>
                                 </constraints>
                                 <connections>
@@ -853,7 +891,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2004" y="-295.50224887556226"/>
+            <point key="canvasLocation" x="2002.8985507246377" y="-295.92391304347831"/>
         </scene>
         <!--Chapter Status View Controller-->
         <scene sceneID="75A-ci-q9O">
@@ -3299,10 +3337,11 @@
                                     <action selector="showMenu:" destination="6ee-q1-KcR" eventType="touchUpInside" id="yrL-X6-yLS"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hqh-x3-34Q">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hqh-x3-34Q">
                                 <rect key="frame" x="16" y="96" width="382" height="624"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

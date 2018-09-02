@@ -197,7 +197,7 @@ extension StudyProgressViewController:  UITableViewDelegate,UITableViewDataSourc
         let cell = tableView.dequeueReusableCell(withIdentifier: "StudyProgressTableViewCell") as! StudyProgressTableViewCell
         cell.lblSubject.text = subjectDataAry[indexPath.row].0
 //        cell.lblSubject.text = arrValuesForTable[indexPath.row]["sub"]
-        cell.lblPercentage.text = subjectDataAry[indexPath.row].3
+        cell.lblPercentage.text =  "\(subjectDataAry[indexPath.row].3)%"
 //        cell.lblPercentage.text = "\(String(describing: arrValuesForTable[indexPath.row]["per"]!))%"
         
         let obtainMarks = Double(subjectDataAry[indexPath.row].1)

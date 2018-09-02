@@ -60,7 +60,7 @@
                     </userDefinedRuntimeAttributes>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Submit Date" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tlc-ju-sPr" customClass="PaddingLabel" customModule="EliteSISSwift" customModuleProvider="target">
-                    <rect key="frame" x="187.5" y="0.0" width="93.5" height="124"/>
+                    <rect key="frame" x="188" y="0.0" width="128" height="124"/>
                     <color key="backgroundColor" red="0.2877008915" green="0.58744770290000003" blue="0.99867731329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -80,8 +80,8 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Action" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jwb-dA-hMe" customClass="PaddingLabel" customModule="EliteSISSwift" customModuleProvider="target">
-                    <rect key="frame" x="281" y="0.0" width="94" height="124"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jwb-dA-hMe" customClass="PaddingLabel" customModule="EliteSISSwift" customModuleProvider="target">
+                    <rect key="frame" x="303" y="0.0" width="72" height="124"/>
                     <color key="backgroundColor" red="0.2877008915" green="0.58744770290000003" blue="0.99867731329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -114,13 +114,13 @@
                 <constraint firstItem="rT5-Up-MF7" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="gkO-TJ-r26"/>
                 <constraint firstItem="rT5-Up-MF7" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.25" id="hsm-xA-P7S"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="tlc-ju-sPr" secondAttribute="bottom" id="kot-SD-QVC"/>
-                <constraint firstItem="Jwb-dA-hMe" firstAttribute="leading" secondItem="tlc-ju-sPr" secondAttribute="trailing" id="loS-2E-r9s"/>
+                <constraint firstItem="Jwb-dA-hMe" firstAttribute="leading" secondItem="tlc-ju-sPr" secondAttribute="trailing" constant="-13" id="loS-2E-r9s"/>
                 <constraint firstItem="KsC-6M-0nt" firstAttribute="width" secondItem="rT5-Up-MF7" secondAttribute="width" id="ng2-vx-2Iy"/>
-                <constraint firstItem="tlc-ju-sPr" firstAttribute="width" secondItem="rT5-Up-MF7" secondAttribute="width" id="pHW-mC-XlI"/>
+                <constraint firstItem="tlc-ju-sPr" firstAttribute="width" secondItem="rT5-Up-MF7" secondAttribute="width" constant="34" id="pHW-mC-XlI"/>
                 <constraint firstItem="Jwb-dA-hMe" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="qya-Lp-9gS"/>
                 <constraint firstItem="tlc-ju-sPr" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="sTV-AK-0aW"/>
                 <constraint firstItem="tlc-ju-sPr" firstAttribute="leading" secondItem="KsC-6M-0nt" secondAttribute="trailing" id="u7T-u8-CkL"/>
-                <constraint firstItem="Jwb-dA-hMe" firstAttribute="width" secondItem="rT5-Up-MF7" secondAttribute="width" id="vK5-1N-cXn"/>
+                <constraint firstItem="Jwb-dA-hMe" firstAttribute="width" secondItem="rT5-Up-MF7" secondAttribute="width" constant="-22" id="vK5-1N-cXn"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
