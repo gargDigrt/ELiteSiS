@@ -11,6 +11,7 @@ import UIKit
 class TextFieldWithCalendarTableViewCell: UITableViewCell, UITextFieldDelegate {
     @IBOutlet weak var textfield: UITextField!
     
+    @IBOutlet weak var titleLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         textfield.delegate = self

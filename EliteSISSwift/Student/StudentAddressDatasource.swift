@@ -28,7 +28,8 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_houseno") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Address"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -37,7 +38,8 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the address type"
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_addresssubtype") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Address Type"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -46,7 +48,8 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the city"
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_city") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "City"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -55,7 +58,8 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the state"
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_state") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "State"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -64,7 +68,8 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the country"
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_country") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Country"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -73,7 +78,8 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the postal code"
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_postalcode") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Postal Code"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell

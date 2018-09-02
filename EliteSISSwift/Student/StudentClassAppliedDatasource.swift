@@ -18,12 +18,13 @@ class StudentClassAppliedDatasource: NSObject, UITableViewDataSource {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownTableViewCell") as! DropDownTableViewCell
             cell.selectionStyle = .none
-            cell.lblTitle.text = "Class Applied"
+            cell.lblTitle.text = "Class Details"
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_registration") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "ID"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -31,7 +32,8 @@ class StudentClassAppliedDatasource: NSObject, UITableViewDataSource {
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.text = UserDefaults.standard.object(forKey: "_sis_class_value") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Class Name"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -45,7 +47,8 @@ class StudentClassAppliedDatasource: NSObject, UITableViewDataSource {
             let DOB = fullNameArr?[0].split(separator: "-")
            
             cell.textfield.text = "\(DOB![2])-\(DOB![1])-\(DOB![0])"
-            cell.textfield.isUserInteractionEnabled = true
+            cell.textfield.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Date Applied"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell

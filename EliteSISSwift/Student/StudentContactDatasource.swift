@@ -24,7 +24,8 @@ class StudentContactDatasource: NSObject, UITableViewDataSource {
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_primarymobilenumber") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Mobile Number"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -34,6 +35,7 @@ class StudentContactDatasource: NSObject, UITableViewDataSource {
             cell.textField.placeholder = "Enter your email address"
             cell.textField.text = UserDefaults.standard.object(forKey: "emailaddress") as? String
             cell.textField.isUserInteractionEnabled = true
+            cell.titleLabel.text = "Email Address"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
