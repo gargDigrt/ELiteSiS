@@ -130,7 +130,7 @@ class LoginViewController: UIViewController, LoginButtonDelegate {
     
     func askForSchoolID() {
         let alert = UIAlertController(title: "Welcome to eLiteSIS !",
-                                      message: "Users installing the app for first timeshall enter the School ID received on their registered Email / Mobileto continue...",
+                                      message: "Users installing the app for first time shall enter the School ID received on their registered Email / Mobile to continue...",
                                       preferredStyle: .alert)
         // Submit button
         let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
