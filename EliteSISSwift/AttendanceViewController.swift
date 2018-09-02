@@ -33,7 +33,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         return formatter
     }()
     
-    
+    var result:(months: [String],days: [String]) = ([],[])
     var attndenceDict:[String:UIColor] = [:]
     
     let fillDefaultColors = ["2018/04/04": UIColor.green, "2018/04/02": UIColor.green, "2018/04/03": UIColor.green, "2018/04/13": UIColor.green, "2018/04/05": UIColor.green, "2018/04/06": UIColor.green, "2018/04/07": UIColor.red, "2018/04/11": UIColor.red, "2018/04/09": UIColor.red, "2018/04/10": UIColor.red, "2018/04/12": UIColor.green, "2018/04/18": UIColor.green, "2018/04/14": UIColor.green, "2018/04/16": UIColor.red, "2018/04/17": UIColor.red, "2018/04/19": UIColor.green, "2018/04/20": UIColor.green, "2018/04/25": UIColor.green, "2018/04/23": UIColor.green, "2018/04/24": UIColor.green, "2018/04/26": UIColor.green, "2018/04/27": UIColor.green,"2018/04/21": UIColor.green]
@@ -80,29 +80,41 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
     
     func getAttendeceData() {
         guard let studentID = UserDefaults.standard.string(forKey: "sis_studentid") else { return }
+        ProgressLoader.shared.showLoader(withText: "Fetching Data")
         WebServices.shared.getAttendenceStatusFor(studentID: studentID, completion: {(response, error) in
             
             if error == nil, let respondeDict = response {
                 let attandenseString = respondeDict["value"][0]["new_attendancedata"].stringValue
                 self.prepareAttandenceData(text: attandenseString)
             }else{
+                ProgressLoader.shared.hideLoader()
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "Getting user performance error")
             }
-            ProgressLoader.shared.hideLoader()
         })
     }
 
     func prepareAttandenceData(text:String) {
-        let result = getMonthAndString(text: text)
+       let result = getMonthAndString(text: text)
         
         for (index, month) in result.months.enumerated() {
             let dateArray = getAllDatesFor(month: Int(month)!)
             let colors = getColorFor(string: result.days[index])
-            attndenceDict[dateArray[index]] = colors[index]
+            for (date,color) in zip(dateArray, colors) {
+                attndenceDict[date] = color
+            }
         }
-        debugPrint(attndenceDict)
+//        debugPrint(attndenceDict)
         calendar.reloadData()
+        prepareMonthlyRecord(record: result)
+        ProgressLoader.shared.hideLoader()
+    }
+    func prepareMonthlyRecord(record: ([String], [String])) {
+//        
+//        for (days, month) in zip(result.days, result.months ){
+//            
+//        }
+        
     }
 
     func getAllDatesFor(month: Int) -> [String] {
@@ -135,8 +147,11 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
             case "P":
                 colors.append(UIColor.green)
                 break
-            case "U":
+            case "A":
                 colors.append(UIColor.red)
+                break
+            case "W":
+                colors.append(UIColor.clear)
                 break
             default:
                 colors.append(UIColor.clear)
@@ -196,6 +211,8 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
 //}
     func calendarCurrentMonthDidChange(_ calendar: FSCalendar) {
         // Do something
+        
+        
         
         print(calendar.currentPage)
         let formatter = DateFormatter()

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class NotificationViewController: UIViewController,UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate {
     
@@ -70,18 +71,41 @@ class NotificationViewController: UIViewController,UICollectionViewDataSource, U
     // MARK:- Web service call
     
     func getAllNotificationForUser() {
-        ProgressLoader.shared.showLoader(withText: "")
+        ProgressLoader.shared.showLoader(withText: "Loading Data")
         WebServices.shared.getNotificationFor(contactID: contactID, completion: { (response, error) in
             if error == nil , let responseDict = response {
                 print(responseDict)
                 let notifications = responseDict["value"].arrayValue
-                self.allDatasource.configureData(from: notifications)
+                self.categoriesNotifications(from: notifications)
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "fetching dashboard error")
             }
             ProgressLoader.shared.hideLoader()
         })
+    }
+    
+    
+    func categoriesNotifications(from json: [JSON]) {
+        
+        var todayAry:[JSON] = []
+        var missedAry:[JSON] = []
+        var allAry:[JSON] = []
+        for item in json {
+            var crationDate = item["createdon"].stringValue
+            crationDate = Date.getFormattedDate(string: crationDate, formatter: "dd-mm-yy")
+            let currentDate = Date.getCurrentDateWithFormat(format: "dd-mm-yy")
+            
+            if crationDate == currentDate {
+                todayAry.append(item)
+            }else{
+                missedAry.append(item)
+            }
+            allAry.append(item)
+        }
+        self.allDatasource.configureData(from: allAry)
+        self.missedDataSource.configureData(from: missedAry)
+        self.todayDatasource.configureData(from: todayAry)
     }
 }
 
@@ -122,17 +146,14 @@ extension NotificationViewController {
         
         switch indexPath.row {
         case 0:
-//            todayDatasource.configureData()
             cell.tblViewDetails.dataSource = todayDatasource
             return cell
         
         case 1:
-            //            allDatasource.configureData()
             cell.tblViewDetails.dataSource = allDatasource
             return cell
           
         default:
-//            missedDataSource.configureData()
             cell.tblViewDetails.dataSource = missedDataSource
             return cell
            

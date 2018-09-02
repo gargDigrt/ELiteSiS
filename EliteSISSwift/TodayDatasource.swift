@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class TodayDatasource: NSObject, UITableViewDataSource {
     
@@ -15,22 +16,18 @@ class TodayDatasource: NSObject, UITableViewDataSource {
     var arrTodayAssignment = [String]()
     var arrDate = [String]()
     
-    func configureData() {
-        arrTodayClass.append("Class 9th")
-        arrTodayClass.append("Class 9th")
-        arrTodayClass.append("Class 9th")
-        
-        arrTodayTeacher.append("Miss Santos")
-        arrTodayTeacher.append("Miss Santos")
-        arrTodayTeacher.append("Miss Santos")
-        
-        arrTodayAssignment.append("Assignment in Geography")
-        arrTodayAssignment.append("Assignment in Geography")
-        arrTodayAssignment.append("Assignment in Geography")
-        
-        arrDate.append("now")
-        arrDate.append("now")
-        arrDate.append("now")
+    func configureData(from json: [JSON] ) {
+        for item in json {
+            let heading = item["new_heading"].stringValue
+            arrTodayClass.append(heading)
+            let title = item["new_title"].stringValue
+            arrTodayTeacher.append(title)
+            var crationDate = item["createdon"].stringValue
+            crationDate = Date.getFormattedDate(string: crationDate, formatter: "dd-MMM")
+            arrDate.append(crationDate)
+            let desc = item["new_description"].stringValue
+            arrTodayAssignment.append(desc)
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
