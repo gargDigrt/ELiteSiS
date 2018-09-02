@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,6 +29,16 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zL2-ML-UyW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="20"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="viY-de-tOl"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                     <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Vn4-7m-bp3">
                         <rect key="frame" x="0.0" y="5" width="320" height="84"/>
                         <nil key="textColor"/>
@@ -37,18 +47,22 @@
                     </textField>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="zL2-ML-UyW" firstAttribute="leading" secondItem="D6Y-Kg-bmS" secondAttribute="leading" id="DY8-DE-jws"/>
+                    <constraint firstItem="zL2-ML-UyW" firstAttribute="width" secondItem="D6Y-Kg-bmS" secondAttribute="width" id="Mxt-Rg-sVF"/>
                     <constraint firstItem="Vn4-7m-bp3" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="NWY-Lx-4aY"/>
                     <constraint firstAttribute="trailing" secondItem="D6Y-Kg-bmS" secondAttribute="trailing" id="QYX-0x-P3K"/>
                     <constraint firstAttribute="trailing" secondItem="Vn4-7m-bp3" secondAttribute="trailing" id="VyO-Ga-Nwb"/>
                     <constraint firstItem="D6Y-Kg-bmS" firstAttribute="top" secondItem="Vn4-7m-bp3" secondAttribute="bottom" id="Wsu-HY-FLr"/>
                     <constraint firstItem="Vn4-7m-bp3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="ao2-0q-HeX"/>
                     <constraint firstItem="D6Y-Kg-bmS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="lHn-1d-Unu"/>
+                    <constraint firstItem="zL2-ML-UyW" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="njW-fz-Wf6"/>
                     <constraint firstAttribute="bottom" secondItem="D6Y-Kg-bmS" secondAttribute="bottom" id="tAO-wk-H1Z"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="textfield" destination="Vn4-7m-bp3" id="PHc-5g-hZf"/>
+                <outlet property="titleLabel" destination="zL2-ML-UyW" id="883-B3-Loa"/>
             </connections>
             <point key="canvasLocation" x="57" y="122.5"/>
         </tableViewCell>

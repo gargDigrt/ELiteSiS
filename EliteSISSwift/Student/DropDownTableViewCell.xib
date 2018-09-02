@@ -22,8 +22,8 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cOa-mc-gag">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4th" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QPh-g1-6cz">
-                                <rect key="frame" x="0.0" y="11" width="289" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="     4th" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QPh-g1-6cz">
+                                <rect key="frame" x="22" y="11" width="267" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -71,7 +71,7 @@
                             <constraint firstItem="JzG-ep-71O" firstAttribute="leading" secondItem="cOa-mc-gag" secondAttribute="leading" id="9NS-Uw-UF1"/>
                             <constraint firstItem="zPn-LB-Kbb" firstAttribute="top" secondItem="vW1-3E-auC" secondAttribute="top" id="A9K-mB-gd6"/>
                             <constraint firstItem="zPn-LB-Kbb" firstAttribute="centerY" secondItem="QPh-g1-6cz" secondAttribute="centerY" id="BYW-SU-Tqt"/>
-                            <constraint firstItem="QPh-g1-6cz" firstAttribute="leading" secondItem="cOa-mc-gag" secondAttribute="leading" id="BxU-5a-35w"/>
+                            <constraint firstItem="QPh-g1-6cz" firstAttribute="leading" secondItem="cOa-mc-gag" secondAttribute="leading" constant="22" id="BxU-5a-35w"/>
                             <constraint firstItem="vW1-3E-auC" firstAttribute="leading" secondItem="cOa-mc-gag" secondAttribute="leading" id="D9W-Tp-3Ho"/>
                             <constraint firstItem="SvQ-HC-ypH" firstAttribute="top" secondItem="vW1-3E-auC" secondAttribute="top" id="ITU-ol-Wds"/>
                             <constraint firstAttribute="trailing" secondItem="JKh-oi-Qaq" secondAttribute="trailing" constant="3" id="KSs-4w-QOJ"/>
