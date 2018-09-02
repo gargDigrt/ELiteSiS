@@ -10,7 +10,10 @@ import UIKit
 
 class TextfieldTableViewCell: UITableViewCell, UITextFieldDelegate {
 
+    @IBOutlet weak var titleLabel: UILabel!
+    
     @IBOutlet weak var textField: UITextField!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

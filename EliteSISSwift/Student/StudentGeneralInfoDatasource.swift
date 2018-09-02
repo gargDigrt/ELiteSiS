@@ -34,22 +34,21 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             else {
                 cell.textField.text  = "Others"
             }
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Gender"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
+    
             return cell
             
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DateSelectionTableViewCell") as! DateSelectionTableViewCell
             
             let DateOfBirth = UserDefaults.standard.object(forKey: "sis_dateofbirth") as? String
-           
-            
             let fullNameArr = DateOfBirth?.split(separator: "T")
             let DOB = fullNameArr?[0].split(separator: "-")
-           
-           
             cell.textLabel?.text = "\(DOB![2])-\(DOB![1])-\(DOB![0])"
+            cell.titleLabel.text = "Date of Birth"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             cell.delegate = self
@@ -64,7 +63,8 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             
             cell.textField.placeholder = "Enter your Father's name"
               cell.textField.text =  UserDefaults.standard.object(forKey: "sis_fathername") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Father's Name"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -73,7 +73,8 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter your Mother's name"
                cell.textField.text = UserDefaults.standard.object(forKey: "sis_mothername") as? String
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Mother's Name"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
@@ -91,7 +92,8 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
                 cell.textField.text  = "EPL"
             }
            
-            cell.textField.isUserInteractionEnabled = true
+            cell.textField.isUserInteractionEnabled = false
+            cell.titleLabel.text = "Category"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
