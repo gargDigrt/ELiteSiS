@@ -287,6 +287,7 @@ extension EventGalleryViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = floor((UIScreen.main.bounds.width - 70)/3)
         let height = width + 50
+        // resize cell
         return CGSize(width:width, height:height)
     }
     

@@ -25,7 +25,7 @@
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ID: SIS|S|1718|0164" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4r4-Ck-9qU">
-                    <rect key="frame" x="78" y="24" width="187" height="14.5"/>
+                    <rect key="frame" x="78" y="24" width="212" height="15"/>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
@@ -43,7 +43,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Class: Nursery" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MB7-OY-KXJ">
-                    <rect key="frame" x="275" y="24" width="90" height="14.5"/>
+                    <rect key="frame" x="284" y="24" width="90" height="14.5"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="90" id="eOG-jm-hRm"/>
                     </constraints>
@@ -61,13 +61,13 @@
                 <constraint firstItem="RIg-1V-6vE" firstAttribute="top" secondItem="4r4-Ck-9qU" secondAttribute="bottom" constant="5" id="8JK-7j-gz1"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="RIg-1V-6vE" secondAttribute="trailing" constant="20" id="8SR-gZ-J9q"/>
                 <constraint firstItem="c4W-Az-9z8" firstAttribute="leading" secondItem="X02-2P-6sT" secondAttribute="trailing" constant="8" id="B0C-zs-duj"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="MB7-OY-KXJ" secondAttribute="trailing" constant="10" id="Jqj-xv-t69"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="MB7-OY-KXJ" secondAttribute="trailing" constant="1" id="Jqj-xv-t69"/>
                 <constraint firstItem="c4W-Az-9z8" firstAttribute="top" secondItem="RIg-1V-6vE" secondAttribute="bottom" constant="5" id="MEo-nj-0mo"/>
                 <constraint firstItem="4r4-Ck-9qU" firstAttribute="top" secondItem="X02-2P-6sT" secondAttribute="top" id="NPZ-5r-v8q"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="c4W-Az-9z8" secondAttribute="trailing" constant="20" id="O9H-3G-97m"/>
                 <constraint firstItem="MB7-OY-KXJ" firstAttribute="top" secondItem="4r4-Ck-9qU" secondAttribute="top" id="VHd-9H-aWo"/>
                 <constraint firstItem="RIg-1V-6vE" firstAttribute="leading" secondItem="X02-2P-6sT" secondAttribute="trailing" constant="8" id="WgH-4m-1rY"/>
-                <constraint firstItem="MB7-OY-KXJ" firstAttribute="leading" secondItem="4r4-Ck-9qU" secondAttribute="trailing" constant="10" id="cJY-Bu-tfj"/>
+                <constraint firstItem="MB7-OY-KXJ" firstAttribute="leading" secondItem="4r4-Ck-9qU" secondAttribute="trailing" constant="-6" id="cJY-Bu-tfj"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>

@@ -14,6 +14,8 @@ protocol DateSelectionCellProtocol: class {
 
 class DateSelectionTableViewCell: UITableViewCell {
     @IBOutlet weak var lblDate: UILabel!
+    
+    @IBOutlet weak var titleLabel: UILabel!
     weak var delegate: DateSelectionCellProtocol?
     
     override func awakeFromNib() {
