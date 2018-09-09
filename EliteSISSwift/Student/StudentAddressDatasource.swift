@@ -7,13 +7,13 @@
 //
 
 import UIKit
-
+import DropDown
 class StudentAddressDatasource: NSObject, UITableViewDataSource {
     
-   
+   var dropDownClasses: DropDown!
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-               return 6
+               return 7
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -28,7 +28,7 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.text = UserDefaults.standard.object(forKey: "sis_houseno") as? String
-            cell.textField.isUserInteractionEnabled = false
+            cell.textField.isUserInteractionEnabled = true
             cell.titleLabel.text = "Address"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -37,28 +37,33 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the address type"
-            cell.textField.text = UserDefaults.standard.object(forKey: "sis_addresssubtype") as? String
-            cell.textField.isUserInteractionEnabled = false
+            let addressType = UserDefaults.standard.object(forKey: "sis_addresssubtype") as? String
+            if addressType == "1" {
+             cell.textField.text = "Permanent Address"
+            }
+            else {
+                cell.textField.text = "Communication Address"
+            }
+            cell.textField.isUserInteractionEnabled = true
             cell.titleLabel.text = "Address Type"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
             
         case 3:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
-            cell.textField.placeholder = "Enter the city"
-            cell.textField.text = UserDefaults.standard.object(forKey: "sis_city") as? String
-            cell.textField.isUserInteractionEnabled = false
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NewDropDownTableViewCell") as! NewDropDownTableViewCell
+
+            cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForCity), for: .touchUpInside)
+            cell.lblTitle.text = ""
             cell.titleLabel.text = "City"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
             
         case 4:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
-            cell.textField.placeholder = "Enter the state"
-            cell.textField.text = UserDefaults.standard.object(forKey: "sis_state") as? String
-            cell.textField.isUserInteractionEnabled = false
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NewDropDownTableViewCell") as! NewDropDownTableViewCell
+cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForState), for: .touchUpInside)
+            cell.lblTitle.text = ""
             cell.titleLabel.text = "State"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -89,4 +94,25 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
         }
         
     }
+    
+   
+    
+    @objc func openDropDownForCity() {
+        print("open drop down here ")
+        
+    }
+    
+    @objc func openDropDownForState()  {
+        print("open drop for state")
+    }
+    
+//    @objc func onStudentCategoryInfoClick() {
+//        if dropDownClasses.isHidden{
+//            dropDownClasses.show()
+//           // hideSideMenuView()
+//        }
+//        else{
+//            dropDownClasses.hide()
+//        }
+//    }
 }

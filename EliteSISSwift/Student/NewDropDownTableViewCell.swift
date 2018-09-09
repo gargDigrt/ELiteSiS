@@ -1,16 +1,17 @@
 //
-//  DropDownTableViewCell.swift
+//  NewDropDownTableViewCell.swift
 //  EliteSISSwift
 //
-//  Created by Daffolap-51 on 01/05/18.
-//  Copyright © 2018 Vivek Garg. All rights reserved.
+//  Created by VEERU KATIYAR on 9/4/18.
+//  Copyright © 2018 Kunal Das. All rights reserved.
 //
 
 import UIKit
 
-class DropDownTableViewCell: UITableViewCell {
+class NewDropDownTableViewCell: UITableViewCell {
+
+    @IBOutlet weak var DropDownBtnOutlet: UIButton!
     @IBOutlet weak var lblTitle: UILabel!
-    
     @IBOutlet weak var titleLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -23,4 +24,5 @@ class DropDownTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+   
 }

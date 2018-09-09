@@ -106,7 +106,8 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let totalDays = dict["new_presentdays"] as! Int
         totalDayLabel.text = "\(totalDays)"
         let perCent = 100*presentDay/totalDay
-        attendencePercentLabel.text = " \(perCent)%"
+
+        attendencePercentLabel.text = "\(String(format:"%.1f", perCent))%"
         let newAngleProgressViewDayValue = getAngle(value: perCent, outOf: 100)
         attendenceProgressView.animate(toAngle: newAngleProgressViewDayValue, duration: 1.0, completion: nil)
         

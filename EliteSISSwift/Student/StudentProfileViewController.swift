@@ -23,6 +23,8 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
     
     //VAriables
     var pickerData: [String] = [String]()
+    var stateData: [String] = [String]()
+    var stateID: [String] = [String]()
     var profileImage:UIImage?
     var studentDetail:StudentAttendanceViewModel!
     var generalDatasource = StudentGeneralInfoDatasource()
@@ -32,6 +34,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
     var addressDatasource = StudentAddressDatasource()
     var identityCardDatasource = StudentIdentityCardDatasource()
     var dropDownClasses: DropDown!
+    var countryId:String = ""
 
     //MARK:- View's Lifecycle
     
@@ -41,6 +44,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         tblViewInfo.register(UINib(nibName: "TextFieldWithCalendarTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldwithCalendarTableCell")
         tblViewInfo.register(UINib(nibName: "DropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "DropDownTableViewCell")
         tblViewInfo.register(UINib(nibName: "DateSelectionTableViewCell", bundle:nil), forCellReuseIdentifier: "DateSelectionTableViewCell")
+        tblViewInfo.register(UINib(nibName: "NewDropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "NewDropDownTableViewCell")
         
         tblViewInfo.dataSource = generalDatasource
         tblViewInfo.delegate = self
@@ -194,20 +198,43 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         WebServices.shared.getAddress(forRegistrationID: regID, completion: { (response, error) in
             
             if error == nil, let responseDict = response {
-                debugPrint(responseDict)
-                UserDefaults.standard.set(responseDict["value"][0]["sis_houseno"].stringValue, forKey: "sis_houseno")
+               
+                let address = "\(responseDict["value"][0]["sis_houseno"]), \(responseDict["value"][0]["sis_streetnumber"])"
+                UserDefaults.standard.set(address, forKey: "sis_houseno")
                UserDefaults.standard.set(responseDict["value"][0]["sis_addresssubtype"].stringValue, forKey: "sis_addresssubtype")
                 UserDefaults.standard.set(responseDict["value"][0]["sis_city"]["sis_name"].stringValue, forKey: "sis_city")
                  UserDefaults.standard.set(responseDict["value"][0]["sis_state"]["sis_name"].stringValue, forKey: "sis_state")
                UserDefaults.standard.set(responseDict["value"][0]["sis_country"]["sis_name"].stringValue, forKey: "sis_country")
                 UserDefaults.standard.set(responseDict["value"][0]["sis_postalcode"].stringValue, forKey: "sis_postalcode")
-                
+                self.countryId = responseDict["value"][0]["_sis_country_value"].stringValue
+                self.stateAPIExecute()
             } else {
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
                 debugPrint(error?.localizedDescription ?? "Getting user profile error")
             }
         })
     }
+    
+    
+    func stateAPIExecute()  {
+        WebServices.shared.getStates(forCountryID: self.countryId, completion: { (response, error) in
+            if error == nil, let responseDict = response {
+                print(responseDict)
+                let myData = responseDict["value"].arrayValue
+                for states in myData {
+                    let stateValue = states["sis_name"].stringValue
+                    let stateID = states["sis_stateid"].stringValue
+                    self.stateID.append(stateID)
+                    self.stateData.append(stateValue)
+                    print(self.stateID)
+                }
+            } else {
+                AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
+                debugPrint(error?.localizedDescription ?? "Getting user profile error")
+            }
+        })
+    }
+    
     
     @objc func keyboardWillShow(_ notification: Notification) {
         guard let kbSizeValue = (notification as NSNotification).userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue else { return }
