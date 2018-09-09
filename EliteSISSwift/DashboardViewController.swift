@@ -86,10 +86,12 @@ class DashboardViewController: UIViewController, ENSideMenuDelegate {
         let completAssignment = dict["new_completedassignments"] as! Int
         let dueAssignment = totalAssignment - completAssignment
         dueAssignmentLabel.text = "\(dueAssignment)"
+        let completed = ((completAssignment * 100 ) / totalAssignment)
         assignmentPercentLabel.text = "\((completAssignment * 100 ) / totalAssignment)% COMPLETE"
-        // totalAssignment
-        // dueAssignment
-        let newAngleValue = getAngle(value: Double(totalAssignment), outOf: Double(dueAssignment))
+        print(totalAssignment)
+        print(dueAssignment)
+        print(completed)
+        let newAngleValue = getAngle(value: Double(completed), outOf:100)
         assignmentProgressView.animate(toAngle: newAngleValue, duration: 1.0, completion: nil)
         
         let totalSubject = dict["new_totalsubjects"] as! Int
