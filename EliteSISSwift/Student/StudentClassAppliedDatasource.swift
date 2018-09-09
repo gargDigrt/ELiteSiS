@@ -39,15 +39,20 @@ class StudentClassAppliedDatasource: NSObject, UITableViewDataSource {
             return cell
             
         case 3:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldwithCalendarTableCell") as! TextFieldWithCalendarTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DateSelectionTableViewCell") as! DateSelectionTableViewCell
             let admiDate = UserDefaults.standard.object(forKey: "sis_dateofadmission") as? String
            
            
-            let fullNameArr = admiDate?.split(separator: "T")
-            let DOB = fullNameArr?[0].split(separator: "-")
-           
-            cell.textfield.text = "\(DOB![2])-\(DOB![1])-\(DOB![0])"
-            cell.textfield.isUserInteractionEnabled = false
+            let Date = admiDate?.split(separator: "T")
+            let DOB = Date![0]
+            
+            let inputFormatter = DateFormatter()
+            inputFormatter.dateFormat = "yyyy-MM-dd"
+            let showDate = inputFormatter.date(from: String(DOB))
+            inputFormatter.dateFormat = "dd-MMM"
+            let resultString = inputFormatter.string(from: showDate!)
+            cell.lblDate.text = resultString
+            
             cell.titleLabel.text = "Date Applied"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear

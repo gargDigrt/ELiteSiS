@@ -45,9 +45,16 @@ class StudentGeneralInfoDatasource: NSObject, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DateSelectionTableViewCell") as! DateSelectionTableViewCell
             
             let DateOfBirth = UserDefaults.standard.object(forKey: "sis_dateofbirth") as? String
-            let fullNameArr = DateOfBirth?.split(separator: "T")
-            let DOB = fullNameArr?[0].split(separator: "-")
-            cell.textLabel?.text = "\(DOB![2])-\(DOB![1])-\(DOB![0])"
+            let Date = DateOfBirth?.split(separator: "T")
+            let DOB = Date![0]
+            
+            let inputFormatter = DateFormatter()
+            inputFormatter.dateFormat = "yyyy-MM-dd"
+            let showDate = inputFormatter.date(from: String(DOB))
+            inputFormatter.dateFormat = "dd-MMM-yyyy"
+            let resultString = inputFormatter.string(from: showDate!)
+            cell.lblDate.text = resultString
+            
             cell.titleLabel.text = "Date of Birth"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear

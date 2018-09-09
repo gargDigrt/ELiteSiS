@@ -33,7 +33,7 @@ class StudentIdentityCardDatasource: NSObject, UITableViewDataSource {
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the card number"
-            // cell.textField.text = UserDefaults.standard.object(forKey: "sis_identity1") as? String
+             cell.textField.text = UserDefaults.standard.object(forKey: "sis_identity1") as? String
             cell.textField.isUserInteractionEnabled = true
             cell.titleLabel.text = "Card Number"
             cell.selectionStyle = .none
@@ -41,20 +41,32 @@ class StudentIdentityCardDatasource: NSObject, UITableViewDataSource {
             return cell
             
         case 3:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldwithCalendarTableCell") as! TextFieldWithCalendarTableViewCell
-            cell.textfield.placeholder = "Enter the issued date"
-            cell.textfield.text = ""
-           // cell.textField.text = UserDefaults.standard.object(forKey: "sis_issuedon") as? String
-            cell.textfield.isUserInteractionEnabled = true
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DateSelectionTableViewCell") as! DateSelectionTableViewCell
+           
+            cell.textLabel?.textColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
+            
+             let DateOfBirth = UserDefaults.standard.object(forKey: "sis_issuedon") as? String
+           
+            let Date = DateOfBirth?.split(separator: "T")
+            let DOB = Date![0]
+            
+            let inputFormatter = DateFormatter()
+            inputFormatter.dateFormat = "yyyy-MM-dd"
+            let showDate = inputFormatter.date(from: String(DOB))
+            inputFormatter.dateFormat = "dd-MMM-yyyy"
+            let resultString = inputFormatter.string(from: showDate!)
+            cell.lblDate.text = resultString
+          
             cell.titleLabel.text = "Issue Date"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
             return cell
             
         case 4:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldwithCalendarTableCell") as! TextFieldWithCalendarTableViewCell
-            cell.textfield.placeholder = "Enter the expiry date"
-            cell.textfield.isUserInteractionEnabled = true
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DateSelectionTableViewCell") as! DateSelectionTableViewCell
+            cell.textLabel?.text = "Enter the expiry date"
+            cell.textLabel?.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+           // cell.textfield.isUserInteractionEnabled = true
             cell.titleLabel.text = "Expiry Date"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear

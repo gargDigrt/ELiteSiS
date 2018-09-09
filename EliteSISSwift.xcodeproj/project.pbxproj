@@ -166,6 +166,8 @@
 		3BD87543A4944A67B4053FF3 /* Pods_EliteSISSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F8D43AFC5B896B534692136 /* Pods_EliteSISSwift.framework */; };
 		430CF636212611B800DAE504 /* ParentChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430CF635212611B800DAE504 /* ParentChatViewController.swift */; };
 		430CF63821261AB700DAE504 /* WebServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430CF63721261AB600DAE504 /* WebServices.swift */; };
+		43FEB199213DD05000E4963B /* NewDropDownTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FEB197213DD05000E4963B /* NewDropDownTableViewCell.swift */; };
+		43FEB19A213DD05000E4963B /* NewDropDownTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43FEB198213DD05000E4963B /* NewDropDownTableViewCell.xib */; };
 		6A0914FD2065790E004A9382 /* StudentProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0914FC2065790E004A9382 /* StudentProfileViewController.swift */; };
 		6A091500206581A0004A9382 /* StudentGeneralInfoDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0914FF206581A0004A9382 /* StudentGeneralInfoDatasource.swift */; };
 		6A091502206581B6004A9382 /* StudentContactDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A091501206581B6004A9382 /* StudentContactDatasource.swift */; };
@@ -417,6 +419,8 @@
 		430CF635212611B800DAE504 /* ParentChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParentChatViewController.swift; sourceTree = "<group>"; };
 		430CF63721261AB600DAE504 /* WebServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebServices.swift; sourceTree = "<group>"; };
 		435C29694BA12C7CC3A8B71D /* Pods-EliteSISSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EliteSISSwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-EliteSISSwift/Pods-EliteSISSwift.release.xcconfig"; sourceTree = "<group>"; };
+		43FEB197213DD05000E4963B /* NewDropDownTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDropDownTableViewCell.swift; sourceTree = "<group>"; };
+		43FEB198213DD05000E4963B /* NewDropDownTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewDropDownTableViewCell.xib; sourceTree = "<group>"; };
 		6A0914FC2065790E004A9382 /* StudentProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentProfileViewController.swift; sourceTree = "<group>"; };
 		6A0914FF206581A0004A9382 /* StudentGeneralInfoDatasource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentGeneralInfoDatasource.swift; sourceTree = "<group>"; };
 		6A091501206581B6004A9382 /* StudentContactDatasource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentContactDatasource.swift; sourceTree = "<group>"; };
@@ -877,6 +881,8 @@
 			children = (
 				2B855D2D2098DD59000C1C2A /* DropDownTableViewCell.swift */,
 				2B855D2E2098DD59000C1C2A /* DropDownTableViewCell.xib */,
+				43FEB197213DD05000E4963B /* NewDropDownTableViewCell.swift */,
+				43FEB198213DD05000E4963B /* NewDropDownTableViewCell.xib */,
 				6A0914FC2065790E004A9382 /* StudentProfileViewController.swift */,
 				6A0914FF206581A0004A9382 /* StudentGeneralInfoDatasource.swift */,
 				6A091501206581B6004A9382 /* StudentContactDatasource.swift */,
@@ -1198,6 +1204,7 @@
 				2B4556E12076A43D00B9738D /* ic_done.png in Resources */,
 				382401BF203EF47A00604D92 /* assessment.png in Resources */,
 				38240196203EF2DD00604D92 /* childpng.png in Resources */,
+				43FEB19A213DD05000E4963B /* NewDropDownTableViewCell.xib in Resources */,
 				6AA150E9203B3E06007CBD99 /* ForgotPasswordTableViewCell.xib in Resources */,
 				2B4556E52076A6CF00B9738D /* TeacherAssignmentHeaderFooterView.xib in Resources */,
 				389F116B20AC43D700CB23FA /* LaunchImage-Portrait@2x.png in Resources */,
@@ -1391,6 +1398,7 @@
 				6A49EE71204714BE00055B3B /* ChapterStatusViewController.swift in Sources */,
 				2BD20887208B245700CD4ED5 /* UpcomingEventsTableViewCell.swift in Sources */,
 				6A49EE782047171B00055B3B /* ChapterStatusTableViewCell.swift in Sources */,
+				43FEB199213DD05000E4963B /* NewDropDownTableViewCell.swift in Sources */,
 				6A532D1E204BF261005DFF4E /* CosmosDistrib.swift in Sources */,
 				388EA89C208DB6600040CC9B /* ParentProfileViewController.swift in Sources */,
 				6A45683220642B9600937CE0 /* TextfieldTableViewCell.swift in Sources */,
