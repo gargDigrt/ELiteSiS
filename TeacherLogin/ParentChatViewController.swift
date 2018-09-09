@@ -142,6 +142,7 @@ class ParentChatViewController: UIViewController {
                 print(responseDict)
                 let facultyData = responseDict.arrayValue
                 self.dataSourceClassses.removeAll()
+                var dropdownData = [String]()
                 for (item, subName) in zip(facultyData,self.subjectArray) {
    
                   let name = item["FacultyName"].stringValue
@@ -149,10 +150,11 @@ class ParentChatViewController: UIViewController {
                     let id = item["FacultyContactID"].stringValue
                     let faculty = Faculty(name: name, id: id, subject: subName)
                     let teacherInfo =  "\(faculty.name), \(faculty.subject)"
-                    self.dataSourceClassses.append(teacherInfo)
+                    dropdownData.append(teacherInfo)
                     self.faculties.append(faculty)
  
                 }
+                self.dataSourceClassses = dropdownData.sorted()
                 self.configureDropDown()
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")

@@ -10,19 +10,36 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
+struct Holiday {
+    var name: String
+    var date: Date
+    var day: String
+    
+    init(name: String, date: String, day: String) {
+        self.name = name
+        self.day = day
+        let holidayDate = Date.convertSringToDate(dateString: date)
+        self.date = holidayDate!
+    }
+    
+}
+
 class HolidayListViewController: UIViewController {
     
+    //IBOutlet
     @IBOutlet weak var tblViewHolidayList: UITableView!
-    var arrHolidayList = [[String: Any]]()
+    
+    //Variable
+    var arrHolidayList = [Holiday]()
     
     
     //MARK:- View's Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Do any additional setup after loading the view.
         
         configureTableView()
-        self .getHolidayList()
-        // Do any additional setup after loading the view.
+        self.getHolidayList()
     }
     
     // MARK: - Button Actions
@@ -77,8 +94,15 @@ class HolidayListViewController: UIViewController {
         WebServices.shared.getHolidayList(completion: { (response, error) in
             
             if error == nil, let responseDict = response {
-                self.arrHolidayList = responseDict["value"].arrayObject as! [[String : Any]]
-                print(self.arrHolidayList)
+                let arrHolidayData = responseDict["value"].arrayValue
+                for holidayData in arrHolidayData {
+                    let name = holidayData["sis_name"].stringValue
+                    let date = holidayData["new_startdate"].stringValue
+                    let day = holidayData["new_dayname"].stringValue
+                    let holiday = Holiday(name: name, date: date, day: day)
+                    self.arrHolidayList.append(holiday)
+                }
+                self.arrHolidayList = self.arrHolidayList.sorted(by: { $0.date < $1.date })
                 DispatchQueue.main.async {
                     self.tblViewHolidayList.reloadData()
                     ProgressLoader.shared.hideLoader()
@@ -115,7 +139,7 @@ extension HolidayListViewController:  UITableViewDelegate,UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HolidayListTableViewCell") as! HolidayListTableViewCell
-        print(self.arrHolidayList[indexPath.row]["sis_name"] as Any)
+//        print(self.arrHolidayList[indexPath.row]["sis_name"] as Any)
         
         cell.configureCell(data: arrHolidayList[indexPath.row])
         return cell

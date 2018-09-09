@@ -214,3 +214,11 @@ extension TeacherChatViewController: UITableViewDelegate,UITableViewDataSource {
     
     
 }
+
+//MARK:- Array Extension
+
+extension Array {
+    
+    
+}
+

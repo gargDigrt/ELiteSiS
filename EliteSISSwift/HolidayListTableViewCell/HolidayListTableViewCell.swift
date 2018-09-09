@@ -27,25 +27,21 @@ class HolidayListTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configureCell(data: [String:Any]) {
+    func configureCell(data: Holiday) {
         
-        if let name = data["sis_name"] as? String {
-            self.lblHolidayName.text = name
-        }
-        if let date = data["new_startdate"] as? String {
-            self.lblHolidayDate.text = changeDateFormat(dateString: date)
-        }
-        if let day = data["new_dayname"] as? String {
-            self.lblHolidayDay.text = day
-        }
+            self.lblHolidayName.text = data.name
+        
+            self.lblHolidayDate.text = changeDateFormat(date: data.date)
+        
+            self.lblHolidayDay.text = data.day
     }
     
-    private func changeDateFormat(dateString: String) -> String {
+    private func changeDateFormat(date: Date) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let dateObj = dateFormatter.date(from: dateString)
+//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//        let dateObj = dateFormatter.date(from: dateString)
         dateFormatter.dateFormat = "dd-MMM"
-        let finalDateStr:String = dateFormatter.string(from: dateObj!)
+        let finalDateStr:String = dateFormatter.string(from: date)
         
         return finalDateStr
     }
