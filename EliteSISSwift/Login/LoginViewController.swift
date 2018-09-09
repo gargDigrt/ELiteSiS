@@ -300,6 +300,7 @@ extension LoginViewController : UITableViewDelegate, UITableViewDataSource {
             
         case 2:
             let cellPassword = tableView.dequeueReusableCell(withIdentifier: "LoginCredentialsTableViewCell") as! LoginCredentialsTableViewCell
+            cellPassword.showHideBtn.isHidden = false
             cellPassword.backgroundColor = UIColor.clear
             cellPassword.textField.placeholder = "Enter password"
             cellPassword.textField.text = "apar@1234"
