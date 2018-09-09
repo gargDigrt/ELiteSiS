@@ -23,13 +23,10 @@ extension Date{
     }
     
     static func convertSringToDate(dateString: String)-> Date?{
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        let dateFromString: Date? = dateFormatter.date(from: dateString)
-        guard let dateValue = dateFromString else {
-            return nil
-        }
-        return dateValue
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+        guard let showDate = inputFormatter.date(from: dateString) else { return nil}
+        return showDate
     }
     
     /// This method is used to get the current date with specified format default is 09-Mar-1990
