@@ -213,9 +213,9 @@ extension LoginViewController {
                         UserDefaults.standard.set(userID, forKey: "sis_user_id")
                         
                         let loginRole = responseDict["value"] [0]["new_rolecode"].stringValue
-                        //                    print(loginRole)
+                       
                         let regId = responseDict["value"] [0]["_sis_registration_value"].stringValue
-                        //                    print(regId)
+                       
                         
                         
                         UserDefaults.standard.set(regId, forKey: "_sis_registration_value")
@@ -310,6 +310,14 @@ extension LoginViewController : UITableViewDelegate, UITableViewDataSource {
             cellPassword.imageView?.image = UIImage(named:"ic_lock.png")!.withRenderingMode(.alwaysTemplate)
             //UIImage(named: arrMenuImages[indexPath.row])
             cellPassword.imageView?.tintColor = UIColor.init(red: 44.0/255.0, green: 154.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+            
+            let btn = UIButton(type: UIButtonType.custom) as UIButton
+            btn.setImage((UIImage(named: "baseline_visibility_off")), for: UIControlState.normal)
+            btn.frame = CGRect(x:cellPassword.frame.size.width - 50, y:5, width:40, height:20)
+          //  btn.addTarget(self, action: "buttonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+           
+            cellPassword.contentView.addSubview(btn)
+            
             return cellPassword
             
         case 3:

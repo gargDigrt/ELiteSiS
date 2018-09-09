@@ -19,7 +19,7 @@ class ForgotPasswordTableViewCell: UITableViewCell {
         // Initialization code
         btnRememberMe.layer.borderWidth = 1
         btnRememberMe.layer.borderColor = UIColor.black.cgColor
-        lblForgotPassword.text = "Forgot password?"
+        lblForgotPassword.text = "Forgot Password?"
         lblRememberMe.text = "Remember me"
         lblForgotPassword.isUserInteractionEnabled = true
         lblRememberMe.isUserInteractionEnabled = true
