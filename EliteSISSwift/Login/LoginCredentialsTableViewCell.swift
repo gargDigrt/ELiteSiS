@@ -12,9 +12,14 @@ class LoginCredentialsTableViewCell: UITableViewCell, UITextFieldDelegate {
 
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var imgView: UIImageView!
+    @IBOutlet weak var showHideBtn: UIButton!
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.showHideBtn.isHidden = true
+        
         textField.tintColor = UIColor.black
         textField.delegate = self
     }
@@ -35,6 +40,13 @@ class LoginCredentialsTableViewCell: UITableViewCell, UITextFieldDelegate {
         let newString: NSString =
             currentString.replacingCharacters(in: range, with: string) as NSString
         return newString.length <= maxLength
+    }
+    
+    @IBAction func showPassword(_ sender: UIButton) {
+        
+        self.textField.isSecureTextEntry = sender.isSelected
+        sender.isSelected = !sender.isSelected
+        
     }
     
 }
