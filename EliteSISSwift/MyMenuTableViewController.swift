@@ -118,7 +118,7 @@ class MyMenuTableViewController: UITableViewController {
     func setupDisplay() {
         
         if (self.selectedLogin == "S") {
-            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "notification.png", "calendar.png", "assignment.png", "performance.png", "teacher.png", "attendance.png", "event.png", "health.png", "holiday.png", "s_profile.png", "key.png", "logout.png"]
+            self.arrMenuImages = ["dashboard.png", "pinboard.png", "discussion.png", "notification.png", "calendar.png", "assignment.png", "performance.png", "teacher.png", "attendance.png", "event.png", "health.png", "holiday.png", "profile.png", "key.png", "logout.png"]
         }
         
         
