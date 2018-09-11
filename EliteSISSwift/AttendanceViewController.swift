@@ -84,6 +84,7 @@ class AttendanceViewController: UIViewController,FSCalendarDataSource, FSCalenda
         WebServices.shared.getAttendenceStatusFor(studentID: studentID, completion: {(response, error) in
             
             if error == nil, let respondeDict = response {
+                print(respondeDict)
                 let attandenseString = respondeDict["value"][0]["new_attendancedata"].stringValue
                 self.prepareAttandenceData(text: attandenseString)
             }else{
