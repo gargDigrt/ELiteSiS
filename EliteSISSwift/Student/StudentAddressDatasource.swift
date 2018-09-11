@@ -10,14 +10,13 @@ import UIKit
 import DropDown
 class StudentAddressDatasource: NSObject, UITableViewDataSource {
     
-   var dropDownClasses: DropDown!
+    var dropDownClasses: DropDown!
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-               return 7
+        return 7
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         
         switch indexPath.row {
         case 0:
@@ -39,7 +38,7 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             cell.textField.placeholder = "Enter the address type"
             let addressType = UserDefaults.standard.object(forKey: "sis_addresssubtype") as? String
             if addressType == "1" {
-             cell.textField.text = "Permanent Address"
+                cell.textField.text = "Permanent Address"
             }
             else {
                 cell.textField.text = "Communication Address"
@@ -52,9 +51,9 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             
         case 3:
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewDropDownTableViewCell") as! NewDropDownTableViewCell
-
+            let cityName = UserDefaults.standard.string(forKey: "sis_city")
             cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForCity), for: .touchUpInside)
-            cell.lblTitle.text = ""
+            cell.lblTitle.text = cityName
             cell.titleLabel.text = "City"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -62,8 +61,9 @@ class StudentAddressDatasource: NSObject, UITableViewDataSource {
             
         case 4:
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewDropDownTableViewCell") as! NewDropDownTableViewCell
-cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForState), for: .touchUpInside)
-            cell.lblTitle.text = ""
+            cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForState), for: .touchUpInside)
+            let stateName = UserDefaults.standard.string(forKey: "sis_state")
+            cell.lblTitle.text = stateName
             cell.titleLabel.text = "State"
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor.clear
@@ -72,7 +72,7 @@ cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForState), f
         case 5:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textfieldTableCell") as! TextfieldTableViewCell
             cell.textField.placeholder = "Enter the country"
-            cell.textField.text = UserDefaults.standard.object(forKey: "sis_country") as? String
+            cell.textField.text = UserDefaults.standard.string(forKey: "sis_country")
             cell.textField.isUserInteractionEnabled = false
             cell.titleLabel.text = "Country"
             cell.selectionStyle = .none
@@ -95,7 +95,7 @@ cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForState), f
         
     }
     
-   
+    
     
     @objc func openDropDownForCity() {
         print("open drop down here ")
@@ -106,13 +106,13 @@ cell.DropDownBtnOutlet.addTarget(self, action:#selector(openDropDownForState), f
         print("open drop for state")
     }
     
-//    @objc func onStudentCategoryInfoClick() {
-//        if dropDownClasses.isHidden{
-//            dropDownClasses.show()
-//           // hideSideMenuView()
-//        }
-//        else{
-//            dropDownClasses.hide()
-//        }
-//    }
+    //    @objc func onStudentCategoryInfoClick() {
+    //        if dropDownClasses.isHidden{
+    //            dropDownClasses.show()
+    //           // hideSideMenuView()
+    //        }
+    //        else{
+    //            dropDownClasses.hide()
+    //        }
+    //    }
 }

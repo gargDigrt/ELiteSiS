@@ -37,34 +37,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
     var countryId:String = ""
 
     //MARK:- View's Lifecycle
-    
-    fileprivate func configureTableView() {
-        tblViewInfo.separatorStyle = .none
-        tblViewInfo.register(UINib(nibName: "TextfieldTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldTableCell")
-        tblViewInfo.register(UINib(nibName: "TextFieldWithCalendarTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldwithCalendarTableCell")
-        tblViewInfo.register(UINib(nibName: "DropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "DropDownTableViewCell")
-        tblViewInfo.register(UINib(nibName: "DateSelectionTableViewCell", bundle:nil), forCellReuseIdentifier: "DateSelectionTableViewCell")
-        tblViewInfo.register(UINib(nibName: "NewDropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "NewDropDownTableViewCell")
-        
-        tblViewInfo.dataSource = generalDatasource
-        tblViewInfo.delegate = self
-        tblViewInfo.reloadData()
-    }
-    
-    fileprivate func configureProfileImageView() {
-        imgViewStudent.layer.borderWidth = 1.0
-        imgViewStudent.layer.borderColor = UIColor.lightGray.cgColor
-        imgViewStudent.layer.cornerRadius = (imgViewStudentHeightConstraint?.constant)!/2
-        imgViewStudent.clipsToBounds = true
-        //Make profile image circular
-        self.imgViewStudent.layer.cornerRadius = self.imgViewStudent.bounds.width/2.0
-        self.imgViewStudent.clipsToBounds = true
-        
-        if let imgData = UserDefaults.standard.data(forKey: "studentImage") {
-            profileImage = UIImage(data: imgData)
-        }
-        
-    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,6 +81,34 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
       // }
         addresssAPIExecute()
         IDCardAPICall()
+    }
+    
+    fileprivate func configureTableView() {
+        tblViewInfo.separatorStyle = .none
+        tblViewInfo.register(UINib(nibName: "TextfieldTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldTableCell")
+        tblViewInfo.register(UINib(nibName: "TextFieldWithCalendarTableViewCell", bundle:nil), forCellReuseIdentifier: "textfieldwithCalendarTableCell")
+        tblViewInfo.register(UINib(nibName: "DropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "DropDownTableViewCell")
+        tblViewInfo.register(UINib(nibName: "DateSelectionTableViewCell", bundle:nil), forCellReuseIdentifier: "DateSelectionTableViewCell")
+        tblViewInfo.register(UINib(nibName: "NewDropDownTableViewCell", bundle:nil), forCellReuseIdentifier: "NewDropDownTableViewCell")
+        
+        tblViewInfo.dataSource = generalDatasource
+        tblViewInfo.delegate = self
+        tblViewInfo.reloadData()
+    }
+    
+    fileprivate func configureProfileImageView() {
+        imgViewStudent.layer.borderWidth = 1.0
+        imgViewStudent.layer.borderColor = UIColor.lightGray.cgColor
+        imgViewStudent.layer.cornerRadius = (imgViewStudentHeightConstraint?.constant)!/2
+        imgViewStudent.clipsToBounds = true
+        //Make profile image circular
+        self.imgViewStudent.layer.cornerRadius = self.imgViewStudent.bounds.width/2.0
+        self.imgViewStudent.clipsToBounds = true
+        
+        if let imgData = UserDefaults.standard.data(forKey: "studentImage") {
+            profileImage = UIImage(data: imgData)
+        }
+        
     }
     
     func configDropDown(){
@@ -257,11 +258,6 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         }
         
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
@@ -278,6 +274,7 @@ class StudentProfileViewController: UIViewController, UITableViewDelegate {
         
         toggleSideMenuView()
     }
+    
     @IBAction func backbuttonClicked(_ sender: Any) {
         
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
