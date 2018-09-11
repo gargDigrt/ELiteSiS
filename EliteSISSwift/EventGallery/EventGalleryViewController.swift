@@ -53,7 +53,7 @@ class EventGalleryViewController: UIViewController{
     fileprivate let gregorian: Calendar = Calendar(identifier: .gregorian)
     
     // Data model: These strings will be the data for the table view cells
-    let eventsToShow: [String] = ["PTM", "Awards / Seminar", "Student Wellness Fair", "Exams"]
+    let eventsToShow: [String] = ["Cultural", "Sports"]
     
     // cell reuse id (cells that scroll out of view can be reused)
     let cellReuseIdentifier = "cell"
@@ -129,7 +129,7 @@ class EventGalleryViewController: UIViewController{
             
             if error == nil , let responseDict = response {
                 let albums = responseDict["value"].arrayValue
-                
+               
                 for item in albums {
                     guard let id = item["new_albumsid"].string  else { return }
                     let name = item["new_name"].string
@@ -229,18 +229,18 @@ extension EventGalleryViewController: UITableViewDelegate, UITableViewDataSource
         cell.imageView?.image = UIImage(named:"circleEvent.png")!.withRenderingMode(.alwaysTemplate)
         //UIImage(named: arrMenuImages[indexPath.row])
         
-        if(indexPath.row == 0){
-            cell.imageView?.tintColor = UIColor.init(red: 153.0/255.0, green: 152/255.0, blue: 255.0/255.0, alpha: 1.0)
+        if(indexPath.row == 0) {
+            cell.imageView?.tintColor = UIColor.init(red: 126.0/255.0, green: 242.0/255.0, blue: 168.0/255.0, alpha: 1.0)
         }
-        else if(indexPath.row == 1){
-            cell.imageView?.tintColor = UIColor.init(red: 0.0/255.0, green: 204/255.0, blue: 102.0/255.0, alpha: 1.0)
+        else if(indexPath.row == 1) {
+            cell.imageView?.tintColor = UIColor.init(red: 205.0/255.0, green: 111.0/255.0, blue: 116.0/255.0, alpha: 1.0)
         }
-        else if(indexPath.row == 2){
-            cell.imageView?.tintColor = UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0)
-        }
-        else if(indexPath.row == 3){
-            cell.imageView?.tintColor = UIColor.init(red: 102.0/255.0, green: 102/255.0, blue: 0.0/255.0, alpha: 1.0)
-        }
+//        else if(indexPath.row == 2){
+//            cell.imageView?.tintColor = UIColor.init(red: 102.0/255.0, green: 0/255.0, blue: 51.0/255.0, alpha: 1.0)
+//        }
+//        else if(indexPath.row == 3){
+//            cell.imageView?.tintColor = UIColor.init(red: 102.0/255.0, green: 102/255.0, blue: 0.0/255.0, alpha: 1.0)
+//        }
         cell.backgroundColor = .clear
         
         return cell

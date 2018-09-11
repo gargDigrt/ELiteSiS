@@ -52,10 +52,10 @@ class ParentChatViewController: UIViewController {
         configureTableView()
         
         if nameString != nil {
-            lblTeacherName.text = nameString
+            lblTeacherName.text = self.nameString
         }
-        
-        lblSelectedClass.text = "Select Teacher"
+       
+        lblSelectedClass.text = "Select teacher"
         // Do any additional setup after loading the view.
     }
     
@@ -85,7 +85,7 @@ class ParentChatViewController: UIViewController {
         dropDownStudents.selectionAction = { [unowned self] (index: Int, item: String) in
             // Handle dropdown selection
             self.selectedFaculty = self.faculties[index]
-            self.lblSelectedClass.text = self.selectedFaculty!.name
+            self.lblSelectedClass.text = self.dataSourceClassses[index]
             let facultyId = self.faculties[index].facultyID
             self.getChatMessageForFaculty(fID: facultyId)
         }
@@ -151,10 +151,13 @@ class ParentChatViewController: UIViewController {
                     let faculty = Faculty(name: name, id: id, subject: subName)
                     let teacherInfo =  "\(faculty.name), \(faculty.subject)"
                     dropdownData.append(teacherInfo)
+
                     self.faculties.append(faculty)
  
                 }
                 self.dataSourceClassses = dropdownData.sorted()
+           //     self.lblSelectedClass.text = self.dataSourceClassses[0]
+                
                 self.configureDropDown()
             }else{
                 AlertManager.shared.showAlertWith(title: "Error!", message: "Somthing went wrong")
